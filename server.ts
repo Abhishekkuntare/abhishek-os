@@ -950,7 +950,8 @@ import path from "path";
 import crypto from "crypto";
 import { spawn } from "child_process";
 import { GoogleGenAI } from "@google/genai";
-now import { transform } from "esbuild";
+import { transform } from "esbuild";
+import youtubeRouter from "./server/routes/youtube";
 
 dotenv.config();
 
@@ -968,7 +969,6 @@ const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
 
 const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN || "*";
 
-import youtubeRouter from "./server/routes/youtube";
 /* ==========================================================================
 | Middleware
 |========================================================================== */
