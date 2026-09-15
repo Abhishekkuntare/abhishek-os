@@ -1,0 +1,6 @@
+{
+  "name": "Abhishek Kuntare — Developer Workstation",
+  "description": "Interactive Windows 11-inspired developer portfolio and operating system of Abhishek Kuntare, Software Developer.",
+  "requestFramePermissions": ["camera", "microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
