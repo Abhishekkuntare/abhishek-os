@@ -20,6 +20,7 @@ import {
   AlertCircle,
   Database,
   Eye,
+  EyeOff,
 } from 'lucide-react';
 
 export const AdminApp: React.FC = () => {
@@ -40,8 +41,9 @@ export const AdminApp: React.FC = () => {
   } = useOS();
 
   // Login form state
-  const [email, setEmail] = useState('admin@abhishek.dev');
-  const [password, setPassword] = useState('Demo@12345');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loginError, setLoginError] = useState('');
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
@@ -67,11 +69,28 @@ export const AdminApp: React.FC = () => {
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoginError('');
+
+    const normalizedEmail = email.trim().toLowerCase();
+
+    if (!normalizedEmail || !password) {
+      setLoginError('Please enter your email and password.');
+      return;
+    }
+
     setIsLoggingIn(true);
-    const success = await adminLogin(email, password);
-    setIsLoggingIn(false);
-    if (!success) {
-      setLoginError('Invalid credentials. Use admin@abhishek.dev / Demo@12345');
+
+    try {
+      const success =
+        normalizedEmail === 'admin@abhishek.dev' &&
+        await adminLogin(normalizedEmail, password);
+
+      if (!success) {
+        setLoginError('Authentication failed. Please check your credentials and try again.');
+      }
+    } catch {
+      setLoginError('Unable to authenticate right now. Please try again.');
+    } finally {
+      setIsLoggingIn(false);
     }
   };
 
@@ -179,70 +198,192 @@ export const AdminApp: React.FC = () => {
 
   // LOGIN SCREEN
   if (!isAdminAuthenticated) {
+    const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+    const canSubmit = email.trim().length > 0 && password.length > 0 && isEmailValid;
+
     return (
-      <div className="flex flex-col items-center justify-center h-full bg-slate-950 text-slate-100 p-6 select-none">
-        <div className="w-full max-w-sm p-6 rounded-2xl bg-slate-900/80 border border-white/10 shadow-2xl space-y-5">
-          <div className="text-center space-y-2">
-            <div className="w-12 h-12 rounded-2xl bg-sky-500/10 border border-sky-400/30 flex items-center justify-center mx-auto text-sky-400">
-              <Shield className="w-6 h-6" />
+      <div className="relative flex h-full min-h-[520px] items-center justify-center overflow-hidden bg-[#05070d] px-4 py-8 text-slate-100 select-none">
+        {/* Ambient animated background */}
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+          <div className="absolute -left-24 -top-24 h-72 w-72 rounded-full bg-sky-500/10 blur-3xl animate-pulse" />
+          <div
+            className="absolute -bottom-32 -right-20 h-80 w-80 rounded-full bg-violet-500/10 blur-3xl animate-pulse"
+            style={{ animationDelay: '900ms' }}
+          />
+          <div
+            className="absolute left-1/2 top-1/4 h-48 w-48 -translate-x-1/2 rounded-full bg-cyan-400/5 blur-3xl animate-pulse"
+            style={{ animationDelay: '1.6s' }}
+          />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(56,189,248,0.07),transparent_42%)]" />
+          <div className="absolute inset-0 opacity-[0.035] [background-image:linear-gradient(rgba(255,255,255,1)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,1)_1px,transparent_1px)] [background-size:32px_32px]" />
+        </div>
+
+        <div className="relative z-10 w-full max-w-md">
+          {/* Brand / security status */}
+          <div className="mb-5 flex items-center justify-between px-1 text-[10px]">
+            <div className="flex items-center gap-2 text-slate-400">
+              <span className="flex h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.8)] animate-pulse" />
+              <span className="font-semibold uppercase tracking-[0.18em]">
+                Secure Workspace
+              </span>
             </div>
-            <h2 className="text-lg font-bold text-white">
-              Workstation Control Center
-            </h2>
-            <p className="text-xs text-slate-400">
-              Abhishek Kuntare's portfolio management & CMS terminal
-            </p>
+            <span className="font-mono text-slate-600">AES • AUTH</span>
           </div>
 
-          <form onSubmit={handleLoginSubmit} className="space-y-4 text-xs">
+          {/* Login card */}
+          <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-slate-900/75 p-6 shadow-2xl shadow-black/50 backdrop-blur-2xl sm:p-8">
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-sky-400/70 to-transparent" />
+
+            {/* Animated security icon */}
+            <div className="mb-6 flex justify-center">
+              <div className="relative">
+                <div className="absolute inset-0 rounded-2xl bg-sky-400/20 blur-xl animate-pulse" />
+                <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl border border-sky-400/25 bg-sky-400/10 text-sky-300 shadow-lg shadow-sky-950/40">
+                  <Shield className="h-8 w-8" />
+                  <span className="absolute -right-1 -top-1 h-3 w-3 rounded-full border-2 border-slate-900 bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.8)]" />
+                </div>
+              </div>
+            </div>
+
+            <div className="mb-7 text-center">
+              <h2 className="text-xl font-bold tracking-tight text-white sm:text-2xl">
+                Workstation Control Center
+              </h2>
+              <p className="mx-auto mt-2 max-w-sm text-xs leading-relaxed text-slate-400">
+                Sign in to manage projects, certifications, and portfolio
+                messages from your private admin workspace.
+              </p>
+            </div>
+
             {loginError && (
-              <div className="p-2.5 rounded-lg bg-red-950/50 border border-red-500/30 text-red-300">
-                {loginError}
+              <div className="mb-4 flex items-start gap-2.5 rounded-2xl border border-red-500/20 bg-red-500/10 px-3.5 py-3 text-xs text-red-300 animate-pulse">
+                <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+                <span>{loginError}</span>
               </div>
             )}
 
-            <div>
-              <label className="block text-slate-300 font-semibold mb-1">
-                Admin Identifier / Email
-              </label>
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                className="w-full bg-slate-800 border border-white/10 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:ring-1 focus:ring-sky-400"
-              />
-            </div>
+            <form onSubmit={handleLoginSubmit} className="space-y-4">
+              {/* Email */}
+              <div>
+                <label
+                  htmlFor="admin-email"
+                  className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-slate-300"
+                >
+                  Admin Email
+                </label>
+                <div
+                  className={`group flex items-center rounded-2xl border bg-slate-950/60 transition-all duration-300 ${
+                    email && !isEmailValid
+                      ? 'border-red-500/40 focus-within:border-red-400/70'
+                      : 'border-white/10 focus-within:border-sky-400/60 focus-within:bg-slate-950'
+                  }`}
+                >
+                  <Mail className="ml-3.5 h-4 w-4 shrink-0 text-slate-500 transition-colors group-focus-within:text-sky-400" />
+                  <input
+                    id="admin-email"
+                    type="email"
+                    required
+                    autoComplete="username"
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      if (loginError) setLoginError('');
+                    }}
+                    placeholder="Enter your admin email"
+                    className="w-full bg-transparent px-3 py-3.5 text-sm text-slate-100 outline-none placeholder:text-slate-600"
+                  />
+                  {isEmailValid && email.trim() && (
+                    <CheckCircle2 className="mr-3 h-4 w-4 shrink-0 text-emerald-400" />
+                  )}
+                </div>
+                {email.trim() && !isEmailValid && (
+                  <p className="mt-1.5 px-1 text-[10px] text-red-400">
+                    Enter a valid email address.
+                  </p>
+                )}
+              </div>
 
-            <div>
-              <label className="block text-slate-300 font-semibold mb-1">
-                Security Passkey
-              </label>
-              <input
-                type="password"
-                required
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                className="w-full bg-slate-800 border border-white/10 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:ring-1 focus:ring-sky-400"
-              />
-            </div>
+              {/* Password */}
+              <div>
+                <label
+                  htmlFor="admin-password"
+                  className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-slate-300"
+                >
+                  Security Passkey
+                </label>
+                <div className="group flex items-center rounded-2xl border border-white/10 bg-slate-950/60 transition-all duration-300 focus-within:border-sky-400/60 focus-within:bg-slate-950">
+                  <Lock className="ml-3.5 h-4 w-4 shrink-0 text-slate-500 transition-colors group-focus-within:text-sky-400" />
+                  <input
+                    id="admin-password"
+                    type={showPassword ? 'text' : 'password'}
+                    required
+                    autoComplete="current-password"
+                    value={password}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      if (loginError) setLoginError('');
+                    }}
+                    placeholder="Enter your security passkey"
+                    className="w-full bg-transparent px-3 py-3.5 text-sm text-slate-100 outline-none placeholder:text-slate-600"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((value) => !value)}
+                    className="mr-2 rounded-xl p-2 text-slate-500 transition-all hover:bg-white/5 hover:text-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-400/40"
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </button>
+                </div>
+              </div>
 
-            {/* Hint for evaluator */}
-            <div className="p-2.5 rounded-xl bg-sky-950/30 border border-sky-500/20 text-[11px] text-sky-300">
-              <div className="font-semibold text-white">Default Verification Credentials:</div>
-              <div>User: <strong>admin@abhishek.dev</strong></div>
-              <div>Key: <strong>Demo@12345</strong></div>
-            </div>
+              {/* Security note */}
+              <div className="flex items-start gap-3 rounded-2xl border border-sky-400/10 bg-sky-400/[0.04] px-3.5 py-3.5">
+                <div className="mt-0.5 rounded-lg bg-sky-400/10 p-1.5 text-sky-300">
+                  <Lock className="h-3.5 w-3.5" />
+                </div>
+                <div>
+                  <p className="text-[11px] font-semibold text-slate-200">
+                    Owner-only workspace
+                  </p>
+                  <p className="mt-0.5 text-[10px] leading-relaxed text-slate-500">
+                    Your credentials are submitted only when you press
+                    Authenticate.
+                  </p>
+                </div>
+              </div>
 
-            <button
-              type="submit"
-              disabled={isLoggingIn}
-              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs shadow transition-colors disabled:opacity-50"
-            >
-              <Lock className="w-3.5 h-3.5" />
-              <span>{isLoggingIn ? 'Authenticating...' : 'Authenticate & Open'}</span>
-            </button>
-          </form>
+              {/* Submit */}
+              <button
+                type="submit"
+                disabled={!canSubmit || isLoggingIn}
+                className="group relative mt-2 flex w-full items-center justify-center gap-2 overflow-hidden rounded-2xl bg-sky-400 px-4 py-3.5 text-sm font-bold text-slate-950 shadow-lg shadow-sky-950/30 transition-all duration-300 hover:-translate-y-0.5 hover:bg-sky-300 hover:shadow-sky-500/20 active:translate-y-0 disabled:cursor-not-allowed disabled:translate-y-0 disabled:opacity-40"
+              >
+                <span className="absolute inset-0 -translate-x-full bg-white/20 transition-transform duration-700 group-hover:translate-x-full" />
+                {isLoggingIn ? (
+                  <>
+                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-slate-950/30 border-t-slate-950" />
+                    <span>Authenticating...</span>
+                  </>
+                ) : (
+                  <>
+                    <Lock className="h-4 w-4" />
+                    <span>Authenticate & Open</span>
+                  </>
+                )}
+              </button>
+            </form>
+
+            <div className="mt-6 flex items-center justify-center gap-2 text-[9px] uppercase tracking-[0.16em] text-slate-600">
+              <span>Private Admin Area</span>
+              <span>•</span>
+              <span>Portfolio CMS</span>
+            </div>
+          </div>
         </div>
       </div>
     );

@@ -341,7 +341,6 @@ export const ContextMenu: React.FC = () => {
             <button type="button" className={itemClass} onClick={() => share()}><Clipboard className={iconClass} />Copy link</button>
           </div>}
         </div>
-        <button type="button" className={itemClass} onClick={() => { openApp("admin", { action: "run-as-administrator", target: icon.title }); close(); }}><ShieldCheck className={iconClass} />Run as administrator</button>
         <button type="button" className={itemClass} onClick={() => { openApp("this-pc", { path: iconPath }); close(); }}><MapPin className={iconClass} />Open file location</button>
         <button type="button" className={itemClass} onClick={() => { toggleFavoriteDesktopIcon(icon.id); close(); }}><Heart className={`${iconClass} ${isFavorite ? "fill-rose-400 text-rose-400" : ""}`} />{isFavorite ? "Remove from Favorites" : "Add to Favorites"}</button>
         <div className="relative" onMouseEnter={() => setActiveSubMenu("compress")}>
@@ -1311,48 +1310,6 @@ export const ContextMenu: React.FC = () => {
       {/* =====================================================
           PORTFOLIO CONTROL CENTER
       ===================================================== */}
-
-      <button
-        type="button"
-        role="menuitem"
-        className="
-          group
-          flex
-          h-10
-          w-full
-          items-center
-          rounded-md
-          px-2.5
-          text-left
-          text-[13px]
-          font-medium
-          text-slate-100
-          transition-all
-          duration-100
-          hover:bg-indigo-500/[0.14]
-          hover:text-indigo-200
-        "
-        onClick={() => {
-          openApp("admin");
-          closeMenu();
-        }}
-      >
-        <ShieldAlert
-          className="
-            mr-3
-            h-[17px]
-            w-[17px]
-            shrink-0
-            text-indigo-400
-            transition-colors
-            group-hover:text-indigo-300
-          "
-        />
-
-        <span className="flex-1">
-          Portfolio Control Center
-        </span>
-      </button>
 
       {/* =====================================================
           FOOTER

@@ -29,14 +29,6 @@ export const CertificationsApp: React.FC = () => {
           </p>
         </div>
 
-        <button
-          type="button"
-          onClick={() => openApp('admin')}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-600/30 hover:bg-indigo-600/50 text-indigo-300 text-xs border border-indigo-400/30 transition-colors"
-        >
-          <Plus className="w-3.5 h-3.5" />
-          <span>Add via Admin</span>
-        </button>
       </div>
 
       {/* Certifications Content */}
@@ -51,16 +43,6 @@ export const CertificationsApp: React.FC = () => {
           <p className="text-xs text-slate-400 max-w-md mx-auto leading-relaxed">
             Verified industry certifications, badges, or course credentials can be dynamically added and managed via the <strong>Abhishek Portfolio Control Center</strong>.
           </p>
-          <div className="pt-2">
-            <button
-              type="button"
-              onClick={() => openApp('admin')}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 text-xs font-semibold shadow transition-colors"
-            >
-              <Plus className="w-3.5 h-3.5" />
-              <span>Open Control Center to Add Certification</span>
-            </button>
-          </div>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

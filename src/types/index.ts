@@ -88,9 +88,21 @@ export interface WindowState {
   size: { width: number; height: number };
   zIndex: number;
   prevBounds?: { x: number; y: number; width: number; height: number };
+  snap?: WindowSnap;
+  groupId?: string;
   extraData?: any;
   desktopId: string;
 }
+
+export type WindowSnap =
+  | 'left'
+  | 'right'
+  | 'top'
+  | 'bottom'
+  | 'top-left'
+  | 'top-right'
+  | 'bottom-left'
+  | 'bottom-right';
 
 export interface Project {
   id: string;
@@ -225,6 +237,7 @@ export interface SystemSettings {
   recruiterMode: boolean;
   /** The focused workspace used by the Start menu and quick-launch workflows. */
   workspaceMode: 'recruiter' | 'developer';
+  windowMode: 'windows' | 'macos';
   iconSize: 'small' | 'medium' | 'large';
 }
 

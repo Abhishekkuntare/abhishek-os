@@ -183,14 +183,6 @@ export const NotificationCenter: React.FC = () => {
           <span className="text-[10px] font-medium text-slate-200">Night Light</span>
         </button>
 
-        <button
-          type="button"
-          onClick={() => openApp('admin')}
-          className="flex flex-col items-center justify-center p-2 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-white/5 transition-colors"
-        >
-          <Shield className="w-3.5 h-3.5 text-sky-400 mb-1" />
-          <span className="text-[10px] font-medium text-slate-200">Admin Lock</span>
-        </button>
       </div>
     </motion.div>
   );

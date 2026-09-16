@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Minus, Square, Copy, X } from 'lucide-react';
-import { WindowState } from '../../types';
+import { Minus, Square, Copy, X, Grid2X2, PanelLeft, PanelRight, PanelTop, PanelBottom, Group, MonitorCog } from 'lucide-react';
+import { WindowSnap, WindowState } from '../../types';
 import { useOS } from '../../context/OSContext';
 import { AppIcon } from '../ui/AppIcon';
 
@@ -19,6 +19,9 @@ export const Window: React.FC<WindowProps> = ({ win, children }) => {
     maximizeWindow,
     updateWindowPosition,
     updateWindowSize,
+    snapWindow,
+    toggleWindowGroup,
+    updateSettings,
     settings,
   } = useOS();
 
@@ -28,6 +31,8 @@ export const Window: React.FC<WindowProps> = ({ win, children }) => {
 
   const [isDragging, setIsDragging] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
+  const [isSnapMenuOpen, setIsSnapMenuOpen] = useState(false);
+  const lastPointerRef = useRef({ x: 0, y: 0 });
 
   const dragStartRef = useRef<{ mouseX: number; mouseY: number; initialX: number; initialY: number }>({
     mouseX: 0,
@@ -75,6 +80,7 @@ export const Window: React.FC<WindowProps> = ({ win, children }) => {
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
+      lastPointerRef.current = { x: e.clientX, y: e.clientY };
       if (isDragging && !isMaximized) {
         const deltaX = e.clientX - dragStartRef.current.mouseX;
         const deltaY = e.clientY - dragStartRef.current.mouseY;
@@ -93,6 +99,24 @@ export const Window: React.FC<WindowProps> = ({ win, children }) => {
     };
 
     const handleMouseUp = () => {
+      if (isDragging && !isMaximized) {
+        const { x, y } = lastPointerRef.current;
+        const edge = 24;
+        const nearLeft = x <= edge;
+        const nearRight = x >= window.innerWidth - edge;
+        const nearTop = y <= edge;
+        const nearBottom = y >= window.innerHeight - 56;
+        let nextSnap: WindowSnap | null = null;
+        if (nearTop && nearLeft) nextSnap = 'top-left';
+        else if (nearTop && nearRight) nextSnap = 'top-right';
+        else if (nearBottom && nearLeft) nextSnap = 'bottom-left';
+        else if (nearBottom && nearRight) nextSnap = 'bottom-right';
+        else if (nearLeft) nextSnap = 'left';
+        else if (nearRight) nextSnap = 'right';
+        else if (nearTop) nextSnap = 'top';
+        else if (nearBottom) nextSnap = 'bottom';
+        if (nextSnap) snapWindow(win.id, nextSnap);
+      }
       setIsDragging(false);
       setIsResizing(false);
     };
@@ -121,7 +145,7 @@ export const Window: React.FC<WindowProps> = ({ win, children }) => {
       window.removeEventListener('touchmove', handleTouchMove);
       window.removeEventListener('touchend', handleMouseUp);
     };
-  }, [isDragging, isResizing, isMaximized, win.id, updateWindowPosition, updateWindowSize]);
+  }, [isDragging, isResizing, isMaximized, win.id, updateWindowPosition, updateWindowSize, snapWindow]);
 
   // Resize handler
   const handleResizeMouseDown = (e: React.MouseEvent) => {
@@ -173,7 +197,7 @@ export const Window: React.FC<WindowProps> = ({ win, children }) => {
             }),
       }}
       className={`flex flex-col select-none overflow-hidden transition-shadow duration-200 ${
-        isMaximized ? 'rounded-none' : 'rounded-xl'
+        isMaximized ? 'rounded-none' : settings.windowMode === 'macos' ? 'rounded-2xl' : 'rounded-xl'
       } ${
         isActive
           ? 'shadow-[0_20px_50px_rgba(0,0,0,0.65)] ring-1 ring-white/20'
@@ -189,7 +213,7 @@ export const Window: React.FC<WindowProps> = ({ win, children }) => {
         onMouseDown={handleTitleMouseDown}
         onTouchStart={handleTitleTouchStart}
         onDoubleClick={() => maximizeWindow(win.id)}
-        className={`h-10 px-3 flex items-center justify-between border-b transition-colors ${
+        className={`relative h-10 px-3 flex items-center justify-between border-b transition-colors ${
           isActive
             ? 'bg-slate-800/80 border-white/12 text-slate-100'
             : 'bg-slate-900/80 border-white/5 text-slate-400'
@@ -203,10 +227,35 @@ export const Window: React.FC<WindowProps> = ({ win, children }) => {
           <span className="text-xs font-semibold tracking-wide truncate">
             {win.title}
           </span>
+          {win.groupId && <span className="rounded-full bg-sky-400/15 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-sky-300">grouped</span>}
         </div>
 
         {/* Window Controls (Minimize, Maximize/Restore, Close) */}
         <div className="flex items-center space-x-1">
+          <button
+            type="button"
+            aria-label="Window snap layouts"
+            title="Snap layouts"
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsSnapMenuOpen(previous => !previous);
+            }}
+            className="w-8 h-7 flex items-center justify-center rounded hover:bg-white/10 text-slate-300 hover:text-white transition-colors"
+          >
+            <Grid2X2 className="w-3.5 h-3.5" />
+          </button>
+          <button
+            type="button"
+            aria-label={win.groupId ? 'Ungroup window' : 'Group with another window'}
+            title={win.groupId ? 'Ungroup window' : 'Group with another window'}
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleWindowGroup(win.id);
+            }}
+            className={`w-8 h-7 flex items-center justify-center rounded hover:bg-white/10 transition-colors ${win.groupId ? 'text-sky-300' : 'text-slate-300 hover:text-white'}`}
+          >
+            <Group className="w-3.5 h-3.5" />
+          </button>
           <button
             type="button"
             id={`win-min-${win.id}`}
@@ -250,6 +299,51 @@ export const Window: React.FC<WindowProps> = ({ win, children }) => {
             <X className="w-3.5 h-3.5" />
           </button>
         </div>
+
+        {isSnapMenuOpen && (
+          <div
+            className="absolute right-2 top-11 z-50 w-56 rounded-xl border border-white/10 bg-slate-900/95 p-2 shadow-2xl backdrop-blur-xl"
+            onMouseDown={(e) => e.stopPropagation()}
+          >
+            <div className="mb-2 flex items-center justify-between px-1 text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">
+              <span>Snap layout</span>
+              <button
+                type="button"
+                className="flex items-center gap-1 rounded px-1.5 py-1 text-[9px] text-slate-400 hover:bg-white/10 hover:text-white"
+                title="Change window behavior"
+                onClick={() => updateSettings({ windowMode: settings.windowMode === 'windows' ? 'macos' : 'windows' })}
+              >
+                <MonitorCog className="h-3 w-3" /> {settings.windowMode === 'windows' ? 'Windows' : 'macOS'}
+              </button>
+            </div>
+            <div className="grid grid-cols-4 gap-1">
+              {([
+                ['top-left', PanelTop, 'Top left'],
+                ['top', PanelTop, 'Top half'],
+                ['top-right', PanelTop, 'Top right'],
+                ['left', PanelLeft, 'Left half'],
+                ['right', PanelRight, 'Right half'],
+                ['bottom-left', PanelBottom, 'Bottom left'],
+                ['bottom', PanelBottom, 'Bottom half'],
+                ['bottom-right', PanelBottom, 'Bottom right'],
+              ] as const).map(([layout, Icon, label]) => (
+                <button
+                  key={layout}
+                  type="button"
+                  title={label}
+                  aria-label={label}
+                  onClick={() => {
+                    snapWindow(win.id, layout);
+                    setIsSnapMenuOpen(false);
+                  }}
+                  className={`flex h-9 items-center justify-center rounded-lg transition-colors ${win.snap === layout ? 'bg-sky-400/20 text-sky-300' : 'text-slate-400 hover:bg-white/10 hover:text-white'}`}
+                >
+                  <Icon className="h-4 w-4" />
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Window Body */}

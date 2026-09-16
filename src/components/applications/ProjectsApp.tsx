@@ -263,15 +263,6 @@ export const ProjectsApp: React.FC = () => {
             </button>
           </div>
 
-          <button
-            type="button"
-            onClick={() => openApp('admin')}
-            className="hidden sm:flex items-center gap-1 px-2.5 py-1 rounded-lg bg-indigo-600/30 hover:bg-indigo-600/50 text-indigo-300 text-xs border border-indigo-400/30 transition-colors"
-            title="Manage Projects in Admin Control Center"
-          >
-            <Plus className="w-3 h-3" />
-            <span>Manage</span>
-          </button>
         </div>
       </div>
 

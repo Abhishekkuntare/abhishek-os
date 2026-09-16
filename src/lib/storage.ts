@@ -37,6 +37,7 @@ export const DEFAULT_SETTINGS: SystemSettings = {
   batterySaver: false,
   recruiterMode: false,
   workspaceMode: 'developer',
+  windowMode: 'windows',
   iconSize: 'medium',
 };
 

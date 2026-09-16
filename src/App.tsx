@@ -1097,6 +1097,12 @@ const DesktopEnvironment: React.FC =
             return;
           }
 
+          if (e.ctrlKey && e.shiftKey && e.code === "Digit9") {
+            e.preventDefault();
+            openApp("admin", { privateEntry: true });
+            return;
+          }
+
           const target = e.target as HTMLElement | null;
           const isEditableTarget = Boolean(
             target &&
