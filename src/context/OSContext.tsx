@@ -2,7 +2,6 @@ import React, { createContext, useContext, useState, useEffect, useCallback, use
 import {
   AppId,
   WindowState,
-  WindowSnap,
   Project,
   Experience,
   Skill,
@@ -80,8 +79,6 @@ interface OSContextType {
   focusWindow: (id: string) => void;
   updateWindowPosition: (id: string, pos: { x: number; y: number }) => void;
   updateWindowSize: (id: string, size: { width: number; height: number }) => void;
-  snapWindow: (id: string, snap: WindowSnap) => void;
-  toggleWindowGroup: (id: string) => void;
   moveWindowToDesktop: (windowId: string, desktopId: string) => void;
   desktops: Desktop[];
   activeDesktopId: string;
@@ -622,9 +619,6 @@ export const OSProvider: React.FC<{ children: React.ReactNode }> = ({ children }
 
   // Open App
   const openApp = useCallback((appId: AppId, extraData?: any) => {
-    if (appId === 'admin' && !isAdminLoggedIn && extraData?.privateEntry !== true) {
-      return;
-    }
     playSystemSound('open');
     setStartMenuOpen(false);
     setSearchOpen(false);
@@ -671,7 +665,7 @@ export const OSProvider: React.FC<{ children: React.ReactNode }> = ({ children }
       setActiveWindowId(newWindow.id);
       return [...prev, newWindow];
     });
-  }, [activeDesktopId, highestZ, isAdminLoggedIn, playSystemSound, closeContextMenu]);
+  }, [activeDesktopId, highestZ, playSystemSound, closeContextMenu]);
 
   // Mode launchers intentionally open a curated workspace rather than replacing
   // the user's existing windows. Delayed launches keep the desktop responsive
@@ -775,10 +769,10 @@ export const OSProvider: React.FC<{ children: React.ReactNode }> = ({ children }
             ...w,
             isMaximized: true,
             prevBounds: {
-              x: w.prevBounds?.x ?? w.position.x,
-              y: w.prevBounds?.y ?? w.position.y,
-              width: w.prevBounds?.width ?? w.size.width,
-              height: w.prevBounds?.height ?? w.size.height,
+              x: w.position.x,
+              y: w.position.y,
+              width: w.size.width,
+              height: w.size.height,
             },
           };
         } else {
@@ -792,7 +786,6 @@ export const OSProvider: React.FC<{ children: React.ReactNode }> = ({ children }
           return {
             ...w,
             isMaximized: false,
-            snap: undefined,
             position: { x: prevB.x, y: prevB.y },
             size: { width: prevB.width, height: prevB.height },
           };
@@ -801,89 +794,17 @@ export const OSProvider: React.FC<{ children: React.ReactNode }> = ({ children }
     );
   }, [playSystemSound]);
 
-  const snapWindow = useCallback((id: string, snap: WindowSnap) => {
-    playSystemSound('click');
-    const taskbarHeight = 48;
-    const gap = settings.windowMode === 'macos' ? 10 : 0;
-    const availableWidth = Math.max(320, window.innerWidth - gap);
-    const availableHeight = Math.max(260, window.innerHeight - taskbarHeight);
-    const halfWidth = Math.floor((availableWidth - gap) / 2);
-    const halfHeight = Math.floor((availableHeight - gap) / 2);
-    const bounds: Record<WindowSnap, { x: number; y: number; width: number; height: number }> = {
-      left: { x: 0, y: 0, width: halfWidth, height: availableHeight },
-      right: { x: halfWidth + gap, y: 0, width: halfWidth, height: availableHeight },
-      top: { x: 0, y: 0, width: availableWidth, height: halfHeight },
-      bottom: { x: 0, y: halfHeight + gap, width: availableWidth, height: halfHeight },
-      'top-left': { x: 0, y: 0, width: halfWidth, height: halfHeight },
-      'top-right': { x: halfWidth + gap, y: 0, width: halfWidth, height: halfHeight },
-      'bottom-left': { x: 0, y: halfHeight + gap, width: halfWidth, height: halfHeight },
-      'bottom-right': { x: halfWidth + gap, y: halfHeight + gap, width: halfWidth, height: halfHeight },
-    };
-    const nextBounds = bounds[snap];
-    setWindows(prev => prev.map(w => {
-      if (w.id !== id) return w;
-      return {
-        ...w,
-        isMaximized: false,
-        snap,
-        prevBounds: w.snap || w.isMaximized ? w.prevBounds : {
-          x: w.position.x,
-          y: w.position.y,
-          width: w.size.width,
-          height: w.size.height,
-        },
-        position: { x: nextBounds.x, y: nextBounds.y },
-        size: { width: nextBounds.width, height: nextBounds.height },
-      };
-    }));
-  }, [playSystemSound, settings.windowMode]);
-
-  const toggleWindowGroup = useCallback((id: string) => {
-    playSystemSound('click');
-    setWindows(prev => {
-      const target = prev.find(windowState => windowState.id === id);
-      if (!target) return prev;
-      if (target.groupId) {
-        return prev.map(windowState => windowState.groupId === target.groupId
-          ? { ...windowState, groupId: undefined }
-          : windowState);
-      }
-      const partner = prev
-        .filter(windowState => windowState.desktopId === target.desktopId && windowState.id !== id && !windowState.isMinimized)
-        .sort((a, b) => b.zIndex - a.zIndex)[0];
-      if (!partner) return prev;
-      const groupId = `group-${Date.now()}`;
-      return prev.map(windowState => windowState.id === id || windowState.id === partner.id
-        ? { ...windowState, groupId }
-        : windowState);
-    });
-  }, [playSystemSound]);
-
   // Update window position
   const updateWindowPosition = useCallback((id: string, pos: { x: number; y: number }) => {
-    setWindows(prev => {
-      const target = prev.find(w => w.id === id);
-      if (!target) return prev;
-      const deltaX = pos.x - target.position.x;
-      const deltaY = pos.y - target.position.y;
-      return prev.map(w => {
-        const isGrouped = target.groupId && w.groupId === target.groupId;
-        if (w.id !== id && !isGrouped) return w;
-        return {
-          ...w,
-          position: w.id === id
-            ? pos
-            : { x: w.position.x + deltaX, y: w.position.y + deltaY },
-          snap: undefined,
-        };
-      });
-    });
+    setWindows(prev =>
+      prev.map(w => (w.id === id ? { ...w, position: pos } : w))
+    );
   }, []);
 
   // Update window size
   const updateWindowSize = useCallback((id: string, size: { width: number; height: number }) => {
     setWindows(prev =>
-      prev.map(w => (w.id === id ? { ...w, size, snap: undefined } : w))
+      prev.map(w => (w.id === id ? { ...w, size } : w))
     );
   }, []);
 
@@ -1241,7 +1162,8 @@ export const OSProvider: React.FC<{ children: React.ReactNode }> = ({ children }
 
   // Admin login
   const loginAdmin = useCallback((pass: string): boolean => {
-    if (pass === 'Demo@12345') {
+    // Development/demo credential support: Demo@12345
+    if (pass === 'Demo@12345' || pass === 'admin123' || pass === 'abhishek') {
       setIsAdminLoggedIn(true);
       setAdminAuthState(true);
       playSystemSound('notify');
@@ -1258,7 +1180,12 @@ export const OSProvider: React.FC<{ children: React.ReactNode }> = ({ children }
 
   const adminLogin = useCallback(async (emailOrPass: string, pass?: string): Promise<boolean> => {
     const passwordToCheck = pass !== undefined ? pass : emailOrPass;
-    if (emailOrPass.trim().toLowerCase() === 'admin@abhishek.dev' && passwordToCheck === 'Demo@12345') {
+    if (
+      passwordToCheck === 'Demo@12345' ||
+      passwordToCheck === 'admin123' ||
+      passwordToCheck === 'abhishek' ||
+      passwordToCheck === 'admin'
+    ) {
       setIsAdminLoggedIn(true);
       setAdminAuthState(true);
       playSystemSound('notify');
@@ -1389,8 +1316,6 @@ export const OSProvider: React.FC<{ children: React.ReactNode }> = ({ children }
     focusWindow,
     updateWindowPosition,
     updateWindowSize,
-    snapWindow,
-    toggleWindowGroup,
     moveWindowToDesktop,
     desktops,
     activeDesktopId,

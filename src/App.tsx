@@ -30,6 +30,7 @@ import { BootScreen } from "./components/overlays/BootScreen";
 import { ShutdownScreen } from "./components/overlays/ShutdownScreen";
 import { LockScreen } from "./components/overlays/LockScreen";
 import { SleepOverlay } from "./components/overlays/SleepOverlay";
+import DesktopExperienceNotice from "./components/desktop/DesktopExperienceNotice";
 
 /* =========================================================
    TYPES
@@ -1692,6 +1693,9 @@ const DesktopEnvironment: React.FC =
             ALWAYS ABOVE EVERYTHING ON DESKTOP.
         ================================================= */}
 
+           {/* Desktop experience message */}
+    <DesktopExperienceNotice />
+
         <div
           id="abhishek-os-taskbar"
           className="
@@ -1709,6 +1713,7 @@ const DesktopEnvironment: React.FC =
           "
         >
           <Taskbar />
+          
         </div>
 
         {/* =================================================
