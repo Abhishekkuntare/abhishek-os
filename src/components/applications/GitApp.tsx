@@ -335,7 +335,7 @@ export const GitApp: React.FC = () => {
               <option value="main" className="bg-slate-900 text-white">main</option>
               <option value="feature/krishimitra-ai" className="bg-slate-900 text-white">feature/krishimitra-ai</option>
               <option value="feature/gemini-rag" className="bg-slate-900 text-white">feature/gemini-rag</option>
-              <option value="release/v2.0" className="bg-slate-900 text-white">release/v2.0</option>
+              <option value="release/v1.0" className="bg-slate-900 text-white">release/v1.0</option>
             </select>
           </div>
 
