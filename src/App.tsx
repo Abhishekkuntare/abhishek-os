@@ -5,7 +5,7 @@ import React, {
   useState,
 } from "react";
 
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "motion/react";
 
 import {
   OSProvider,
@@ -1667,22 +1667,18 @@ const DesktopEnvironment: React.FC =
             z-20
           "
         >
-          <AnimatePresence initial={false} mode="sync">
+          <AnimatePresence mode="sync">
             {(windows || [])
               .filter((win) => win.desktopId === activeDesktopId && !win.isMinimized)
               .map((win) => (
-                <div
+                <Window
                   key={win.id}
-                  className="pointer-events-auto"
+                  win={win}
                 >
-                  <Window
+                  <WindowContent
                     win={win}
-                  >
-                    <WindowContent
-                      win={win}
-                    />
-                  </Window>
-                </div>
+                  />
+                </Window>
               ))}
           </AnimatePresence>
         </div>

@@ -41,7 +41,8 @@ export type AppId =
   | 'performance'
   | 'security'
   | 'control-panel'
-  | 'store';
+  | 'store'
+  | 'abhishek-canva';
 
 export interface TaskbarApp {
   appId: AppId;

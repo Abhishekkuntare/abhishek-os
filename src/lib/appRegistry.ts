@@ -5,7 +5,7 @@ export interface AppMetadata {
   name: string;
   title: string;
   icon: string;
-  category: 'portfolio' | 'development' | 'productivity' | 'media' | 'system' | 'entertainment';
+  category: 'portfolio' | 'development' | 'productivity' | 'media' | 'system' | 'entertainment' | 'creative';
   description: string;
   defaultSize: { width: number; height: number };
   minimumSize: { width: number; height: number };
@@ -548,6 +548,20 @@ export const APP_REGISTRY: Record<AppId, AppMetadata> = {
     minimumSize: { width: 640, height: 480 },
     availableModes: ['explorer', 'developer', 'recruiter'],
     isPinnedDefault: false,
+  },
+  'abhishek-canva': {
+    id: 'abhishek-canva',
+    name: 'AbhishekCanva',
+    title: 'AbhishekCanva — Creative Design Studio',
+    icon: 'Palette',
+    category: 'creative',
+    description: 'Professional visual design studio with templates, elements, AI assistance, and real-time collaboration. Create stunning designs, presentations, and marketing materials.',
+    defaultSize: { width: 1280, height: 800 },
+    minimumSize: { width: 800, height: 600 },
+    supportedFileTypes: ['png', 'jpg', 'jpeg', 'svg', 'pdf', 'json'],
+    keyboardShortcut: 'Ctrl + D',
+    availableModes: ['explorer', 'recruiter', 'developer'],
+    isPinnedDefault: true,
   },
 };
 

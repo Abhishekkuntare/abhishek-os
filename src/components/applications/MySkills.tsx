@@ -5,7 +5,7 @@ import React, {
   useState,
 } from 'react';
 
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 
 import {
   Activity,
@@ -23,10 +23,12 @@ import {
   ChevronDown,
   ChevronRight,
   Circle,
+  Cloud,
   Code2,
   Compass,
   Cpu,
   Database,
+  GitBranch,
   ExternalLink,
   Eye,
   FileCode2,
@@ -164,11 +166,11 @@ const getSkillIcon = (skillName: string): React.ElementType => {
   if (name.includes('ai')) return Brain;
   if (name.includes('machine')) return Brain;
   if (name.includes('learning')) return Brain;
-  if (name.includes('git')) return GitBranchIcon;
+  if (name.includes('git')) return GitBranch;
   if (name.includes('github')) return Github;
   if (name.includes('docker')) return Box;
-  if (name.includes('aws')) return CloudIcon;
-  if (name.includes('azure')) return CloudIcon;
+  if (name.includes('aws')) return Cloud;
+  if (name.includes('azure')) return Cloud;
   if (name.includes('figma')) return Palette;
   if (name.includes('vscode') || name.includes('visual studio')) {
     return Code2;

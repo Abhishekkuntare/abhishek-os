@@ -79,6 +79,8 @@ interface OSContextType {
   focusWindow: (id: string) => void;
   updateWindowPosition: (id: string, pos: { x: number; y: number }) => void;
   updateWindowSize: (id: string, size: { width: number; height: number }) => void;
+  snapWindow: (id: string, snap: WindowSnap) => void;
+  toggleWindowGroup: (id: string) => void;
   moveWindowToDesktop: (windowId: string, desktopId: string) => void;
   desktops: Desktop[];
   activeDesktopId: string;
@@ -808,6 +810,81 @@ export const OSProvider: React.FC<{ children: React.ReactNode }> = ({ children }
     );
   }, []);
 
+  // Snap Window
+  const snapWindow = useCallback((id: string, snap: WindowSnap) => {
+    const taskbarH = 54;
+    const screenW = window.innerWidth;
+    const screenH = window.innerHeight - taskbarH;
+    const halfW = Math.round(screenW / 2);
+    const halfH = Math.round(screenH / 2);
+
+    let position = { x: 0, y: 0 };
+    let size = { width: screenW, height: screenH };
+
+    switch (snap) {
+      case 'left':
+        position = { x: 0, y: 0 };
+        size = { width: halfW, height: screenH };
+        break;
+      case 'right':
+        position = { x: halfW, y: 0 };
+        size = { width: halfW, height: screenH };
+        break;
+      case 'top':
+        position = { x: 0, y: 0 };
+        size = { width: screenW, height: halfH };
+        break;
+      case 'bottom':
+        position = { x: 0, y: halfH };
+        size = { width: screenW, height: halfH };
+        break;
+      case 'top-left':
+        position = { x: 0, y: 0 };
+        size = { width: halfW, height: halfH };
+        break;
+      case 'top-right':
+        position = { x: halfW, y: 0 };
+        size = { width: halfW, height: halfH };
+        break;
+      case 'bottom-left':
+        position = { x: 0, y: halfH };
+        size = { width: halfW, height: halfH };
+        break;
+      case 'bottom-right':
+        position = { x: halfW, y: halfH };
+        size = { width: halfW, height: halfH };
+        break;
+    }
+
+    setWindows(prev =>
+      prev.map(w =>
+        w.id === id
+          ? {
+              ...w,
+              isMaximized: false,
+              position,
+              size,
+              snap,
+            }
+          : w
+      )
+    );
+  }, []);
+
+  // Toggle Window Group
+  const toggleWindowGroup = useCallback((id: string) => {
+    setWindows(prev =>
+      prev.map(w =>
+        w.id === id
+          ? {
+              ...w,
+              groupId: w.groupId ? undefined : 'group-1',
+            }
+          : w
+      )
+    );
+  }, []);
+
   // Refresh desktop
   const refreshDesktop = useCallback(() => {
     playSystemSound('notify');
@@ -1316,6 +1393,8 @@ export const OSProvider: React.FC<{ children: React.ReactNode }> = ({ children }
     focusWindow,
     updateWindowPosition,
     updateWindowSize,
+    snapWindow,
+    toggleWindowGroup,
     moveWindowToDesktop,
     desktops,
     activeDesktopId,

@@ -26,7 +26,7 @@ export function saveTaskbarApps(apps: TaskbarApp[]): void {
 export const DEFAULT_SETTINGS: SystemSettings = {
   theme: 'dark',
   accentColor: '#38bdf8', // Windows Sky Cyan
-  wallpaperId: 'wall-aurora',
+  wallpaperId: 'wall-dev-grid',
   animationsEnabled: true,
   glassBlurEnabled: true,
   soundsEnabled: true,

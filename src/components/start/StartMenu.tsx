@@ -23,6 +23,7 @@ const START_PINNED_APPS: { appId: AppId; title: string; icon: string }[] = [
   { appId: 'code-editor', title: 'Abhishek Code', icon: 'Code2' },
   { appId: 'writer', title: 'Writer', icon: 'FileText' },
   { appId: 'sheets', title: 'Sheets', icon: 'Table' },
+  { appId: 'abhishek-canva', title: 'AbhishekCanva', icon: 'Palette' },
   { appId: 'arcade', title: 'Arcade', icon: 'Gamepad2' },
   { appId: 'camera', title: 'Camera', icon: 'Camera' },
   { appId: 'achievements', title: 'Trophies', icon: 'Trophy' },

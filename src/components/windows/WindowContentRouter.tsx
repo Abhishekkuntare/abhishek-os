@@ -41,6 +41,7 @@ import { WeatherApp } from '../applications/WeatherApp';
 import VideoPlayerApp from '../applications/VideoPlayerApp';
 import { WriterApp } from '../applications/WriterApp';
 import { StoreApp } from '../applications/StoreApp';
+import { AbhishekCanvaApp } from '../applications/abhishekcanva/AbhishekCanvaApp';
 import WindowContentYouTube from './WindowContent';
 
 interface WindowContentProps {
@@ -54,6 +55,7 @@ const APP_COMPONENTS: Partial<Record<AppId, React.ComponentType<{ extraData?: an
   ai: AiAssistantApp,
   'api-tester': ApiTesterApp,
   arcade: ArcadeApp,
+  'abhishek-canva': AbhishekCanvaApp,
   browser: BrowserApp,
   calculator: CalculatorApp,
   calendar: CalendarApp,

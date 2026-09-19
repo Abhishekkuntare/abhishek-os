@@ -24,10 +24,10 @@ technologies: [
 ],
 category: 'Full-Stack & AI',
 year: '2026',
-thumbnail_url: 'https://media.canva.com/v2/image-resize/format:PNG/height:727/quality:100/uri:ifs%3A%2F%2FM%2Fc1cc5eaa-fa7b-454a-a21d-3b0f77493a8d/watermark:F/width:1600?csig=AAAAAAAAAAAAAAAAAAAAACz72S6cZOJp9Zh60JJav5QE8eA74Y-dROuihakhEJ3o&exp=1789640511&osig=AAAAAAAAAAAAAAAAAAAAAD1gI5n-dl5fBUGjWxnokJQqqaN3BneBv_mSnwwxx1Zn&signer=media-rpc&x-canva-quality=screen_2x',
+thumbnail_url: '/abhisheknewport-3.webp',
 gallery: [
-'https://media.canva.com/v2/image-resize/format:PNG/height:727/quality:100/uri:ifs%3A%2F%2FM%2Fc1cc5eaa-fa7b-454a-a21d-3b0f77493a8d/watermark:F/width:1600?csig=AAAAAAAAAAAAAAAAAAAAACz72S6cZOJp9Zh60JJav5QE8eA74Y-dROuihakhEJ3o&exp=1789640511&osig=AAAAAAAAAAAAAAAAAAAAAD1gI5n-dl5fBUGjWxnokJQqqaN3BneBv_mSnwwxx1Zn&signer=media-rpc&x-canva-quality=screen_2x','https://media.canva.com/v2/image-resize/format:PNG/height:728/quality:100/uri:ifs%3A%2F%2FM%2F79516cef-ff42-487c-a19f-af619303fde0/watermark:F/width:1600?csig=AAAAAAAAAAAAAAAAAAAAAOLZkJpyP190WkEstIYMbUFlOmV9-50mcAl-c45AxjeD&exp=1789641002&osig=AAAAAAAAAAAAAAAAAAAAACP48zj-pnXdyB6khS0MUfLHF4WhpXmxco20NpenvBB_&signer=media-rpc&x-canva-quality=screen_2x',
-'https://media.canva.com/v2/image-resize/format:PNG/height:673/quality:100/uri:ifs%3A%2F%2FM%2Fd2214b7c-ddee-4f53-b616-ad235f467a5f/watermark:F/width:1600?csig=AAAAAAAAAAAAAAAAAAAAADk2ROwTUOe2hjCbQuJ3VFghwkfdx5DITNVUL1e9EhfX&exp=1789643057&osig=AAAAAAAAAAAAAAAAAAAAAACjxzteJsBMyOWIgV3Nqgh_rEpckBzIKL7QgbTDX0SB&signer=media-rpc&x-canva-quality=screen_2x'
+'/abhisheknewport-3.webp','/abhisheknewport-2.webp','/abhisheknewport-1.webp',
+
 ],
 live_url: 'https://abhishek-os-seven.vercel.app/',
 github_url: 'https://github.com/Abhishekkuntare/abhishek-os',
@@ -137,11 +137,11 @@ created_at: '2026-09-13'
   ],
   category: 'Technology & Business',
   year: '2026',
-  thumbnail_url: 'https://media.canva.com/v2/image-resize/format:PNG/height:717/quality:100/uri:ifs%3A%2F%2FM%2F8e6098fe-1db2-4ca9-a183-987eb6a1b245/watermark:F/width:1600?csig=AAAAAAAAAAAAAAAAAAAAAAdC-o-YcZWJ_b2bnq1negAiFeg_hT0q3US506ngAXaw&exp=1789644649&osig=AAAAAAAAAAAAAAAAAAAAADO0L7OifeTsXYz9X_tCh_EQr4QgL53WLLQ2hDVK3wp2&signer=media-rpc&x-canva-quality=screen_2x',
+  thumbnail_url: '/abhishekbusiness-1.webp',
   gallery: [
-    'https://media.canva.com/v2/image-resize/format:PNG/height:717/quality:100/uri:ifs%3A%2F%2FM%2F8e6098fe-1db2-4ca9-a183-987eb6a1b245/watermark:F/width:1600?csig=AAAAAAAAAAAAAAAAAAAAAAdC-o-YcZWJ_b2bnq1negAiFeg_hT0q3US506ngAXaw&exp=1789644649&osig=AAAAAAAAAAAAAAAAAAAAADO0L7OifeTsXYz9X_tCh_EQr4QgL53WLLQ2hDVK3wp2&signer=media-rpc&x-canva-quality=screen_2x',
-    'https://media.canva.com/v2/image-resize/format:PNG/height:726/quality:100/uri:ifs%3A%2F%2FM%2F14e27437-6a84-410e-9aee-8c4d4daf1be2/watermark:F/width:1600?csig=AAAAAAAAAAAAAAAAAAAAAEMH10QmeO_N6NebacZY9Xbp9i8vEkR2OCdy9cWRjtsI&exp=1789644445&osig=AAAAAAAAAAAAAAAAAAAAAJjeXQkoMU57YtK4dUlL80vS65KJrjAhm_IOjGeMyYxn&signer=media-rpc&x-canva-quality=screen_2x',
-    'https://media.canva.com/v2/image-resize/format:PNG/height:719/quality:100/uri:ifs%3A%2F%2FM%2F9a1c9774-d592-4dac-b836-90ab299e930c/watermark:F/width:1600?csig=AAAAAAAAAAAAAAAAAAAAADI9G_vviPYZ2dNzs1h1TahtsXgWhLmXnWL2Dr2Ibece&exp=1789646391&osig=AAAAAAAAAAAAAAAAAAAAAEZg7l468mn3euGPU-Z3FC4kJ5-0yN6d0gmnU-LtMxJ6&signer=media-rpc&x-canva-quality=screen_2x'
+    '/abhishekbusiness-1.webp',
+    '/abhishekbusiness-2.webp',
+    '/abhishekbusiness-3.png'
   ],
   live_url: 'https://abhishek-digital-solutions-tech.vercel.app/',
   github_url: 'https://github.com/Abhishekkuntare/Abhishek-Digital-Solutions-Technology',
@@ -173,11 +173,11 @@ technologies: [
 ],
 category: 'Real Estate & Web',
 year: '2026',
-thumbnail_url: 'https://media.canva.com/v2/image-resize/format:PNG/height:717/quality:100/uri:ifs%3A%2F%2FM%2F1749b8bf-7dd6-4eb4-bab0-700fded82815/watermark:F/width:1600?csig=AAAAAAAAAAAAAAAAAAAAABsKFLR_mLy7DO56I2OlnJgJ_IGe9zZxgn5CeAX-RLUv&exp=1789642319&osig=AAAAAAAAAAAAAAAAAAAAAAQnuwF7yOMeR-9fp9AdsJQO6S5X07GX83-wFOplpaAY&signer=media-rpc&x-canva-quality=screen_2x',
+thumbnail_url: '/house-1.webp',
 gallery: [
-'https://media.canva.com/v2/image-resize/format:PNG/height:717/quality:100/uri:ifs%3A%2F%2FM%2F1749b8bf-7dd6-4eb4-bab0-700fded82815/watermark:F/width:1600?csig=AAAAAAAAAAAAAAAAAAAAABsKFLR_mLy7DO56I2OlnJgJ_IGe9zZxgn5CeAX-RLUv&exp=1789642319&osig=AAAAAAAAAAAAAAAAAAAAAAQnuwF7yOMeR-9fp9AdsJQO6S5X07GX83-wFOplpaAY&signer=media-rpc&x-canva-quality=screen_2x',
-'https://media.canva.com/v2/image-resize/format:PNG/height:711/quality:100/uri:ifs%3A%2F%2FM%2F8b80cbdd-0d01-46c7-8f17-6d16b2ded2d9/watermark:F/width:1600?csig=AAAAAAAAAAAAAAAAAAAAADGl2KLfhMiiM7GxefKidP7tunDWLuYsT5yutLptR4-F&exp=1789644336&osig=AAAAAAAAAAAAAAAAAAAAAE78QEC_oWZDGuWCpXa4VNtC3Uup1edGim5tPERovZlD&signer=media-rpc&x-canva-quality=screen_2x',
-'https://media.canva.com/v2/image-resize/format:PNG/height:719/quality:100/uri:ifs%3A%2F%2FM%2F186159d2-5173-4d37-8c46-7574794a41e5/watermark:F/width:1600?csig=AAAAAAAAAAAAAAAAAAAAAGyCSHrwE_bMMjXeLIM-prpEYLq48LIQmdgd5kY9fdA_&exp=1789642496&osig=AAAAAAAAAAAAAAAAAAAAADK2HlhWFo9gOKjUtoABwIdXudNTx04oMDEFqVMoAJo4&signer=media-rpc&x-canva-quality=screen_2x'
+'/house-1.webp',
+'/house-2.webp',
+'/house-3.webp'
 ],
 live_url: 'https://homebuilders-neon.vercel.app/',
 github_url: 'https://github.com/Abhishekkuntare/homebuilders',
@@ -211,11 +211,11 @@ technologies: [
 ],
 category: 'Fitness & Web',
 year: '2026',
-thumbnail_url: 'https://media.canva.com/v2/image-resize/format:PNG/height:722/quality:100/uri:ifs%3A%2F%2FM%2F68da17a8-f098-4956-bc9b-f99e3e59c08e/watermark:F/width:1600?csig=AAAAAAAAAAAAAAAAAAAAAERC8IbWzKo_Umwh4vEkEQ9fZMvRit7b8cKUzdYqHzP3&exp=1789642151&osig=AAAAAAAAAAAAAAAAAAAAAEJnqCkpcl9ei9vZJ9P0PnYs2-W3wRHOeTqr5iE8p37B&signer=media-rpc&x-canva-quality=screen_2x',
+thumbnail_url: 'pulse-1.webp',
 gallery: [
-'https://media.canva.com/v2/image-resize/format:PNG/height:722/quality:100/uri:ifs%3A%2F%2FM%2F68da17a8-f098-4956-bc9b-f99e3e59c08e/watermark:F/width:1600?csig=AAAAAAAAAAAAAAAAAAAAAERC8IbWzKo_Umwh4vEkEQ9fZMvRit7b8cKUzdYqHzP3&exp=1789642151&osig=AAAAAAAAAAAAAAAAAAAAAEJnqCkpcl9ei9vZJ9P0PnYs2-W3wRHOeTqr5iE8p37B&signer=media-rpc&x-canva-quality=screen_2x',
-'https://media.canva.com/v2/image-resize/format:PNG/height:722/quality:100/uri:ifs%3A%2F%2FM%2F1297e9b4-e2b2-4573-a73c-806cfc44a04f/watermark:F/width:1600?csig=AAAAAAAAAAAAAAAAAAAAAIKk4inS5pKTGaexRL6cSNQTFBxabakDoGE0qR0VgcZu&exp=1789642821&osig=AAAAAAAAAAAAAAAAAAAAAGXJnxl8pYImli4wjeJDNJkwknWkhZp7x3_yd5VdFfic&signer=media-rpc&x-canva-quality=screen_2x',
-'https://media.canva.com/v2/image-resize/format:PNG/height:720/quality:100/uri:ifs%3A%2F%2FM%2F9dd149eb-34cc-4d19-86ff-8a63a53a9b2a/watermark:F/width:1600?csig=AAAAAAAAAAAAAAAAAAAAAInlCZVkP_uk5s_WFaeHBc7b_S4bc7YR-Gx2oyc-KgQ-&exp=1789644125&osig=AAAAAAAAAAAAAAAAAAAAAJ_25HzPMnFRU--HzRyXKmOIPMwxVnbSr6csH7XsPF_G&signer=media-rpc&x-canva-quality=screen_2x'
+'pulse-1.webp',
+'pulse-2.png',
+'pulse-3.webp'
 ],
 live_url: 'https://pulse-fitness-club-three.vercel.app/',
 github_url: 'https://github.com/Abhishekkuntare/pulse-fitness-club',
@@ -252,11 +252,11 @@ technologies: [
 ],
 category: 'AI & Fashion',
 year: '2026',
-thumbnail_url: 'https://media.canva.com/v2/image-resize/format:PNG/height:728/quality:100/uri:ifs%3A%2F%2FM%2Fb878bc30-1c04-4e38-80ad-43a8251d422c/watermark:F/width:1600?csig=AAAAAAAAAAAAAAAAAAAAAFd_GKJ_u5-7GBvBfdatSGWmMJQyWyRLb0rZSMtFyznz&exp=1789642314&osig=AAAAAAAAAAAAAAAAAAAAAAlSjITaWrfA_zCe1EmPIf3HFUDLgJYwoUr7V9-f2Icb&signer=media-rpc&x-canva-quality=screen_2x',
+thumbnail_url: '/auraweb-1.png',
 gallery: [
-'https://media.canva.com/v2/image-resize/format:PNG/height:728/quality:100/uri:ifs%3A%2F%2FM%2Fb878bc30-1c04-4e38-80ad-43a8251d422c/watermark:F/width:1600?csig=AAAAAAAAAAAAAAAAAAAAAFd_GKJ_u5-7GBvBfdatSGWmMJQyWyRLb0rZSMtFyznz&exp=1789642314&osig=AAAAAAAAAAAAAAAAAAAAAAlSjITaWrfA_zCe1EmPIf3HFUDLgJYwoUr7V9-f2Icb&signer=media-rpc&x-canva-quality=screen_2x',
-'https://media.canva.com/v2/image-resize/format:PNG/height:726/quality:100/uri:ifs%3A%2F%2FM%2F418db8c2-2be9-46e4-b26b-1377bcd38e72/watermark:F/width:1600?csig=AAAAAAAAAAAAAAAAAAAAAMentz4pRBqCFTub_yU254aTSoJyUxr3dJbeBZb9SBhb&exp=1789643147&osig=AAAAAAAAAAAAAAAAAAAAAKys2hEM3qDkGLBJEzd95f73azl1PP5Pu16vc6IeJ__R&signer=media-rpc&x-canva-quality=screen_2x',
-'https://media.canva.com/v2/image-resize/format:PNG/height:725/quality:100/uri:ifs%3A%2F%2FM%2F76b5ad71-e231-4eb0-a228-0fd7611d47e1/watermark:F/width:1600?csig=AAAAAAAAAAAAAAAAAAAAAB01Ud9hWb_BMqq8Aee70bZOle3gA7jdeegkHYXw3c1w&exp=1789643296&osig=AAAAAAAAAAAAAAAAAAAAAMl2WmsrGU8SgAUQRFVP-0R7rfk2G-PnMyiw6PnzO4-c&signer=media-rpc&x-canva-quality=screen_2x'
+'/auraweb-1.png',
+'/auraweb2.webp',
+'aura-3.webp'
 ],
 live_url: 'https://aura-atelier-ai.vercel.app/',
 github_url: 'https://github.com/Abhishekkuntare/aura-atelier-ai',
@@ -292,11 +292,11 @@ created_at: '2026-09-08'
   ],
   category: 'E-Commerce & Fashion',
   year: '2026',
-  thumbnail_url: 'https://media.canva.com/v2/image-resize/format:PNG/height:734/quality:100/uri:ifs%3A%2F%2FM%2F139d2de9-0f41-415d-a458-c168e238654c/watermark:F/width:1600?csig=AAAAAAAAAAAAAAAAAAAAABG0vPifNBZ6DN-wBeq-LooTJEZmR3nL_77jYqFqcXO6&exp=1789645242&osig=AAAAAAAAAAAAAAAAAAAAAIHZeZV0jwlRJFkG7R2w53VSAos7kee-KmmzIaNFpPuy&signer=media-rpc&x-canva-quality=screen_2x',
+  thumbnail_url: '/shoes-1.png',
   gallery: [
-    'https://media.canva.com/v2/image-resize/format:PNG/height:734/quality:100/uri:ifs%3A%2F%2FM%2F139d2de9-0f41-415d-a458-c168e238654c/watermark:F/width:1600?csig=AAAAAAAAAAAAAAAAAAAAABG0vPifNBZ6DN-wBeq-LooTJEZmR3nL_77jYqFqcXO6&exp=1789645242&osig=AAAAAAAAAAAAAAAAAAAAAIHZeZV0jwlRJFkG7R2w53VSAos7kee-KmmzIaNFpPuy&signer=media-rpc&x-canva-quality=screen_2x',
-    'https://media.canva.com/v2/image-resize/format:PNG/height:730/quality:100/uri:ifs%3A%2F%2FM%2F27186bb2-3973-4607-938b-f019e32268cf/watermark:F/width:1600?csig=AAAAAAAAAAAAAAAAAAAAAFO6KZJFPjT0kakUVsIYY_tJQ5RBE1KAhJO6SFYVsLBo&exp=1789644433&osig=AAAAAAAAAAAAAAAAAAAAADLu5qaFtV7Kn9tBxEge-1oUaYu7aZrCZ4cGhbyAgeab&signer=media-rpc&x-canva-quality=screen_2x',
-    'https://media.canva.com/v2/image-resize/format:PNG/height:728/quality:100/uri:ifs%3A%2F%2FM%2F315a15e1-930e-48c1-82db-21e0da3ecb49/watermark:F/width:1600?csig=AAAAAAAAAAAAAAAAAAAAACqO2s4F4VlE_Vzh5wt-1E2XzjoVgi46NJMTCWtHAbA5&exp=1789641975&osig=AAAAAAAAAAAAAAAAAAAAALF8gJAfuQW3XQsY6D6_2k3NNZ_WuqaMkNGL-guvxyi_&signer=media-rpc&x-canva-quality=screen_2x'
+    '/shoes-1.png',
+    '/shoes-2.webp',
+    '/shoes-3.png'
   ],
   live_url: 'https://soleva-premium-futuristic-footwear.vercel.app/',
   github_url: 'https://github.com/Abhishekkuntare/SOLEVA-premium-futuristic-footwear.-',
@@ -329,11 +329,11 @@ created_at: '2026-09-08'
   ],
   category: 'Interactive Experience',
   year: '2026',
-  thumbnail_url: 'https://media.canva.com/v2/image-resize/format:PNG/height:723/quality:100/uri:ifs%3A%2F%2FM%2F79b5df73-5dbd-46b8-98d7-9ba85a6fe560/watermark:F/width:1600?csig=AAAAAAAAAAAAAAAAAAAAAERsHI-v-SVZxZvIa6fCvlusUs061ko8TX6dn9Fi61yu&exp=1789642074&osig=AAAAAAAAAAAAAAAAAAAAAI33Xn9UCUgYYJNNUdG_Bdcln4X_LDSFLBTRPL9Pt20-&signer=media-rpc&x-canva-quality=screen_2x',
+  thumbnail_url: '/rakhi-1.png',
   gallery: [
-    'https://media.canva.com/v2/image-resize/format:PNG/height:723/quality:100/uri:ifs%3A%2F%2FM%2F79b5df73-5dbd-46b8-98d7-9ba85a6fe560/watermark:F/width:1600?csig=AAAAAAAAAAAAAAAAAAAAAERsHI-v-SVZxZvIa6fCvlusUs061ko8TX6dn9Fi61yu&exp=1789642074&osig=AAAAAAAAAAAAAAAAAAAAAI33Xn9UCUgYYJNNUdG_Bdcln4X_LDSFLBTRPL9Pt20-&signer=media-rpc&x-canva-quality=screen_2x',
-    'https://media.canva.com/v2/image-resize/format:PNG/height:716/quality:100/uri:ifs%3A%2F%2FM%2Fca7e75d4-adf1-408d-9077-5aeee3455cf8/watermark:F/width:1600?csig=AAAAAAAAAAAAAAAAAAAAAOWARuAVg3mVRL_Z0O8SDHU8mEuMlxp2dBRs1ShIXTGx&exp=1789644032&osig=AAAAAAAAAAAAAAAAAAAAAMKSqfTh4vcvmuuFFgAE0AonX6kg7EiGPdu7PhOpbfI6&signer=media-rpc&x-canva-quality=screen_2x',
-    'https://media.canva.com/v2/image-resize/format:PNG/height:727/quality:100/uri:ifs%3A%2F%2FM%2F80ded726-910a-4158-9ae8-f610b844eb60/watermark:F/width:1600?csig=AAAAAAAAAAAAAAAAAAAAAI0CKm4FL-8bfnjUYozmm5DUf8s3nKKq5AsJQLIpwbwv&exp=1789643620&osig=AAAAAAAAAAAAAAAAAAAAAFj6XKFXUNsClFm2gtXgA0Qoxd4D_s6IM6n1VGlur0yt&signer=media-rpc&x-canva-quality=screen_2x'
+    '/rakhi-1.png',
+    '/rakhi-3.webp',
+    '/rakhi-2.png'
   ],
   live_url: 'https://rakhi-verse.vercel.app/',
   github_url: 'https://github.com/Abhishekkuntare/RakhiVerse',
@@ -369,11 +369,11 @@ created_at: '2026-09-08'
   ],
   category: 'Productivity & Web',
   year: '2026',
-  thumbnail_url: 'https://media.canva.com/v2/image-resize/format:PNG/height:730/quality:100/uri:ifs%3A%2F%2FM%2F01d5e311-a758-4284-a9a1-0333af45d082/watermark:F/width:1600?csig=AAAAAAAAAAAAAAAAAAAAAJcsu6broM4K6yDi0WqALfSZypMNQYJ5Z9PjABwLGm3v&exp=1789643322&osig=AAAAAAAAAAAAAAAAAAAAAFw03R7GqmdBD0eD6OlEorm77ipJuw6CfSWFyu8Qz0HF&signer=media-rpc&x-canva-quality=screen_2x',
+  thumbnail_url: '/clacko-1.png',
   gallery: [
-    'https://media.canva.com/v2/image-resize/format:PNG/height:730/quality:100/uri:ifs%3A%2F%2FM%2F01d5e311-a758-4284-a9a1-0333af45d082/watermark:F/width:1600?csig=AAAAAAAAAAAAAAAAAAAAAJcsu6broM4K6yDi0WqALfSZypMNQYJ5Z9PjABwLGm3v&exp=1789643322&osig=AAAAAAAAAAAAAAAAAAAAAFw03R7GqmdBD0eD6OlEorm77ipJuw6CfSWFyu8Qz0HF&signer=media-rpc&x-canva-quality=screen_2x',
-    'https://media.canva.com/v2/image-resize/format:PNG/height:718/quality:100/uri:ifs%3A%2F%2FM%2F1d1d284d-aa7f-4cf8-adaa-d096ba9c0728/watermark:F/width:1600?csig=AAAAAAAAAAAAAAAAAAAAAOBw0bAwEXBxPTcpdKPi1ESTlCFM9p9kMwmL8uByIjqQ&exp=1789642998&osig=AAAAAAAAAAAAAAAAAAAAAHb-M37C6oQXVVUMYDaj51AEythKzRODdhtufdYYInMQ&signer=media-rpc&x-canva-quality=screen_2x',
-    'https://media.canva.com/v2/image-resize/format:PNG/height:728/quality:100/uri:ifs%3A%2F%2FM%2F8904a5aa-44d0-40ce-a276-abbed569add1/watermark:F/width:1600?csig=AAAAAAAAAAAAAAAAAAAAABzmBYLE8Gm9Ug-safgdFjcs2sKB2WXiO_Avcnq3dPtE&exp=1789643848&osig=AAAAAAAAAAAAAAAAAAAAAGbSbZcUrihAb4a2eDH0CC5gmGtvbO1fMCp9KUz0abZn&signer=media-rpc&x-canva-quality=screen_2x'
+    '/clacko-1.png',
+    '/clacko-2.webp',
+    '/clacko-3.webp'
   ],
   live_url: 'https://clacko.vercel.app/',
   github_url: 'https://github.com/Abhishekkuntare/Clacko',
@@ -409,11 +409,11 @@ created_at: '2026-09-08'
   ],
   category: '3D & Interactive Web',
   year: '2026',
-  thumbnail_url: 'https://media.canva.com/v2/image-resize/format:PNG/height:723/quality:100/uri:ifs%3A%2F%2FM%2F93c41a87-80c5-4f2b-9eb8-c35a588de0ee/watermark:F/width:1600?csig=AAAAAAAAAAAAAAAAAAAAAKKd210w_SRZh5EHPMFt2H689EjRRlrtAdiMBOR9-Syt&exp=1789642578&osig=AAAAAAAAAAAAAAAAAAAAAIyLngkzEMI_oi88Ky9BEIR39OhywsAz1cvcCYi9ldjZ&signer=media-rpc&x-canva-quality=screen_2x',
+  thumbnail_url: '/fifa-3.webp',
   gallery: [
-    'https://media.canva.com/v2/image-resize/format:PNG/height:732/quality:100/uri:ifs%3A%2F%2FM%2F3a243c7a-9af9-4fe2-ab99-33aeb1394c23/watermark:F/width:1600?csig=AAAAAAAAAAAAAAAAAAAAAD1p-dittXw-IFzYSaQlazfvUTl2TX3sF71LbILFb1oL&exp=1789642928&osig=AAAAAAAAAAAAAAAAAAAAAJrf1IMqier1Lj15ZrKMmNbFwJ7MBzTl_NfbQt8Y3_-h&signer=media-rpc&x-canva-quality=screen_2x',
-    'https://media.canva.com/v2/image-resize/format:PNG/height:726/quality:100/uri:ifs%3A%2F%2FM%2F8d36f821-6b70-48ab-ac24-34e93567a1fe/watermark:F/width:1600?csig=AAAAAAAAAAAAAAAAAAAAAM1zyVo5pvioUb8GCcot5YwJVeYcKY2rc80VturfXSy7&exp=1789642740&osig=AAAAAAAAAAAAAAAAAAAAAJ7mfjbtMN8vRSppSZ1zzy3-x8zEFnf8YFPCsDsuNdVU&signer=media-rpc&x-canva-quality=screen_2x',
-    'https://media.canva.com/v2/image-resize/format:PNG/height:720/quality:100/uri:ifs%3A%2F%2FM%2F6574ffbe-5784-411b-804a-2670e205a673/watermark:F/width:1600?csig=AAAAAAAAAAAAAAAAAAAAAMVB-zuIKodCerC98Vh7ZjLWFxsLghrsdgvFa7jfO6cJ&exp=1789644120&osig=AAAAAAAAAAAAAAAAAAAAALcWEvV30SvGMskbg2q6AV7g2MchKONG2Vc0sni67Y4v&signer=media-rpc&x-canva-quality=screen_2x'
+    '/fifa-4.webp',
+    '/fifa-2.png',
+    '/fifa-1.webp'
   ],
   live_url: 'https://fifa-black-eta.vercel.app/',
   github_url: 'https://github.com/Abhishekkuntare/FIFA',
@@ -447,11 +447,11 @@ created_at: '2026-09-08'
   ],
   category: 'Creative & Portfolio',
   year: '2026',
-  thumbnail_url: 'https://media.canva.com/v2/image-resize/format:PNG/height:726/quality:100/uri:ifs%3A%2F%2FM%2F23906544-ef75-4250-b6e6-a53b4bd570e4/watermark:F/width:1600?csig=AAAAAAAAAAAAAAAAAAAAADdELGsE1rQvlmPlVb2LdAQsxY8xRjuOhXEYTwadmF1H&exp=1789646204&osig=AAAAAAAAAAAAAAAAAAAAADkLrbXnHBtYktOxvlZ8VGMjE_LzKPahSc0OxI-1m-tq&signer=media-rpc&x-canva-quality=screen_2x',
+  thumbnail_url: '/abhishekart-1.png',
   gallery: [
-    'https://media.canva.com/v2/image-resize/format:PNG/height:726/quality:100/uri:ifs%3A%2F%2FM%2F23906544-ef75-4250-b6e6-a53b4bd570e4/watermark:F/width:1600?csig=AAAAAAAAAAAAAAAAAAAAADdELGsE1rQvlmPlVb2LdAQsxY8xRjuOhXEYTwadmF1H&exp=1789646204&osig=AAAAAAAAAAAAAAAAAAAAADkLrbXnHBtYktOxvlZ8VGMjE_LzKPahSc0OxI-1m-tq&signer=media-rpc&x-canva-quality=screen_2x',
-    'https://media.canva.com/v2/image-resize/format:PNG/height:727/quality:100/uri:ifs%3A%2F%2FM%2F5d5d908a-5355-4168-9e47-483cc25207fc/watermark:F/width:1600?csig=AAAAAAAAAAAAAAAAAAAAAFQe7NiR4B75flLfBJ4f94YsLBDQ9wy4StexouWUZA4J&exp=1789645860&osig=AAAAAAAAAAAAAAAAAAAAAPqmqpmnzOk9HJ1mO5K7DsoK_8X_miN58XOr7E2uAvSB&signer=media-rpc&x-canva-quality=screen_2x',
-    'https://media.canva.com/v2/image-resize/format:PNG/height:737/quality:100/uri:ifs%3A%2F%2FM%2F98f699b2-f9ac-47c1-9ade-78c5ed284b3b/watermark:F/width:1600?csig=AAAAAAAAAAAAAAAAAAAAAKD9vmpCHkkkoDKQNwPDLAEzXCqv5IxX_2tOzC9jkYsX&exp=1789645265&osig=AAAAAAAAAAAAAAAAAAAAAAqFlQAUYJV98EOEa8k4SHCEGz79g1zWwwzFJ2NV60PK&signer=media-rpc&x-canva-quality=screen_2x'
+    '/abhishekart-1.png',
+    '/abhishekart-2.png',
+    '/abhishekart-3.webp'
   ],
   live_url: 'https://cosmicabhishekkuntare.vercel.app/',
   github_url: 'https://github.com/Abhishekkuntare/cosmicabhishekkuntare',
@@ -483,11 +483,11 @@ created_at: '2026-09-08'
   ],
   category: 'Portfolio & Web',
   year: '2024',
-  thumbnail_url: 'https://media.canva.com/v2/image-resize/format:PNG/height:726/quality:100/uri:ifs%3A%2F%2FM%2Ffb782e7b-f37d-4c64-a706-b5a61a894e00/watermark:F/width:1600?csig=AAAAAAAAAAAAAAAAAAAAADFrUPFQ_Kjq-jPAWnhzCkw78aXUxUPbPvBWUHsCdRWb&exp=1789643225&osig=AAAAAAAAAAAAAAAAAAAAAFJsaY-aEt19t9BGJX5dh-N87YKewIcGATteGtTbCFsr&signer=media-rpc&x-canva-quality=screen_2x',
+  thumbnail_url: '/abhishekoldport-1.png',
   gallery: [
-    'https://media.canva.com/v2/image-resize/format:PNG/height:726/quality:100/uri:ifs%3A%2F%2FM%2Ffb782e7b-f37d-4c64-a706-b5a61a894e00/watermark:F/width:1600?csig=AAAAAAAAAAAAAAAAAAAAADFrUPFQ_Kjq-jPAWnhzCkw78aXUxUPbPvBWUHsCdRWb&exp=1789643225&osig=AAAAAAAAAAAAAAAAAAAAAFJsaY-aEt19t9BGJX5dh-N87YKewIcGATteGtTbCFsr&signer=media-rpc&x-canva-quality=screen_2x',
-    'https://media.canva.com/v2/image-resize/format:PNG/height:714/quality:100/uri:ifs%3A%2F%2FM%2F1406adfd-0366-4141-af08-555307c0d709/watermark:F/width:1600?csig=AAAAAAAAAAAAAAAAAAAAAJXD_oRYB531o88jOmFx5D4vuptISbgJDq7o1yv-TAfZ&exp=1789643086&osig=AAAAAAAAAAAAAAAAAAAAAIhm_13A-2TTcHmfNE4Jxz0aH_crWl0SAnN9eD97tjZ_&signer=media-rpc&x-canva-quality=screen_2x',
-    'https://media.canva.com/v2/image-resize/format:PNG/height:728/quality:100/uri:ifs%3A%2F%2FM%2F654686c1-3727-46a6-acc6-d8850bfca214/watermark:F/width:1600?csig=AAAAAAAAAAAAAAAAAAAAAN1Rx8DqaNZbDSY9FlDfteWBXNJD4JEdxenqf_-I94tG&exp=1789643919&osig=AAAAAAAAAAAAAAAAAAAAAH6bhMfrbE2FyoNDrhXLt_jnF58oJ7Jj1a6OZKeExFAQ&signer=media-rpc&x-canva-quality=screen_2x'
+    '/abhishekoldport-1.png',
+    '/abhishekoldport-3.webp',
+    'abhishekoldport-2.png'
   ],
   live_url: 'https://abhishekkuntare.netlify.app/',
   github_url: 'https://github.com/Abhishekkuntare',
@@ -725,6 +725,7 @@ export const DESKTOP_ICONS: DesktopIconItem[] = [
   { id: 'icon-contact', appId: 'contact', title: 'Contact', iconName: 'Mail' },
   { id: 'icon-settings', appId: 'settings', title: 'Settings', iconName: 'Settings' },
   { id: 'icon-control-panel', appId: 'control-panel', title: 'Control Panel', iconName: 'SlidersHorizontal' },
+  { id: 'icon-abhishek-canva', appId: 'abhishek-canva', title: 'Abhishek Canva', iconName: 'Palette' },
   { id: 'icon-recycle-bin', appId: 'recycle-bin', title: 'Recycle Bin', iconName: 'Trash2' }
 ];
 
