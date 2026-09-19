@@ -115,11 +115,51 @@ created_at: '2026-09-13'
     sort_order: 3,
     created_at: '2024-07-20'
   },
-{
+  {
   id: 'proj-5',
+  title: 'ABHISHEK OS',
+  slug: 'abhishek-os',
+  number: '05',
+  short_description: 'A Windows desktop application delivering a modern macOS-inspired developer workstation with AI tools, productivity apps, workspaces, widgets, and interactive window management.',
+  long_description: 'ABHISHEK OS is an independent installable desktop application built with Electron, React, and TypeScript. It provides a highly interactive desktop environment with a custom application launcher, dock, draggable and resizable windows, Spotlight-style search, workspaces, widgets, developer tools, productivity applications, AI capabilities, personalization, glassmorphism, 3D depth, and smooth spatial animations. Designed as a personal developer workstation, the project combines desktop interaction patterns, productivity workflows, and modern UI engineering into a unified Windows experience.',
+  technologies: [
+    'Electron',
+    'React.js',
+    'TypeScript',
+    'JavaScript',
+    'HTML5',
+    'CSS3',
+    'Tailwind CSS',
+    'Framer Motion',
+    'Node.js',
+    'REST APIs',
+    'AI Integration'
+  ],
+  category: 'Desktop Application',
+  year: '2025 - 2026',
+  thumbnail_url: '/abhishekosweb1.png',
+  gallery: [
+    '/abhishekosweb1.png',
+    '/abhishekosweb2.png',
+    '/abhishekosweb3.png',
+    '/abhishekosweb4.png',
+    '/abhishekosweb5.png',
+  ],
+  live_url: 'https://abhishek-operating-system.netlify.app/',
+  github_url: 'https://github.com/Abhishekkuntare',
+  featured: true,
+  status: 'Completed',
+  challenges: 'Creating a fluid desktop-like environment inside a single application while managing multiple interactive windows, focus states, dragging, resizing, workspaces, widgets, application state, responsive layouts, and complex UI interactions without sacrificing performance.',
+  solution: 'Built a modular Electron and React desktop architecture with reusable application windows, centralized OS state management, spatial desktop interactions, dynamic application launching, dock and search systems, workspace management, customizable widgets, animated glass interfaces, and integrated productivity and AI capabilities.',
+  results: 'Created a fully interactive personal developer workstation experience that combines desktop computing patterns, developer utilities, AI-powered workflows, productivity applications, and modern spatial UI into a unified Windows application.',
+  sort_order: 3,
+  created_at: '2026-09-18'
+},
+{
+  id: 'proj-15',
   title: 'Abhishek Digital Solutions & Technology',
   slug: 'abhishek-digital-solutions-technology',
-  number: '05',
+  number: '15',
   short_description: 'Modern digital solutions platform offering websites, web applications, AI solutions, automation, and technology services for businesses.',
   long_description: 'Abhishek Digital Solutions & Technology is a modern digital solutions platform designed to present technology services, web development, AI solutions, automation, and digital experiences for businesses across multiple industries. The platform combines a premium agency-style interface with service discovery, industry-focused solutions, modern visual sections, responsive layouts, and conversion-oriented presentation. It demonstrates how a technology service brand can communicate a broad range of digital capabilities through a polished and scalable web experience.',
   technologies: [
@@ -150,7 +190,7 @@ created_at: '2026-09-13'
   challenges: 'Presenting a broad range of digital services and technology capabilities in a single professional platform while keeping the experience visually engaging, easy to navigate, responsive, and focused on different business and industry requirements.',
   solution: 'Designed and developed a modern agency-style web experience with structured service and industry sections, reusable UI components, responsive layouts, strong visual hierarchy, interactive elements, and technology-focused content to clearly communicate digital solutions and capabilities.',
   results: 'Created a professional digital technology platform that showcases web development, AI, automation, and digital solution capabilities through a modern business-focused interface. The project demonstrates frontend development, responsive UI/UX, service presentation, personal branding, and the ability to build technology platforms around real-world business use cases.',
-  sort_order: 5,
+  sort_order: 15,
   created_at: '2026-09-1'
 },
   {
