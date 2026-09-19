@@ -2506,7 +2506,7 @@ const FOLDERS: FolderItem[] = [
     appId: 'projects',
     icon: 'FolderKanban',
     desc: 'KrishiMitra, Amba, CraveVerse',
-    count: '3+ projects',
+    count: '14+ projects',
     type: 'Portfolio',
   },
   {

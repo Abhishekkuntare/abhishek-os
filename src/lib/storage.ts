@@ -26,7 +26,7 @@ export function saveTaskbarApps(apps: TaskbarApp[]): void {
 export const DEFAULT_SETTINGS: SystemSettings = {
   theme: 'dark',
   accentColor: '#38bdf8', // Windows Sky Cyan
-  wallpaperId: 'wall-dev-grid',
+  wallpaperId: 'wall-deep-space',
   animationsEnabled: true,
   glassBlurEnabled: true,
   soundsEnabled: true,
@@ -38,7 +38,7 @@ export const DEFAULT_SETTINGS: SystemSettings = {
   recruiterMode: false,
   workspaceMode: 'developer',
   windowMode: 'windows',
-  iconSize: 'medium',
+  iconSize: 'small',
 };
 
 // Safe localStorage helpers

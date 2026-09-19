@@ -18,7 +18,7 @@ import { EducationApp } from '../applications/EducationApp';
 import { ExperienceApp } from '../applications/ExperienceApp';
 import { FileExplorerApp } from '../applications/FileExplorerApp';
 import { GalleryApp } from '../applications/GalleryApp';
-import { GitApp } from '../applications/GitApp';
+import  GitApp  from '../applications/GitApp';
 import { MySkills } from '../applications/MySkills';
 import { NotesApp } from '../applications/NotesApp';
 import { PdfViewerApp } from '../applications/PdfViewerApp';
