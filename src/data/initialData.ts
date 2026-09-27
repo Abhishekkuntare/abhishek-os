@@ -55,7 +55,7 @@ created_at: '2026-09-13'
       'https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=800&auto=format&fit=crop&q=80',
       'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=800&auto=format&fit=crop&q=80'
     ],
-    live_url: 'https://krishimitra-ai.vercel.app',
+    live_url: 'https://krishi-mitra-ai-three.vercel.app',
     github_url: 'https://github.com/abhishekkuntare/krishimitra-ai',
     featured: true,
     status: 'Completed',
