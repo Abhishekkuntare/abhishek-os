@@ -553,23 +553,26 @@ export const DesktopIcon: React.FC<
       tabIndex={0}
       draggable={false}
       className={`
-        group
-        relative
-        flex
-        flex-col
-        items-center
-        justify-center
+  group
+  relative
+  flex
+  flex-col
+  items-center
+  justify-center
+  rounded-xl
+  outline-none
+  select-none
+  touch-none
 
-        rounded-xl
+  ${
+    isDragging
+      ? "cursor-grabbing"
+      : "cursor-pointer"
+  }
 
-        outline-none
-
-        select-none
-        touch-none
-
-        transition-[transform,background-color,border-color,box-shadow]
-        duration-150
-        ease-out
+  transition-[transform,background-color,border-color,box-shadow]
+  duration-150
+  ease-out
 
         ${
           isDragging

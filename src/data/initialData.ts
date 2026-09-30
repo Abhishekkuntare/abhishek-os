@@ -75,10 +75,11 @@ created_at: '2026-09-13'
     technologies: ['React.js', 'Next.js', 'TypeScript', 'HTML5', 'CSS3', 'Google Maps API'],
     category: 'Client Web Platform',
     year: '2023 - 2024',
-    thumbnail_url: 'https://media.licdn.com/dms/image/v2/D562DAQHi_BQEMPjMvQ/profile-treasury-image-shrink_1280_1280/B56aBSDG7iGsAY-/0/1788082941929?e=1789959600&v=beta&t=Zuyayhzfxe-ZEC9cxXe6bLTvFLqAh064sx1wfIx0J7E',
+    thumbnail_url: '/am1.png',
     gallery: [
-      'https://media.licdn.com/dms/image/v2/D562DAQHi_BQEMPjMvQ/profile-treasury-image-shrink_1280_1280/B56aBSDG7iGsAY-/0/1788082941929?e=1789959600&v=beta&t=Zuyayhzfxe-ZEC9cxXe6bLTvFLqAh064sx1wfIx0J7E',
-      'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=800&auto=format&fit=crop&q=80'
+      '/am1.png',
+      '/am2.png',
+      '/am3.png'
     ],
     live_url: 'https://ambamotors.vercel.app',
     github_url: 'https://github.com/abhishekkuntare/amba-motors',
