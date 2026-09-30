@@ -207,8 +207,8 @@ export interface Wallpaper {
   name: string;
   thumbnailColor: string;
   style: string;
-  type?: WallpaperType;
-  description?: string;
+  type: string;
+  description: string;
   videoUrl?: string;
 }
 

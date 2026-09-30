@@ -344,10 +344,42 @@ export const OSProvider: React.FC<{ children: React.ReactNode }> = ({ children }
   });
 
   // System settings
-  const [settings, setSettings] = useState<SystemSettings>(getStoredSettings);
-  const [customWallpaperUrl, setCustomWallpaperUrl] = useState<string | null>(null);
-  const [customWallpaperType, setCustomWallpaperType] = useState<'image' | 'video' | null>(null);
+ // System settings
+const [settings, setSettings] = useState<SystemSettings>(() => {
+  const storedSettings = getStoredSettings();
 
+  const DEFAULT_WALLPAPER_ID = 'wall-bus-night';
+  const WALLPAPER_DEFAULT_VERSION = '2';
+
+  const savedWallpaperDefaultVersion = localStorage.getItem(
+    'abhishek-wallpaper-default-version'
+  );
+
+  // One-time migration:
+  // Make Bus Night the default for existing installations.
+  // After this migration, the user's manually selected wallpaper
+  // will continue to persist normally.
+  if (savedWallpaperDefaultVersion !== WALLPAPER_DEFAULT_VERSION) {
+    const migratedSettings = {
+      ...storedSettings,
+      wallpaperId: DEFAULT_WALLPAPER_ID,
+    };
+
+    localStorage.setItem(
+      'abhishek-wallpaper-default-version',
+      WALLPAPER_DEFAULT_VERSION
+    );
+
+    saveSettings(migratedSettings);
+
+    return migratedSettings;
+  }
+
+  return storedSettings;
+});
+
+const [customWallpaperUrl, setCustomWallpaperUrl] = useState<string | null>(null);
+const [customWallpaperType, setCustomWallpaperType] = useState<'image' | 'video' | null>(null);
   useEffect(() => {
     let objectUrl: string | null = null;
     let disposed = false;

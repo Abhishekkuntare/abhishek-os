@@ -667,6 +667,16 @@ export const INITIAL_EDUCATION: Education = {
 
 export const INITIAL_WALLPAPERS: Wallpaper[] = [
   {
+    id: 'wall-bus-night',
+    name: 'Bus Night',
+    thumbnailColor: '#020617',
+    style: 'linear-gradient(135deg, #020617 0%, #0f172a 100%)',
+    type: 'video',
+    description: 'Cinematic night bus journey wallpaper',
+    videoUrl: '/busnight.mp4'
+  },
+  
+{
     id: 'wall-aurora',
     name: 'Midnight Aurora',
     thumbnailColor: '#0c4a6e',
