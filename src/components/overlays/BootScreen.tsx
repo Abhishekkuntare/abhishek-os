@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import { useOS } from '../../context/OSContext';
+import { TrackingFace } from '../ui/TrackingFace';
 
 export const BootScreen: React.FC = () => {
   const { powerState, setPowerState, playSystemSound } = useOS();
@@ -37,14 +38,8 @@ export const BootScreen: React.FC = () => {
       transition={{ duration: 0.3 }}
       className="fixed inset-0 z-100000 bg-black flex flex-col items-center justify-center select-none text-slate-100 p-6"
     >
-      {/* OS Logo */}
-      <div className="relative mb-8">
-        <div className="grid grid-cols-2 gap-1.5 w-16 h-16">
-          <div className="rounded-sm bg-sky-500 shadow-lg shadow-sky-500/50 animate-pulse" />
-          <div className="rounded-sm bg-sky-400 shadow-lg shadow-sky-400/40" />
-          <div className="rounded-sm bg-sky-400 shadow-lg shadow-sky-400/40" />
-          <div className="rounded-sm bg-sky-300 shadow-lg shadow-sky-300/30" />
-        </div>
+      <div className="relative mb-8 rounded-[10px] shadow-[0_18px_55px_rgba(14,165,233,.38)] transition-transform duration-300 hover:scale-105">
+        <TrackingFace size={128} />
       </div>
 
       <h1 className="text-xl font-bold tracking-widest text-slate-100 mb-1">

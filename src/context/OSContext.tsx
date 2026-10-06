@@ -415,6 +415,16 @@ const [customWallpaperType, setCustomWallpaperType] = useState<'image' | 'video'
     root.dataset.themePreset = settings.themePreset;
     root.style.setProperty('--os-accent', settings.accentColor);
     root.style.setProperty('--os-font-family', `"${settings.fontFamily}"`);
+    const fontLink = document.querySelector<HTMLLinkElement>('link[data-os-font="true"]');
+    if (settings.fontFamily === 'Plus Jakarta Sans') {
+      fontLink?.remove();
+    } else {
+      const link = fontLink || document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(settings.fontFamily).replace(/%20/g, '+')}&display=swap`;
+      link.dataset.osFont = 'true';
+      if (!fontLink) document.head.appendChild(link);
+    }
     const arrowCursor = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M5 2.5 19 14l-6.5 1.4L9 22 5 2.5Z" fill="${settings.cursorColor}" stroke="#0b1020" stroke-width="1.5" stroke-linejoin="round"/></svg>`;
     const handCursor = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M8 11V5a2 2 0 0 1 4 0v5-7a2 2 0 0 1 4 0v8-5a2 2 0 0 1 4 0v8c0 5-3 8-8 8-3 0-5-2-7-5l-2-3a2 2 0 0 1 3-2l2 2Z" fill="${settings.cursorColor}" stroke="#0b1020" stroke-width="1.5" stroke-linejoin="round"/></svg>`;
     root.style.setProperty('--os-cursor', `url("data:image/svg+xml,${encodeURIComponent(arrowCursor)}") 4 3, auto`);

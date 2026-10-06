@@ -41,6 +41,7 @@ import {
 } from 'lucide-react';
 import { createPortal } from 'react-dom';
 import VirtualKeyboard from './VirtualKeyboard';
+import { TrackingFace } from '../ui/TrackingFace';
 
 /* =========================================================
    TYPES
@@ -411,6 +412,27 @@ export const Taskbar: React.FC = () => {
     draggedAppId,
     setDraggedAppId,
   ] = useState<AppId | null>(null);
+
+  const [taskbarPreview, setTaskbarPreview] = useState<{
+    appId: AppId;
+    left: number;
+  } | null>(null);
+  const taskbarPreviewTimer = useRef<number | null>(null);
+
+  useEffect(() => () => {
+    if (taskbarPreviewTimer.current !== null) {
+      window.clearTimeout(taskbarPreviewTimer.current);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!isDesktopOverviewOpen) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setDesktopOverviewOpen(false);
+    };
+    window.addEventListener('keydown', closeOnEscape);
+    return () => window.removeEventListener('keydown', closeOnEscape);
+  }, [isDesktopOverviewOpen, setDesktopOverviewOpen]);
 
   const [
     showKeyboard,
@@ -836,6 +858,35 @@ export const Taskbar: React.FC = () => {
         window.id === activeWindowId &&
         !window.isMinimized,
     );
+
+  const showTaskbarPreview = (
+    event: React.MouseEvent<HTMLButtonElement> | React.FocusEvent<HTMLButtonElement>,
+    appId: AppId,
+  ) => {
+    if (!isAppRunning(appId)) return;
+    if (taskbarPreviewTimer.current !== null) {
+      window.clearTimeout(taskbarPreviewTimer.current);
+    }
+    const bounds = event.currentTarget.getBoundingClientRect();
+    setTaskbarPreview({
+      appId,
+      left: Math.max(12, Math.min(window.innerWidth - 292, bounds.left + bounds.width / 2 - 140)),
+    });
+  };
+
+  const scheduleTaskbarPreviewClose = () => {
+    taskbarPreviewTimer.current = window.setTimeout(() => {
+      setTaskbarPreview(null);
+      taskbarPreviewTimer.current = null;
+    }, 180);
+  };
+
+  const keepTaskbarPreviewOpen = () => {
+    if (taskbarPreviewTimer.current !== null) {
+      window.clearTimeout(taskbarPreviewTimer.current);
+      taskbarPreviewTimer.current = null;
+    }
+  };
 
   /* =======================================================
      TASKBAR APPS
@@ -2021,12 +2072,10 @@ export const Taskbar: React.FC = () => {
                 `}
                 title="Start"
               >
-                <div className="grid h-4 w-4 grid-cols-2 gap-0.5">
-                  <div className="h-2 w-2 rounded-[2px] bg-sky-400" />
-                  <div className="h-2 w-2 rounded-[2px] bg-sky-400" />
-                  <div className="h-2 w-2 rounded-[2px] bg-sky-400" />
-                  <div className="h-2 w-2 rounded-[2px] bg-sky-400" />
-                </div>
+                <TrackingFace
+                size={28}
+  className="!w-[28px] !h-[28px] transition-transform duration-200 group-hover:scale-110"
+                />
               </button>
 
               {/* SEARCH */}
@@ -2114,11 +2163,22 @@ export const Taskbar: React.FC = () => {
                       }
                       type="button"
                       id={`taskbar-app-${item.appId}`}
-                      onClick={() =>
-                        handleAppClick(
-                          item.appId,
-                        )
+                      onClick={() => {
+                        setTaskbarPreview(null);
+                        handleAppClick(item.appId);
+                      }}
+                      onMouseEnter={event =>
+                        showTaskbarPreview(event, item.appId)
                       }
+                      onMouseLeave={() => {
+                        if (running) scheduleTaskbarPreviewClose();
+                      }}
+                      onFocus={event =>
+                        showTaskbarPreview(event, item.appId)
+                      }
+                      onBlur={() => {
+                        if (running) scheduleTaskbarPreviewClose();
+                      }}
                       onContextMenu={event => {
                         event.preventDefault();
                         event.stopPropagation();
@@ -2474,277 +2534,231 @@ export const Taskbar: React.FC = () => {
           </div>
         </div>
 
+        {taskbarPreview && createPortal(
+          (() => {
+            const previewWindows = windows.filter(appWindow =>
+              appWindow.appId === taskbarPreview.appId &&
+              appWindow.desktopId === activeDesktopId,
+            );
+
+            if (!previewWindows.length) return null;
+
+            return (
+              <div
+                role="group"
+                aria-label="Open app windows"
+                onMouseEnter={keepTaskbarPreviewOpen}
+                onMouseLeave={scheduleTaskbarPreviewClose}
+                className="fixed bottom-[60px] z-[10001] w-[280px] origin-bottom animate-[taskbarPopupIn_180ms_cubic-bezier(.2,.8,.2,1)] rounded-2xl border border-white/15 bg-slate-950/90 p-2.5 shadow-[0_18px_55px_rgba(0,0,0,.55)] backdrop-blur-2xl"
+                style={{ left: taskbarPreview.left }}
+              >
+                {previewWindows.map(appWindow => (
+                  <button
+                    key={appWindow.id}
+                    type="button"
+                    onClick={() => {
+                      focusWindow(appWindow.id);
+                      setTaskbarPreview(null);
+                    }}
+                    className="group/preview block w-full overflow-hidden rounded-xl border border-white/10 bg-slate-900/80 text-left transition-all duration-200 hover:-translate-y-0.5 hover:border-sky-400/45 hover:bg-slate-900"
+                  >
+                    <div className="flex h-7 items-center gap-2 border-b border-white/[0.07] bg-white/[0.04] px-2.5">
+                      <AppIcon name={appWindow.iconName} className="h-3.5 w-3.5 text-sky-300" />
+                      <span className="min-w-0 flex-1 truncate text-[10px] font-medium text-slate-200">
+                        {appWindow.title}
+                      </span>
+                      <span className="h-1.5 w-1.5 rounded-full bg-sky-400" />
+                    </div>
+                    <div className="relative flex h-[112px] gap-2 overflow-hidden bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950 p-3">
+                      <div className="w-[27%] rounded-md border border-white/[0.06] bg-slate-800/80 p-1.5">
+                        <div className="mb-2 h-1 w-2/3 rounded bg-sky-400/50" />
+                        <div className="space-y-1">
+                          <div className="h-1 rounded bg-white/15" />
+                          <div className="h-1 w-4/5 rounded bg-white/10" />
+                          <div className="h-1 w-3/5 rounded bg-white/10" />
+                        </div>
+                      </div>
+                      <div className="flex-1 rounded-md border border-white/[0.07] bg-slate-800/55 p-2">
+                        <div className="mb-2 h-2 w-2/5 rounded bg-white/20" />
+                        <div className="space-y-1.5">
+                          <div className="h-1.5 rounded bg-white/10" />
+                          <div className="h-1.5 w-5/6 rounded bg-white/10" />
+                          <div className="h-1.5 w-3/4 rounded bg-white/10" />
+                        </div>
+                        <div className="absolute bottom-3 right-3 rounded-md bg-sky-400/15 p-1.5 text-sky-200">
+                          <AppIcon name={appWindow.iconName} className="h-5 w-5" />
+                        </div>
+                      </div>
+                    </div>
+                  </button>
+                ))}
+                <p className="px-1 pt-2 text-center text-[9px] text-slate-500">
+                  Click a preview to switch to that window
+                </p>
+              </div>
+            );
+          })(),
+          document.body,
+        )}
+
         {/* =====================================================
             DESKTOP OVERVIEW
         ===================================================== */}
 
         {isDesktopOverviewOpen && (
+          createPortal(
           <div
-            className="
-              desktop-overview
-              fixed
-              bottom-14
-              left-1/2
-              z-[9998]
-              w-[min(760px,calc(100vw-24px))]
-              -translate-x-1/2
-              animate-[taskbarPopupIn_180ms_ease-out]
-              rounded-2xl
-              border
-              border-white/15
-              bg-slate-950/90
-              p-4
-              shadow-2xl
-              backdrop-blur-2xl
-            "
+            onClick={() => setDesktopOverviewOpen(false)}
+            className="desktop-overview fixed inset-0 z-[8998] bg-slate-950/25 backdrop-blur-[2px] animate-[desktopOverviewFade_180ms_ease-out]"
           >
-            <div className="mb-3 flex items-center justify-between gap-3">
-              <div>
-                <p className="text-sm font-semibold text-white">
-                  Your desktops
-                </p>
+            <section
+              role="dialog"
+              aria-modal="true"
+              aria-label="Your desktops"
+              onClick={event => event.stopPropagation()}
+              className="desktop-overview-panel absolute inset-x-3 top-3 bottom-[60px] flex flex-col overflow-hidden rounded-[24px] border border-white/15 bg-slate-950/10 shadow-[0_30px_100px_rgba(0,0,0,.3)] sm:inset-x-6 sm:top-5"
+            >
+              <header className="flex shrink-0 items-center justify-between gap-3 px-4 py-3 sm:px-6 sm:py-4">
+                <div>
+                  <p className="text-sm font-semibold text-white sm:text-base">Task view</p>
+                  <p className="mt-0.5 text-[10px] text-slate-300/80 sm:text-xs">Choose an open window or switch desktops</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    playQuickSettingSound();
+                    createDesktop();
+                  }}
+                  className="flex shrink-0 items-center gap-1.5 rounded-xl border border-sky-200/25 bg-sky-400 px-3 py-2 text-xs font-semibold text-slate-950 shadow-lg shadow-sky-950/20 transition-all duration-200 hover:-translate-y-0.5 hover:bg-sky-300 active:translate-y-0"
+                >
+                  <Plus className="h-3.5 w-3.5" />
+                  New desktop
+                </button>
+              </header>
 
-                <p className="text-[11px] text-slate-400">
-                  Switch workspace without losing your place
-                </p>
+              <div className="flex min-h-0 flex-1 items-center justify-center overflow-auto px-3 pb-4 sm:px-8">
+                {windows.filter(appWindow => appWindow.desktopId === activeDesktopId).length > 0 ? (
+                  <div className="flex w-full max-w-6xl flex-wrap items-center justify-center gap-4">
+                    {windows
+                      .filter(appWindow => appWindow.desktopId === activeDesktopId)
+                      .map(appWindow => (
+                        <button
+                          key={appWindow.id}
+                          type="button"
+                          draggable
+                          onDragStart={event => {
+                            event.dataTransfer.setData('text/window-id', appWindow.id);
+                          }}
+                          onClick={() => {
+                            focusWindow(appWindow.id);
+                            setDesktopOverviewOpen(false);
+                          }}
+                          className="group w-full max-w-[360px] overflow-hidden rounded-xl border border-white/20 bg-slate-950/85 text-left shadow-[0_18px_55px_rgba(0,0,0,.42)] transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02] hover:border-sky-300/70 hover:shadow-[0_24px_65px_rgba(2,132,199,.2)]"
+                        >
+                          <div className="flex h-8 items-center gap-2 border-b border-white/10 bg-white/[0.06] px-3">
+                            <AppIcon name={appWindow.iconName} className="h-4 w-4 shrink-0 text-sky-300" />
+                            <span className="min-w-0 flex-1 truncate text-[11px] font-medium text-slate-100">{appWindow.title}</span>
+                            <span className="h-1.5 w-1.5 rounded-full bg-sky-400" />
+                          </div>
+                          <div className="relative flex h-36 gap-2 overflow-hidden bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950 p-3 sm:h-44">
+                            <div className="w-[24%] rounded-md border border-white/[0.07] bg-slate-800/80 p-2">
+                              <div className="mb-3 h-1.5 w-2/3 rounded bg-sky-400/55" />
+                              <div className="space-y-1.5">
+                                <div className="h-1 rounded bg-white/20" />
+                                <div className="h-1 w-4/5 rounded bg-white/10" />
+                                <div className="h-1 w-3/5 rounded bg-white/10" />
+                              </div>
+                            </div>
+                            <div className="relative flex-1 rounded-md border border-white/[0.07] bg-slate-800/55 p-3">
+                              <div className="mb-3 h-2 w-2/5 rounded bg-white/20" />
+                              <div className="space-y-2">
+                                <div className="h-1.5 rounded bg-white/10" />
+                                <div className="h-1.5 w-5/6 rounded bg-white/10" />
+                                <div className="h-1.5 w-3/4 rounded bg-white/10" />
+                              </div>
+                              <AppIcon name={appWindow.iconName} className="absolute bottom-3 right-3 h-7 w-7 text-sky-300/70" />
+                            </div>
+                          </div>
+                        </button>
+                      ))}
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center gap-2 text-center text-white/75">
+                    <LayoutDashboard className="h-8 w-8 opacity-80" />
+                    <p className="text-sm font-medium">No open windows on this desktop</p>
+                    <p className="text-xs text-white/55">Open an app or choose another desktop below.</p>
+                  </div>
+                )}
               </div>
 
-              <button
-                type="button"
-                onClick={() => {
-                  playQuickSettingSound();
-                  createDesktop();
-                }}
-                className="
-                  flex
-                  shrink-0
-                  items-center
-                  gap-1
-                  rounded-lg
-                  bg-sky-500
-                  px-2.5
-                  py-1.5
-                  text-xs
-                  font-semibold
-                  text-slate-950
-                  transition-all
-                  duration-200
-                  hover:bg-sky-400
-                  active:scale-95
-                "
-              >
-                <Plus className="h-3.5 w-3.5" />
-                <span>
-                  New desktop
-                </span>
-              </button>
-            </div>
-
-            <div
-              className="
-                grid
-                max-h-[65vh]
-                grid-cols-1
-                gap-3
-                overflow-y-auto
-                pr-1
-                sm:grid-cols-2
-              "
-            >
-              {desktops.map(
-                desktop => {
-                  const desktopWindows =
-                    windows.filter(
-                      window =>
-                        window.desktopId ===
-                        desktop.id,
-                    );
-
-                  return (
-                    <div
-                      key={
-                        desktop.id
-                      }
-                      onDragOver={event =>
-                        event.preventDefault()
-                      }
-                      onDrop={event => {
-                        event.preventDefault();
-
-                        const windowId =
-                          event.dataTransfer.getData(
-                            'text/window-id',
-                          );
-
-                        if (windowId) {
-                          moveWindowToDesktop(
-                            windowId,
-                            desktop.id,
-                          );
-                        }
-                      }}
-                      className={`
-                        group
-                        relative
-                        rounded-xl
-                        border
-                        p-2
-                        transition-all
-                        duration-200
-                        ${
-                          desktop.id ===
-                          activeDesktopId
-                            ? 'border-sky-400/70 bg-sky-400/10 shadow-lg shadow-sky-500/10'
-                            : 'border-white/10 bg-white/[0.04] hover:border-white/25 hover:bg-white/[0.06]'
-                        }
-                      `}
-                    >
-                      <button
-                        type="button"
-                        onClick={() =>
-                          switchDesktop(
-                            desktop.id,
-                          )
-                        }
-                        className="block w-full text-left"
+              <div className="shrink-0 border-t border-white/15 bg-slate-950/75 px-3 py-3 backdrop-blur-2xl sm:px-6">
+                <div className="mb-2 flex items-center justify-between">
+                  <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-300">Desktops</span>
+                  <span className="text-[10px] text-slate-400">Drag a window onto a desktop to move it</span>
+                </div>
+                <div className="flex gap-3 overflow-x-auto pb-1">
+                  {desktops.map(desktop => {
+                    const desktopWindows = windows.filter(appWindow => appWindow.desktopId === desktop.id);
+                    return (
+                      <div
+                        key={desktop.id}
+                        onDragOver={event => event.preventDefault()}
+                        onDrop={event => {
+                          event.preventDefault();
+                          const windowId = event.dataTransfer.getData('text/window-id');
+                          if (windowId) moveWindowToDesktop(windowId, desktop.id);
+                        }}
+                        className={`group relative w-[min(230px,68vw)] shrink-0 rounded-xl border p-2 transition-all duration-200 ${
+                          desktop.id === activeDesktopId
+                            ? 'border-sky-300/80 bg-sky-400/15 shadow-[0_0_24px_rgba(56,189,248,.12)]'
+                            : 'border-white/15 bg-white/[0.06] hover:border-white/35 hover:bg-white/10'
+                        }`}
                       >
-                        <div
-                          className={`
-                            relative
-                            h-20
-                            overflow-hidden
-                            rounded-lg
-                            bg-gradient-to-br
-                            ${desktop.accent}
-                            p-2
-                          `}
-                        >
-                          <div className="absolute inset-0 bg-slate-950/45" />
-
-                          <div className="relative grid grid-cols-3 gap-1">
-                            {desktopWindows
-                              .slice(
-                                0,
-                                3,
-                              )
-                              .map(
-                                win => (
-                                  <div
-                                    key={
-                                      win.id
-                                    }
-                                    draggable
-                                    onDragStart={event => {
-                                      event.stopPropagation();
-
-                                      event.dataTransfer.setData(
-                                        'text/window-id',
-                                        win.id,
-                                      );
-                                    }}
-                                    className="
-                                      h-12
-                                      cursor-grab
-                                      rounded
-                                      bg-slate-900/80
-                                      shadow-lg
-                                      active:cursor-grabbing
-                                    "
-                                    title={`Drag ${win.title} to another desktop`}
-                                  />
-                                ),
-                              )}
-
-                            {desktopWindows.length ===
-                              0 && (
-                              <span className="col-span-3 self-center pt-3 text-center text-[10px] text-white/70">
-                                Empty workspace
-                              </span>
-                            )}
-                          </div>
-                        </div>
-
-                        <div className="flex items-center justify-between px-1 pt-2">
-                          <span className="text-xs font-semibold text-slate-100">
-                            {desktop.name}
-                          </span>
-
-                          <span className="text-[10px] text-slate-400">
-                            {
-                              desktopWindows.length
-                            }{' '}
-                            {desktopWindows.length ===
-                            1
-                              ? 'window'
-                              : 'windows'}
-                          </span>
-                        </div>
-
-                        {desktopWindows.length >
-                          0 && (
-                          <div className="mt-2 flex flex-wrap gap-1 px-1">
-                            {desktopWindows.map(
-                              win => (
-                                <span
-                                  key={
-                                    win.id
-                                  }
-                                  className="
-                                    max-w-full
-                                    truncate
-                                    rounded
-                                    bg-white/10
-                                    px-1.5
-                                    py-0.5
-                                    text-[9px]
-                                    text-slate-300
-                                  "
-                                >
-                                  {
-                                    win.title
-                                  }
-                                </span>
-                              ),
-                            )}
-                          </div>
-                        )}
-                      </button>
-
-                      {desktops.length >
-                        1 && (
                         <button
                           type="button"
-                          aria-label={`Delete ${desktop.name}`}
                           onClick={() => {
-                            playQuickSettingSound();
-                            deleteDesktop(
-                              desktop.id,
-                            );
+                            switchDesktop(desktop.id);
+                            setDesktopOverviewOpen(false);
                           }}
-                          className="
-                            absolute
-                            right-2
-                            top-2
-                            rounded
-                            p-1
-                            text-slate-400
-                            opacity-0
-                            transition-all
-                            duration-200
-                            hover:bg-red-500/20
-                            hover:text-red-300
-                            group-hover:opacity-100
-                          "
+                          className={`relative flex h-[76px] w-full items-center justify-center overflow-hidden rounded-lg bg-gradient-to-br ${desktop.accent} transition-transform duration-200 group-hover:scale-[1.015]`}
                         >
-                          <Trash2 className="h-3.5 w-3.5" />
+                          <span className="absolute inset-0 bg-slate-950/40" />
+                          {desktopWindows.length ? (
+                            <span className="relative flex max-w-[90%] items-center gap-2 rounded-md border border-white/20 bg-slate-950/80 px-3 py-2 shadow-xl">
+                              <AppIcon name={desktopWindows[0].iconName} className="h-4 w-4 shrink-0 text-sky-300" />
+                              <span className="max-w-[130px] truncate text-[10px] text-white">{desktopWindows[0].title}</span>
+                              {desktopWindows.length > 1 && <span className="text-[9px] text-slate-400">+{desktopWindows.length - 1}</span>}
+                            </span>
+                          ) : (
+                            <span className="relative text-[10px] text-white/70">Empty desktop</span>
+                          )}
                         </button>
-                      )}
-                    </div>
-                  );
-                },
-              )}
-            </div>
-          </div>
+                        <div className="flex items-center justify-between px-1 pt-2">
+                          <span className="text-[11px] font-semibold text-white">{desktop.name}</span>
+                          <span className="text-[9px] text-slate-400">{desktopWindows.length} {desktopWindows.length === 1 ? 'window' : 'windows'}</span>
+                        </div>
+                        {desktops.length > 1 && (
+                          <button
+                            type="button"
+                            aria-label={`Delete ${desktop.name}`}
+                            onClick={() => {
+                              playQuickSettingSound();
+                              deleteDesktop(desktop.id);
+                            }}
+                            className="absolute right-2 top-2 rounded-md bg-black/35 p-1 text-white/75 opacity-0 transition hover:bg-red-500/80 hover:text-white group-hover:opacity-100 focus:opacity-100"
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </button>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </section>
+          </div>,
+          document.body,
+          )
         )}
 
         {/* =====================================================
@@ -4232,6 +4246,16 @@ export const Taskbar: React.FC = () => {
 
       <style>
         {`
+          @keyframes desktopOverviewFade {
+            from {
+              opacity: 0;
+            }
+
+            to {
+              opacity: 1;
+            }
+          }
+
           @keyframes quickSettingsIn {
             0% {
               opacity: 0;
@@ -4414,11 +4438,6 @@ export const Taskbar: React.FC = () => {
              MOBILE
           --------------------------------------------- */
 
-          @media (max-width: 640px) {
-            .desktop-overview {
-              bottom: 58px;
-            }
-          }
         `}
       </style>
     </>

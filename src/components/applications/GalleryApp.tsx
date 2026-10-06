@@ -120,8 +120,7 @@ const PERSONAL_GALLERY_ITEMS: GalleryItem[] = [
     id: 'me-1',
     title: 'Abhishek Kuntare',
     category: 'Me',
-    imageUrl:
-      'https://media.licdn.com/dms/image/v2/D4D03AQGviWu-FSf4LQ/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1697363364918?e=1791417600&v=beta&t=Y6DI4uOusT8jMIbvz292WjarZoNq8AssVro3_l01icQ',
+    imageUrl: '/abhishek-profile-portrait.png',
     description: 'Personal profile portrait.',
     quote:
       '“Keep learning, keep building, and let the work speak for itself.”',

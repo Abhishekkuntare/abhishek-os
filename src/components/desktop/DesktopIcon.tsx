@@ -800,7 +800,9 @@ export const DesktopIcon: React.FC<
         className={`
           mt-1
 
+          w-full
           max-w-full
+          break-words
 
           px-1
           py-[2px]

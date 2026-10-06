@@ -603,16 +603,6 @@ export const SettingsApp: React.FC = () => {
     activateMode,
   } = useOS();
 
-  useEffect(() => {
-    if (settings.fontFamily === 'Plus Jakarta Sans') return;
-    const fontLink = document.createElement('link');
-    fontLink.rel = 'stylesheet';
-    fontLink.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(settings.fontFamily).replace(/%20/g, '+')}&display=swap`;
-    fontLink.dataset.osFont = 'true';
-    document.head.appendChild(fontLink);
-    return () => fontLink.remove();
-  }, [settings.fontFamily]);
-
   const [activePage, setActivePage] =
     useState<SettingsPage>('home');
 
