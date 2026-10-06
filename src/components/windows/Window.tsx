@@ -32,7 +32,18 @@ export const Window: React.FC<WindowProps> = ({ win, children }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
   const [isSnapMenuOpen, setIsSnapMenuOpen] = useState(false);
+  const [isMobileViewport, setIsMobileViewport] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches,
+  );
   const lastPointerRef = useRef({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 768px)');
+    const updateViewport = () => setIsMobileViewport(mediaQuery.matches);
+    updateViewport();
+    mediaQuery.addEventListener('change', updateViewport);
+    return () => mediaQuery.removeEventListener('change', updateViewport);
+  }, []);
 
   const dragStartRef = useRef<{ mouseX: number; mouseY: number; initialX: number; initialY: number }>({
     mouseX: 0,
@@ -50,7 +61,7 @@ export const Window: React.FC<WindowProps> = ({ win, children }) => {
 
   // Dragging Title Bar
   const handleTitleMouseDown = (e: React.MouseEvent) => {
-    if (isMaximized) return;
+    if (isMaximized || isMobileViewport) return;
     if ((e.target as HTMLElement).closest('button')) return;
     e.preventDefault();
     focusWindow(win.id);
@@ -65,7 +76,7 @@ export const Window: React.FC<WindowProps> = ({ win, children }) => {
 
   // Touch drag for tablets
   const handleTitleTouchStart = (e: React.TouchEvent) => {
-    if (isMaximized) return;
+    if (isMaximized || isMobileViewport) return;
     if ((e.target as HTMLElement).closest('button')) return;
     const touch = e.touches[0];
     focusWindow(win.id);
@@ -211,14 +222,16 @@ export const Window: React.FC<WindowProps> = ({ win, children }) => {
           ? 'none'
           : 'top 0.28s cubic-bezier(0.16, 1, 0.3, 1), left 0.28s cubic-bezier(0.16, 1, 0.3, 1), width 0.28s cubic-bezier(0.16, 1, 0.3, 1), height 0.28s cubic-bezier(0.16, 1, 0.3, 1), border-radius 0.25s ease',
         willChange: isDragging || isResizing ? 'auto' : 'transform, opacity',
-        ...(isMaximized
+        ...(isMaximized || isMobileViewport
           ? {
               position: 'fixed',
-              top: 0,
-              left: 0,
-              width: '100vw',
-              height: 'calc(100vh - 48px)', // Leave room for bottom taskbar
-              borderRadius: 0,
+              top: isMaximized ? 0 : 6,
+              left: isMaximized ? 0 : 6,
+              width: isMaximized ? '100vw' : 'calc(100vw - 12px)',
+              height: isMaximized
+                ? isMobileViewport ? 'calc(100dvh - 52px)' : 'calc(100dvh - 54px)'
+                : 'calc(100dvh - 64px)',
+              borderRadius: isMaximized ? 0 : 16,
             }
           : {
               position: 'fixed',
@@ -485,7 +498,7 @@ export const Window: React.FC<WindowProps> = ({ win, children }) => {
       </div>
 
       {/* Window Body */}
-      <div className="flex-1 overflow-hidden relative flex flex-col bg-slate-950/70 text-slate-100">
+      <div className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-slate-950/70 text-slate-100">
         {children}
       </div>
 

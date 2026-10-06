@@ -883,6 +883,9 @@ export const Taskbar: React.FC = () => {
       }
     };
 
+  const isSoundMuted =
+    !settings.soundsEnabled || settings.volume === 0;
+
   /* =======================================================
      WIFI
   ======================================================= */
@@ -1788,7 +1791,7 @@ export const Taskbar: React.FC = () => {
                 LEFT
             ================================================= */}
 
-            <div className="flex shrink-0 items-center gap-1 sm:gap-2">
+            <div className="taskbar-status-left flex shrink-0 items-center gap-1 sm:gap-2">
               {/* HOME */}
 
               <button
@@ -1923,6 +1926,7 @@ export const Taskbar: React.FC = () => {
 
             <div
               className="
+                taskbar-dock
                 flex
                 shrink-0
                 items-center
@@ -2223,7 +2227,7 @@ export const Taskbar: React.FC = () => {
                 RIGHT SIDE
             ================================================= */}
 
-            <div className="flex shrink-0 items-center gap-1">
+            <div className="taskbar-status-right flex shrink-0 items-center gap-1">
               {/* KEYBOARD */}
 
               <button
@@ -2344,8 +2348,7 @@ export const Taskbar: React.FC = () => {
                   `}
                 />
 
-                {settings.volume >
-                0 ? (
+                {!isSoundMuted ? (
                   <Volume2 className="h-3.5 w-3.5" />
                 ) : (
                   <VolumeX className="h-3.5 w-3.5 text-slate-500" />
@@ -3700,7 +3703,7 @@ export const Taskbar: React.FC = () => {
 <div className="space-y-2">
   <div className="flex items-center justify-between">
     <span className="flex items-center gap-2 text-[11px] font-semibold text-slate-300">
-      {settings.volume > 0 ? (
+      {!isSoundMuted ? (
         <Volume2 className="h-3.5 w-3.5 text-sky-400" />
       ) : (
         <VolumeX className="h-3.5 w-3.5 text-slate-500" />
@@ -3719,23 +3722,22 @@ export const Taskbar: React.FC = () => {
     <button
       type="button"
       aria-label={
-        settings.volume > 0
+        !isSoundMuted
           ? "Mute volume"
           : "Unmute volume"
       }
       title={
-        settings.volume > 0
-          ? "Mute"
-          : "Unmute"
+        isSoundMuted ? "Unmute" : "Mute"
       }
+      aria-pressed={isSoundMuted}
       onClick={() => {
         playQuickSettingSound();
 
         updateSettings({
-          volume:
-            settings.volume > 0
-              ? 0
-              : 70,
+          volume: isSoundMuted
+          ? settings.volume || 70
+          : 0,
+          soundsEnabled: isSoundMuted ? true : settings.soundsEnabled,
         });
       }}
       className="
@@ -3759,7 +3761,7 @@ export const Taskbar: React.FC = () => {
         active:scale-90
       "
     >
-      {settings.volume > 0 ? (
+      {!isSoundMuted ? (
         <Volume2 className="h-4 w-4 transition-transform duration-200 group-hover:scale-110" />
       ) : (
         <VolumeX className="h-4 w-4 text-slate-500 transition-transform duration-200 group-hover:scale-110" />
@@ -3775,8 +3777,10 @@ export const Taskbar: React.FC = () => {
         step={1}
         value={settings.volume}
         onChange={(event) => {
+          const volume = Number(event.target.value);
           updateSettings({
-            volume: Number(event.target.value),
+            volume,
+            soundsEnabled: settings.soundsEnabled,
           });
         }}
         aria-label="Master volume"
@@ -3999,8 +4003,8 @@ export const Taskbar: React.FC = () => {
                       playQuickSettingSound();
 
                       updateSettings({
-                        soundEffects:
-                          !settings.soundEffects,
+                        soundsEnabled:
+                          !settings.soundsEnabled,
                       });
                     }}
                     className={`
@@ -4017,14 +4021,14 @@ export const Taskbar: React.FC = () => {
                       duration-200
                       active:scale-[0.98]
                       ${
-                        settings.soundEffects
+                        settings.soundsEnabled
                           ? 'border-sky-400/40 bg-sky-500/10'
                           : 'border-white/[0.07] bg-white/[0.035] hover:bg-white/[0.06]'
                       }
                     `}
                   >
                     <span className="flex items-center gap-2">
-                      {settings.soundEffects ? (
+                      {settings.soundsEnabled ? (
                         <Volume2 className="h-3.5 w-3.5 text-sky-400" />
                       ) : (
                         <VolumeX className="h-3.5 w-3.5 text-slate-500" />
@@ -4041,7 +4045,7 @@ export const Taskbar: React.FC = () => {
                         w-1.5
                         rounded-full
                         ${
-                          settings.soundEffects
+                          settings.soundsEnabled
                             ? 'bg-emerald-400'
                             : 'bg-slate-600'
                         }

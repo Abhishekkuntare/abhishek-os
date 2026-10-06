@@ -26,10 +26,14 @@ export function saveTaskbarApps(apps: TaskbarApp[]): void {
 export const DEFAULT_SETTINGS: SystemSettings = {
   theme: 'dark',
   accentColor: '#38bdf8', // Windows Sky Cyan
-  wallpaperId: 'wall-deep-space',
+  themePreset: 'aurora',
+  fontFamily: 'Plus Jakarta Sans',
+  cursorColor: '#e2e8f0',
+  wallpaperId: 'wall-alpine-valley',
   animationsEnabled: true,
   glassBlurEnabled: true,
   soundsEnabled: true,
+  volume: 70,
   taskbarPosition: 'center',
   performanceMode: 'quality',
   brightness: 100,
@@ -215,6 +219,7 @@ export function getStoredSettings(): SystemSettings {
     ...DEFAULT_SETTINGS,
     ...stored,
     brightness: Math.min(100, Math.max(30, Number(stored.brightness ?? DEFAULT_SETTINGS.brightness))),
+    volume: Math.min(100, Math.max(0, Number(stored.volume ?? DEFAULT_SETTINGS.volume))),
     // The light palette was retired; normalize settings saved by older builds.
     theme: 'dark',
   };

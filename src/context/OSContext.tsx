@@ -348,21 +348,22 @@ export const OSProvider: React.FC<{ children: React.ReactNode }> = ({ children }
 const [settings, setSettings] = useState<SystemSettings>(() => {
   const storedSettings = getStoredSettings();
 
-  const DEFAULT_WALLPAPER_ID = 'wall-bus-night';
-  const WALLPAPER_DEFAULT_VERSION = '2';
+  const DEFAULT_WALLPAPER_ID = 'wall-alpine-valley';
+  const WALLPAPER_DEFAULT_VERSION = '3';
 
   const savedWallpaperDefaultVersion = localStorage.getItem(
     'abhishek-wallpaper-default-version'
   );
 
-  // One-time migration:
-  // Make Bus Night the default for existing installations.
+  // One-time migration to the supplied wallpaper collection.
   // After this migration, the user's manually selected wallpaper
   // will continue to persist normally.
   if (savedWallpaperDefaultVersion !== WALLPAPER_DEFAULT_VERSION) {
     const migratedSettings = {
       ...storedSettings,
-      wallpaperId: DEFAULT_WALLPAPER_ID,
+      wallpaperId: storedSettings.wallpaperId === 'wall-custom'
+        ? 'wall-custom'
+        : DEFAULT_WALLPAPER_ID,
     };
 
     localStorage.setItem(
@@ -411,10 +412,17 @@ const [customWallpaperType, setCustomWallpaperType] = useState<'image' | 'video'
   useEffect(() => {
     const root = document.documentElement;
     root.dataset.theme = settings.theme;
+    root.dataset.themePreset = settings.themePreset;
     root.style.setProperty('--os-accent', settings.accentColor);
+    root.style.setProperty('--os-font-family', `"${settings.fontFamily}"`);
+    const arrowCursor = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M5 2.5 19 14l-6.5 1.4L9 22 5 2.5Z" fill="${settings.cursorColor}" stroke="#0b1020" stroke-width="1.5" stroke-linejoin="round"/></svg>`;
+    const handCursor = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M8 11V5a2 2 0 0 1 4 0v5-7a2 2 0 0 1 4 0v8-5a2 2 0 0 1 4 0v8c0 5-3 8-8 8-3 0-5-2-7-5l-2-3a2 2 0 0 1 3-2l2 2Z" fill="${settings.cursorColor}" stroke="#0b1020" stroke-width="1.5" stroke-linejoin="round"/></svg>`;
+    root.style.setProperty('--os-cursor', `url("data:image/svg+xml,${encodeURIComponent(arrowCursor)}") 4 3, auto`);
+    root.style.setProperty('--os-pointer-cursor', `url("data:image/svg+xml,${encodeURIComponent(handCursor)}") 8 3, pointer`);
     root.style.setProperty('--os-brightness', `${settings.brightness}%`);
     root.style.colorScheme = settings.theme;
-  }, [settings.theme, settings.accentColor, settings.brightness]);
+    root.classList.toggle('os-animations-disabled', !settings.animationsEnabled || settings.performanceMode === 'performance');
+  }, [settings.theme, settings.themePreset, settings.accentColor, settings.fontFamily, settings.cursorColor, settings.brightness, settings.animationsEnabled, settings.performanceMode]);
 
   // Data states
   const [projects, setProjects] = useState<Project[]>(INITIAL_PROJECTS);
@@ -442,17 +450,18 @@ const [customWallpaperType, setCustomWallpaperType] = useState<'image' | 'video'
 
   // Play subtle synthetic system sound via Web Audio API without external files
   const playSystemSound = useCallback((type: 'click' | 'open' | 'notify' | 'shutdown' | 'boot') => {
-    if (!settings.soundsEnabled) return;
+    if (!settings.soundsEnabled || settings.volume === 0) return;
     try {
       const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
       if (!AudioContext) return;
       const ctx = new AudioContext();
+      const volumeMultiplier = settings.volume / 100;
 
       if (type === 'click') {
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.frequency.setValueAtTime(800, ctx.currentTime);
-        gain.gain.setValueAtTime(0.04, ctx.currentTime);
+        gain.gain.setValueAtTime(0.04 * volumeMultiplier, ctx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.04);
         osc.connect(gain);
         gain.connect(ctx.destination);
@@ -463,7 +472,7 @@ const [customWallpaperType, setCustomWallpaperType] = useState<'image' | 'video'
         const gain = ctx.createGain();
         osc.frequency.setValueAtTime(520, ctx.currentTime);
         osc.frequency.exponentialRampToValueAtTime(780, ctx.currentTime + 0.08);
-        gain.gain.setValueAtTime(0.05, ctx.currentTime);
+        gain.gain.setValueAtTime(0.05 * volumeMultiplier, ctx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.1);
         osc.connect(gain);
         gain.connect(ctx.destination);
@@ -474,7 +483,7 @@ const [customWallpaperType, setCustomWallpaperType] = useState<'image' | 'video'
         const gain = ctx.createGain();
         osc.frequency.setValueAtTime(659.25, ctx.currentTime); // E5
         osc.frequency.setValueAtTime(880, ctx.currentTime + 0.08); // A5
-        gain.gain.setValueAtTime(0.05, ctx.currentTime);
+        gain.gain.setValueAtTime(0.05 * volumeMultiplier, ctx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.25);
         osc.connect(gain);
         gain.connect(ctx.destination);
@@ -484,7 +493,7 @@ const [customWallpaperType, setCustomWallpaperType] = useState<'image' | 'video'
     } catch {
       // Audio context might be restricted before user interaction; ignore silently
     }
-  }, [settings.soundsEnabled]);
+  }, [settings.soundsEnabled, settings.volume]);
 
   // Load initial asynchronous data
   useEffect(() => {

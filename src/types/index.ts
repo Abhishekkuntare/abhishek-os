@@ -209,6 +209,7 @@ export interface Wallpaper {
   style: string;
   type: string;
   description: string;
+  imageUrl?: string;
   videoUrl?: string;
 }
 
@@ -226,10 +227,14 @@ export interface DesktopIconItem {
 export interface SystemSettings {
   theme: 'dark';
   accentColor: string;
+  themePreset: string;
+  fontFamily: string;
+  cursorColor: string;
   wallpaperId: string;
   animationsEnabled: boolean;
   glassBlurEnabled: boolean;
   soundsEnabled: boolean;
+  volume: number;
   taskbarPosition: 'center' | 'left';
   performanceMode: 'quality' | 'balanced' | 'performance';
   brightness: number; // 30 - 100

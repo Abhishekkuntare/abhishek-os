@@ -75,10 +75,20 @@ export const DesktopIcon: React.FC<
     openApp,
     playSystemSound,
     openContextMenu,
+    pinTaskbarApp,
   } = useOS();
 
   const isSelected =
     selectedIconId === item.id;
+
+  const iconColors = [
+    '#78c7ff', '#9ca8ff', '#d5a3ff', '#ff94c2', '#ff9f9f',
+    '#ffbd86', '#f3d27a', '#b9df82', '#82dbb5', '#78ddd9',
+  ];
+  const iconColorIndex = Array.from(item.appId).reduce(
+    (hash, character) => (hash * 31 + character.charCodeAt(0)) >>> 0,
+    0,
+  ) % iconColors.length;
 
   /* =======================================================
      TOUCH / POINTER REFS
@@ -327,6 +337,21 @@ export const DesktopIcon: React.FC<
     if (
       hasMovedRef.current
     ) {
+      const dropTarget = document.elementFromPoint(
+        e.clientX,
+        e.clientY
+      );
+
+      if (
+        dropTarget?.closest("#windows-taskbar")
+      ) {
+        pinTaskbarApp({
+          appId: item.appId,
+          title: item.title,
+          icon: item.iconName,
+        });
+      }
+
       onDragStateChange?.(
         null
       );
@@ -622,6 +647,7 @@ export const DesktopIcon: React.FC<
         focus-visible:ring-sky-400
       `}
       style={{
+        '--icon-accent': iconColors[iconColorIndex],
         /*
          * Width/height are controlled here rather
          * than through the old flex grid.
@@ -655,7 +681,7 @@ export const DesktopIcon: React.FC<
          */
         WebkitUserDrag:
           "none" as any,
-      }}
+      } as React.CSSProperties}
       onPointerDown={
         handlePointerDown
       }

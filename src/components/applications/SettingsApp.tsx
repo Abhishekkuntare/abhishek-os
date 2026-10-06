@@ -189,6 +189,52 @@ const ACCENT_COLORS = [
   },
 ];
 
+const THEME_PRESETS = [
+  { id: 'aurora', name: 'Aurora', color: '#38bdf8', gradient: 'linear-gradient(135deg,#0f172a,#075985)' },
+  { id: 'midnight', name: 'Midnight', color: '#818cf8', gradient: 'linear-gradient(135deg,#111827,#312e81)' },
+  { id: 'ocean', name: 'Ocean', color: '#06b6d4', gradient: 'linear-gradient(135deg,#083344,#155e75)' },
+  { id: 'amethyst', name: 'Amethyst', color: '#a855f7', gradient: 'linear-gradient(135deg,#1e1b4b,#6b21a8)' },
+  { id: 'rose', name: 'Rose', color: '#f472b6', gradient: 'linear-gradient(135deg,#3b1029,#9d174d)' },
+  { id: 'ember', name: 'Ember', color: '#fb7185', gradient: 'linear-gradient(135deg,#3f1118,#9f1239)' },
+  { id: 'sunset', name: 'Sunset', color: '#fb923c', gradient: 'linear-gradient(135deg,#431407,#c2410c)' },
+  { id: 'amber', name: 'Amber', color: '#fbbf24', gradient: 'linear-gradient(135deg,#422006,#a16207)' },
+  { id: 'lime', name: 'Lime', color: '#a3e635', gradient: 'linear-gradient(135deg,#1a2e05,#4d7c0f)' },
+  { id: 'emerald', name: 'Emerald', color: '#34d399', gradient: 'linear-gradient(135deg,#022c22,#047857)' },
+  { id: 'jade', name: 'Jade', color: '#2dd4bf', gradient: 'linear-gradient(135deg,#042f2e,#0f766e)' },
+  { id: 'glacier', name: 'Glacier', color: '#67e8f9', gradient: 'linear-gradient(135deg,#083344,#164e63)' },
+  { id: 'cobalt', name: 'Cobalt', color: '#3b82f6', gradient: 'linear-gradient(135deg,#111827,#1e40af)' },
+  { id: 'indigo', name: 'Indigo', color: '#6366f1', gradient: 'linear-gradient(135deg,#1e1b4b,#4338ca)' },
+  { id: 'orchid', name: 'Orchid', color: '#c084fc', gradient: 'linear-gradient(135deg,#2e1065,#7e22ce)' },
+  { id: 'crimson', name: 'Crimson', color: '#ef4444', gradient: 'linear-gradient(135deg,#450a0a,#991b1b)' },
+  { id: 'coral', name: 'Coral', color: '#fb7185', gradient: 'linear-gradient(135deg,#431407,#be123c)' },
+  { id: 'mono', name: 'Monochrome', color: '#e2e8f0', gradient: 'linear-gradient(135deg,#0f172a,#475569)' },
+  { id: 'copper', name: 'Copper', color: '#d97706', gradient: 'linear-gradient(135deg,#292016,#92400e)' },
+  { id: 'neon', name: 'Neon', color: '#e879f9', gradient: 'linear-gradient(135deg,#1e1035,#86198f)' },
+];
+
+const FONT_FAMILIES = [
+  'Plus Jakarta Sans', 'Inter', 'Roboto', 'Open Sans', 'Lato', 'Montserrat', 'Poppins', 'Nunito',
+  'Nunito Sans', 'DM Sans', 'Manrope', 'Outfit', 'Space Grotesk', 'Urbanist', 'Sora', 'Work Sans',
+  'Source Sans 3', 'Rubik', 'Mulish', 'Raleway', 'Karla', 'Barlow', 'Figtree', 'Lexend', 'IBM Plex Sans',
+  'Roboto Condensed', 'Oswald', 'Archivo', 'Asap', 'Cabin', 'Exo 2', 'Josefin Sans', 'Quicksand',
+  'Red Hat Display', 'Public Sans', 'Titillium Web', 'Ubuntu', 'Oxygen', 'PT Sans', 'Inconsolata',
+  'JetBrains Mono', 'Fira Code', 'Source Code Pro', 'Space Mono', 'Merriweather', 'Playfair Display',
+  'Lora', 'DM Serif Display', 'Bitter', 'Caveat',
+];
+
+const CURSOR_COLORS = [
+  { name: 'Cloud', hex: '#e2e8f0' },
+  { name: 'Sky', hex: '#38bdf8' },
+  { name: 'Blue', hex: '#3b82f6' },
+  { name: 'Violet', hex: '#a855f7' },
+  { name: 'Pink', hex: '#f472b6' },
+  { name: 'Red', hex: '#ef4444' },
+  { name: 'Orange', hex: '#fb923c' },
+  { name: 'Yellow', hex: '#facc15' },
+  { name: 'Lime', hex: '#a3e635' },
+  { name: 'Mint', hex: '#34d399' },
+];
+
 const NAV_ITEMS: NavItem[] = [
   {
     id: 'home',
@@ -557,6 +603,16 @@ export const SettingsApp: React.FC = () => {
     activateMode,
   } = useOS();
 
+  useEffect(() => {
+    if (settings.fontFamily === 'Plus Jakarta Sans') return;
+    const fontLink = document.createElement('link');
+    fontLink.rel = 'stylesheet';
+    fontLink.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(settings.fontFamily).replace(/%20/g, '+')}&display=swap`;
+    fontLink.dataset.osFont = 'true';
+    document.head.appendChild(fontLink);
+    return () => fontLink.remove();
+  }, [settings.fontFamily]);
+
   const [activePage, setActivePage] =
     useState<SettingsPage>('home');
 
@@ -790,6 +846,7 @@ export const SettingsApp: React.FC = () => {
   ) => {
     updateSettings({
       accentColor: hex,
+      themePreset: 'custom',
     });
 
     try {
@@ -807,6 +864,9 @@ export const SettingsApp: React.FC = () => {
       updateSettings({
         wallpaperId: wallpapers[0].id,
         accentColor: '#38bdf8',
+        themePreset: 'aurora',
+        fontFamily: 'Plus Jakarta Sans',
+        cursorColor: '#e2e8f0',
         animationsEnabled: true,
         glassBlurEnabled: true,
         soundsEnabled: true,
@@ -814,6 +874,9 @@ export const SettingsApp: React.FC = () => {
     } else {
       updateSettings({
         accentColor: '#38bdf8',
+        themePreset: 'aurora',
+        fontFamily: 'Plus Jakarta Sans',
+        cursorColor: '#e2e8f0',
         animationsEnabled: true,
         glassBlurEnabled: true,
         soundsEnabled: true,
@@ -2275,8 +2338,10 @@ export const SettingsApp: React.FC = () => {
               className="absolute inset-0"
               style={{
                 background:
-                  currentWallpaper?.style ||
-                  'linear-gradient(135deg,#111827,#020617)',
+                  currentWallpaper?.imageUrl
+                    ? `center / cover no-repeat url("${currentWallpaper.imageUrl}")`
+                    : currentWallpaper?.style ||
+                      'linear-gradient(135deg,#111827,#020617)',
               }}
             />
 
@@ -2352,15 +2417,46 @@ export const SettingsApp: React.FC = () => {
 
           </Card>
 
+        </div>
 
-          {/* WALLPAPER PREVIEWS */}
+        {/* BACKGROUND */}
 
-          <div className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h3 className="text-sm font-semibold text-slate-100">System wallpaper</h3>
-              <p className="mt-1 text-xs text-slate-400">Choose an image or video from your device and apply it to the desktop immediately.</p>
+        <Card
+          id="background-settings"
+          className="p-5"
+        >
+
+          <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-3">
+
+              <div
+                className="
+                  flex
+                  h-10
+                  w-10
+                  items-center
+                  justify-center
+                  rounded-xl
+                  bg-white/[0.05]
+                "
+              >
+                <ImageIcon className="w-5 h-5 text-sky-400" />
+              </div>
+
+              <div>
+
+                <h2 className="text-sm font-semibold text-white">
+                  Wallpapers
+                </h2>
+
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Choose one of the 20 supplied images or add your own.
+                </p>
+
+              </div>
             </div>
-            <label className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-sky-400 px-4 py-2.5 text-xs font-semibold text-slate-950 transition hover:bg-sky-300">
+
+            <label className="inline-flex cursor-pointer items-center justify-center gap-2 self-start rounded-xl bg-sky-400 px-4 py-2.5 text-xs font-semibold text-slate-950 transition hover:bg-sky-300 sm:self-auto">
               <Upload className="h-4 w-4" />
               Choose image or video
               <input
@@ -2393,127 +2489,6 @@ export const SettingsApp: React.FC = () => {
                 }}
               />
             </label>
-          </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-
-            {wallpapers
-              .slice(0, 6)
-              .map((wallpaper) => {
-
-                const selected =
-                  wallpaper.id ===
-                  settings.wallpaperId;
-
-                return (
-                  <button
-                    key={wallpaper.id}
-                    type="button"
-                    onClick={() =>
-                      changeWallpaper(
-                        wallpaper.id
-                      )
-                    }
-                    className={`
-                      relative
-                      aspect-[1.35/1]
-                      rounded-2xl
-                      overflow-hidden
-                      border
-                      group
-                      transition-all
-                      ${
-                        selected
-                          ? 'border-sky-400 ring-2 ring-sky-400/20'
-                          : 'border-white/10 hover:border-white/25'
-                      }
-                    `}
-                  >
-
-                    <div
-                      className="
-                        absolute
-                        inset-0
-                        transition-transform
-                        duration-500
-                        group-hover:scale-110
-                      "
-                      style={{
-                        background:
-                          wallpaper.style,
-                      }}
-                    />
-
-                    <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors" />
-
-
-                    {selected && (
-                      <div className="absolute right-2 bottom-2">
-
-                        <div
-                          className="
-                            w-7
-                            h-7
-                            rounded-lg
-                            flex
-                            items-center
-                            justify-center
-                            shadow-xl
-                          "
-                          style={{
-                            background:
-                              accent,
-                          }}
-                        >
-                          <Check className="w-4 h-4 text-white stroke-[3]" />
-                        </div>
-
-                      </div>
-                    )}
-
-                  </button>
-                );
-              })}
-
-          </div>
-
-        </div>
-
-
-        {/* BACKGROUND */}
-
-        <Card
-          id="background-settings"
-          className="p-5"
-        >
-
-          <div className="flex items-center gap-3 mb-5">
-
-            <div
-              className="
-                w-10
-                h-10
-                rounded-xl
-                bg-white/[0.05]
-                flex
-                items-center
-                justify-center
-              "
-            >
-              <ImageIcon className="w-5 h-5 text-sky-400" />
-            </div>
-
-            <div>
-
-              <h2 className="text-sm font-semibold text-white">
-                Background
-              </h2>
-
-              <p className="text-xs text-slate-500 mt-0.5">
-                Choose a desktop background for your workstation.
-              </p>
-
-            </div>
 
           </div>
 
@@ -2536,6 +2511,8 @@ export const SettingsApp: React.FC = () => {
                         wallpaper.id
                       )
                     }
+                    aria-label={`Set ${wallpaper.name} as wallpaper`}
+                    aria-pressed={selected}
                     className={`
                       relative
                       overflow-hidden
@@ -2554,7 +2531,9 @@ export const SettingsApp: React.FC = () => {
 
                     <div
                       className="
-                        h-24
+                        relative
+                        aspect-[16/9]
+                        overflow-hidden
                         transition-transform
                         duration-500
                         group-hover:scale-105
@@ -2563,7 +2542,17 @@ export const SettingsApp: React.FC = () => {
                         background:
                           wallpaper.style,
                       }}
-                    />
+                    >
+                      {wallpaper.imageUrl && (
+                        <img
+                          src={wallpaper.imageUrl}
+                          alt=""
+                          loading="lazy"
+                          decoding="async"
+                          className="absolute inset-0 h-full w-full object-cover"
+                        />
+                      )}
+                    </div>
 
                     <div
                       className="
@@ -2600,14 +2589,94 @@ export const SettingsApp: React.FC = () => {
         <Card className="p-5">
           <div className="flex items-center justify-between gap-4">
             <div>
-              <h2 className="text-sm font-semibold text-white">App theme</h2>
+              <h2 className="text-sm font-semibold text-white">20 signature themes</h2>
               <p className="text-xs text-slate-500 mt-1">
-                Apply the color mode across the desktop and every open window.
+                Choose a coordinated accent for your desktop, windows and controls.
               </p>
             </div>
-            <span className="rounded-lg border border-sky-400 bg-sky-500/20 px-3 py-2 text-xs font-semibold text-sky-300">
-              Dark
+            <span className="rounded-lg border border-white/10 bg-white/[0.04] px-3 py-2 text-xs font-semibold text-slate-300">
+              {THEME_PRESETS.find(theme => theme.id === settings.themePreset)?.name || 'Custom'}
             </span>
+          </div>
+          <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
+            {THEME_PRESETS.map(theme => {
+              const selected = settings.themePreset === theme.id;
+              return (
+                <button
+                  key={theme.id}
+                  type="button"
+                  aria-pressed={selected}
+                  onClick={() => updateSettings({ themePreset: theme.id, accentColor: theme.color })}
+                  className={`flex min-w-0 items-center gap-2 rounded-xl border p-2 text-left transition duration-200 hover:-translate-y-0.5 hover:border-white/25 ${selected ? 'border-white/50 bg-white/[0.08] ring-1 ring-white/20' : 'border-white/10 bg-white/[0.025]'}`}
+                >
+                  <span className="h-8 w-8 shrink-0 rounded-lg border border-white/15 shadow-inner" style={{ background: theme.gradient }} />
+                  <span className="min-w-0 truncate text-[11px] font-medium text-slate-200">{theme.name}</span>
+                  {selected && <Check className="ml-auto h-3.5 w-3.5 shrink-0" style={{ color: theme.color }} />}
+                </button>
+              );
+            })}
+          </div>
+        </Card>
+
+        <Card className="p-5">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h2 className="text-sm font-semibold text-white">Typography</h2>
+              <p className="mt-1 text-xs text-slate-500">Pick from 50 typefaces and apply your choice everywhere.</p>
+            </div>
+            <label className="flex w-full items-center gap-3 rounded-xl border border-white/10 bg-black/20 px-3 py-2 sm:max-w-xs">
+              <span className="shrink-0 text-xs text-slate-400">Font</span>
+              <select
+                aria-label="Website font"
+                value={settings.fontFamily}
+                onChange={event => updateSettings({ fontFamily: event.target.value })}
+                className="min-w-0 flex-1 bg-transparent text-sm text-slate-100 outline-none"
+              >
+                {FONT_FAMILIES.map(font => <option key={font} value={font} className="bg-slate-900">{font}</option>)}
+              </select>
+            </label>
+          </div>
+          <div className="mt-4 rounded-xl border border-white/5 bg-white/[0.025] p-4">
+            <p className="text-lg text-slate-100" style={{ fontFamily: `"${settings.fontFamily}", system-ui, sans-serif` }}>Your workspace, your style.</p>
+            <p className="mt-1 text-xs text-slate-400" style={{ fontFamily: `"${settings.fontFamily}", system-ui, sans-serif` }}>A live preview of {settings.fontFamily} across the entire experience.</p>
+          </div>
+        </Card>
+
+        <Card className="p-5">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h2 className="text-sm font-semibold text-white">Cursor color</h2>
+              <p className="mt-1 text-xs text-slate-500">Give your pointer a matching color. The change applies instantly.</p>
+            </div>
+            <label className="flex items-center gap-3 rounded-xl border border-white/10 bg-black/20 px-3 py-2">
+              <span className="text-xs text-slate-400">Custom</span>
+              <input
+                aria-label="Custom cursor color"
+                type="color"
+                value={settings.cursorColor}
+                onChange={event => updateSettings({ cursorColor: event.target.value })}
+                className="h-8 w-10 cursor-pointer rounded-md border-0 bg-transparent p-0"
+              />
+            </label>
+          </div>
+          <div className="mt-4 flex flex-wrap gap-3">
+            {CURSOR_COLORS.map(color => {
+              const selected = settings.cursorColor.toLowerCase() === color.hex;
+              return (
+                <button
+                  key={color.hex}
+                  type="button"
+                  title={color.name}
+                  aria-label={`${color.name} cursor`}
+                  aria-pressed={selected}
+                  onClick={() => updateSettings({ cursorColor: color.hex })}
+                  className={`grid h-9 w-9 place-items-center rounded-full transition hover:scale-110 ${selected ? 'ring-2 ring-white ring-offset-2 ring-offset-slate-900' : ''}`}
+                  style={{ backgroundColor: color.hex }}
+                >
+                  {selected && <Check className="h-4 w-4 text-slate-950" />}
+                </button>
+              );
+            })}
           </div>
         </Card>
 

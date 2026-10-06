@@ -354,7 +354,12 @@ const DesktopEnvironment: React.FC =
       hasInitialLayout,
       setHasInitialLayout,
     ] =
-      useState(false);
+      useState(false      );
+
+      const [viewportSize, setViewportSize] = useState(() => ({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      }));
 
     /* =====================================================
        SAVE ICON POSITIONS
@@ -395,19 +400,16 @@ const DesktopEnvironment: React.FC =
     ===================================================== */
 
     const getDesktopMetrics =
-      useCallback(() => {
-        const viewportWidth =
-          window.innerWidth;
-
-        const viewportHeight =
-          window.innerHeight;
+      useCallback((width = viewportSize.width, height = viewportSize.height) => {
+        const viewportWidth = width;
+        const viewportHeight = height;
 
         const {
           tileWidth,
           tileHeight,
         } =
           getViewDimensions(
-            desktopSettings.viewMode
+            viewportWidth <= 800 ? "small" : desktopSettings.viewMode
           );
 
         /*
@@ -509,6 +511,7 @@ const DesktopEnvironment: React.FC =
         };
       }, [
         desktopSettings.viewMode,
+        viewportSize,
       ]);
 
     /* =====================================================
@@ -519,14 +522,9 @@ const DesktopEnvironment: React.FC =
       useCallback(
         (
           x: number,
-          y: number
+          y: number,
+          metrics = getDesktopMetrics()
         ): IconPosition => {
-          const {
-            maxX,
-            maxY,
-          } =
-            getDesktopMetrics();
-
           return {
             x: Math.max(
               DESKTOP_PADDING,
@@ -535,7 +533,7 @@ const DesktopEnvironment: React.FC =
                   x,
                   DESKTOP_PADDING
                 ),
-                maxX
+                metrics.maxX
               )
             ),
 
@@ -546,7 +544,7 @@ const DesktopEnvironment: React.FC =
                   y,
                   DESKTOP_PADDING
                 ),
-                maxY
+                metrics.maxY
               )
             ),
           };
@@ -640,8 +638,56 @@ const DesktopEnvironment: React.FC =
         desktopSettings.sortDirection,
       ]);
 
+    const normalizeIconPositions = useCallback(
+        (
+          previous: IconPositions,
+          metrics = getDesktopMetrics(),
+        ): IconPositions => {
+          const next: IconPositions = {};
+          const overlaps = (a: IconPosition, b: IconPosition) =>
+            Math.abs(a.x - b.x) < metrics.tileWidth &&
+            Math.abs(a.y - b.y) < metrics.tileHeight;
+          const findFreePosition = (index: number) => {
+            for (let candidate = index; candidate < sortedDesktopIcons.length + index + 100; candidate += 1) {
+              const column = Math.floor(candidate / metrics.maxRows);
+              const row = candidate % metrics.maxRows;
+              const position = clampPosition(
+                INITIAL_LEFT + column * metrics.columnStep,
+                INITIAL_TOP + row * metrics.rowStep,
+                metrics,
+              );
+              if (!Object.values(next).some(existing => overlaps(existing, position))) {
+                return position;
+              }
+            }
+            return clampPosition(INITIAL_LEFT, INITIAL_TOP, metrics);
+          };
+
+          sortedDesktopIcons.forEach((icon: any, index: number) => {
+            const position = previous[icon.id];
+            if (!position) {
+              next[icon.id] = findFreePosition(index);
+              return;
+            }
+
+            const safe = clampPosition(position.x, position.y, metrics);
+            next[icon.id] = Object.values(next).some(existing => overlaps(existing, safe))
+              ? findFreePosition(index)
+              : safe;
+          });
+
+          const unchanged =
+            Object.keys(next).length === Object.keys(previous).length &&
+            Object.entries(next).every(([id, position]) =>
+              previous[id]?.x === position.x && previous[id]?.y === position.y,
+            );
+          return unchanged ? previous : next;
+        },
+        [clampPosition, getDesktopMetrics, sortedDesktopIcons],
+    );
+
     /* =====================================================
-       ARRANGE ICONS
+         ARRANGE ICONS
     ===================================================== */
 
     const arrangeIcons =
@@ -807,94 +853,14 @@ const DesktopEnvironment: React.FC =
     ===================================================== */
 
     useEffect(() => {
-      if (
-        !sortedDesktopIcons.length
-      ) {
+      if (!sortedDesktopIcons.length) {
         return;
       }
 
-      setIconPositions(
-        (previous) => {
-          const next: IconPositions =
-            {};
-
-          let changed = false;
-          const {
-            maxRows,
-            rowStep,
-            columnStep,
-          } = getDesktopMetrics();
-          const dimensions = getViewDimensions(desktopSettings.viewMode);
-          const overlaps = (a: IconPosition, b: IconPosition) =>
-            Math.abs(a.x - b.x) < dimensions.tileWidth &&
-            Math.abs(a.y - b.y) < dimensions.tileHeight;
-          const findFreePosition = (index: number) => {
-            for (let candidate = index; candidate < sortedDesktopIcons.length + index + 100; candidate += 1) {
-              const column = Math.floor(candidate / maxRows);
-              const row = candidate % maxRows;
-              const position = clampPosition(
-                INITIAL_LEFT + column * columnStep,
-                INITIAL_TOP + row * rowStep
-              );
-              if (!Object.values(next).some(existing => overlaps(existing, position))) {
-                return position;
-              }
-            }
-            return clampPosition(INITIAL_LEFT, INITIAL_TOP);
-          };
-
-          sortedDesktopIcons.forEach(
-          (icon: any, index: number) => {
-              const position =
-                previous[
-                  icon.id
-                ];
-
-              if (!position) {
-              next[icon.id] = findFreePosition(index);
-              changed = true;
-              return;
-            }
-
-              const safe =
-                clampPosition(
-                  position.x,
-                  position.y
-                );
-
-              next[icon.id] = Object.values(next).some(existing => overlaps(existing, safe))
-                ? findFreePosition(index)
-                : safe;
-
-              if (
-                safe.x !==
-                  next[icon.id].x !== position.x ||
-                safe.y !==
-                  next[icon.id].y !== position.y
-              ) {
-                changed = true;
-              }
-            }
-          );
-
-          if (
-            !changed &&
-            Object.keys(next)
-              .length ===
-              Object.keys(
-                previous
-              ).length
-          ) {
-            return previous;
-          }
-
-          return next;
-        }
-      );
+      setIconPositions(previous => normalizeIconPositions(previous));
     }, [
-      desktopSettings.viewMode,
       sortedDesktopIcons,
-      clampPosition,
+      normalizeIconPositions,
     ]);
 
     /* =====================================================
@@ -904,48 +870,19 @@ const DesktopEnvironment: React.FC =
     useEffect(() => {
       const handleResize =
         () => {
+          setViewportSize({
+            width: window.innerWidth,
+            height: window.innerHeight,
+          });
+
           requestAnimationFrame(
             () => {
               setIconPositions(
-                (previous) => {
-                  const next: IconPositions =
-                    {};
-
-                  let changed =
-                    false;
-
-                  Object.entries(
-                    previous
-                  ).forEach(
-                    ([
-                      id,
-                      position,
-                    ]) => {
-                      const safe =
-                        clampPosition(
-                          position.x,
-                          position.y
-                        );
-
-                      next[id] =
-                        safe;
-
-                      if (
-                        safe.x !==
-                          position.x ||
-                        safe.y !==
-                          position.y
-                      ) {
-                        changed =
-                          true;
-                      }
-                    }
-                  );
-
-                  return changed
-                    ? next
-                    : previous;
-                }
+                previous =>
+                  normalizeIconPositions(
+                    previous,
+                    getDesktopMetrics(window.innerWidth, window.innerHeight),
+                  ),
               );
             }
           );
@@ -964,6 +901,8 @@ const DesktopEnvironment: React.FC =
       };
     }, [
       clampPosition,
+      getDesktopMetrics,
+      normalizeIconPositions,
     ]);
 
     /* =====================================================
@@ -1431,7 +1370,9 @@ const DesktopEnvironment: React.FC =
         "
         style={{
           background:
-            currentWallpaper.style,
+            currentWallpaper.imageUrl
+              ? `center / cover no-repeat url("${currentWallpaper.imageUrl}")`
+              : currentWallpaper.style,
           '--os-accent': settings.accentColor,
           filter: `brightness(${settings.brightness}%)`,
         } as React.CSSProperties}
@@ -1451,20 +1392,7 @@ const DesktopEnvironment: React.FC =
         ================================================= */}
 
         <div
-          className="
-            absolute
-            inset-0
-
-            pointer-events-none
-
-            z-0
-
-            bg-[radial-gradient(
-              ellipse_80%_80%_at_50%_-20%,
-              rgba(56,189,248,0.12),
-              rgba(255,255,255,0)
-            )]
-          "
+          className="os-theme-glow absolute inset-0 pointer-events-none z-0"
         />
 
         {/* =================================================
@@ -1513,6 +1441,10 @@ const DesktopEnvironment: React.FC =
               never affect icon positions.
           =============================================== */}
 
+          <div
+            id="desktop-icons-layer"
+            className="absolute inset-0 pointer-events-none"
+          >
           {desktopSettings.showDesktopIcons &&
             sortedDesktopIcons.map(
               (icon: any) => {
@@ -1525,18 +1457,17 @@ const DesktopEnvironment: React.FC =
                   return null;
                 }
 
+                const iconViewMode =
+                  viewportSize.width <= 800
+                    ? "small"
+                    : desktopSettings.viewMode;
                 const dimensions =
-                  getViewDimensions(
-                    desktopSettings.viewMode
-                  );
+                  getViewDimensions(iconViewMode);
 
                 return (
                   <div
                     key={icon.id}
-                    className="
-                      absolute
-                      pointer-events-auto
-                    "
+                    className="desktop-icon-position pointer-events-auto"
                     style={{
                       left:
                         position.x,
@@ -1590,13 +1521,14 @@ const DesktopEnvironment: React.FC =
                       }
 
                       viewMode={
-                        desktopSettings.viewMode
+                        iconViewMode
                       }
                     />
                   </div>
                 );
               }
             )}
+          </div>
 
           {/* ===============================================
               DESKTOP WIDGET LAYER
