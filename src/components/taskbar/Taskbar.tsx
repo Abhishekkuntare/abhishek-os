@@ -41,7 +41,7 @@ import {
 } from 'lucide-react';
 import { createPortal } from 'react-dom';
 import VirtualKeyboard from './VirtualKeyboard';
-import { TrackingFace } from '../ui/TrackingFace';
+import { Mascot } from 'page-mascot';
 
 /* =========================================================
    TYPES
@@ -2033,10 +2033,8 @@ export const Taskbar: React.FC = () => {
 
               {/* START */}
 
-              <button
-                type="button"
+              <div
                 id="taskbar-start-btn"
-                aria-label="Start Menu"
                 onClick={() => {
                   playQuickSettingSound();
 
@@ -2061,7 +2059,7 @@ export const Taskbar: React.FC = () => {
                   relative
                   shrink-0
                   rounded-lg
-                  p-2
+                  p-1
                   transition-all
                   duration-200
                   ${
@@ -2072,11 +2070,14 @@ export const Taskbar: React.FC = () => {
                 `}
                 title="Start"
               >
-                <TrackingFace
-                size={28}
-  className="!w-[28px] !h-[28px] transition-transform duration-200 group-hover:scale-110"
+                <Mascot
+                  directions="/mascots/crt-directions.webp"
+                  reactions="/mascots/crt-reactions.webp"
+                  size={40}
+                  label="Open Start menu"
+                  className="transition-transform duration-200 group-hover:scale-110"
                 />
-              </button>
+              </div>
 
               {/* SEARCH */}
 

@@ -140,23 +140,17 @@ export const DesktopIcon: React.FC<
   const dimensions =
     viewMode === "large"
       ? {
-          width: 88,
-          height: 88,
           icon: "w-11 h-11",
           iconInner: "w-7 h-7",
           text: "text-sm",
         }
       : viewMode === "small"
       ? {
-          width: 68,
-          height: 68,
           icon: "w-9 h-9",
           iconInner: "w-5 h-5",
           text: "text-[11px]",
         }
       : {
-          width: 78,
-          height: 78,
           icon: "w-11 h-11",
           iconInner: "w-6 h-6",
           text: "text-xs",
@@ -583,7 +577,7 @@ export const DesktopIcon: React.FC<
   flex
   flex-col
   items-center
-  justify-center
+  justify-start
   rounded-xl
   outline-none
   select-none
@@ -648,14 +642,8 @@ export const DesktopIcon: React.FC<
       `}
       style={{
         '--icon-accent': iconColors[iconColorIndex],
-        /*
-         * Width/height are controlled here rather
-         * than through the old flex grid.
-         */
-        width:
-          dimensions.width,
-        height:
-          dimensions.height,
+        width: "100%",
+        height: "100%",
 
         /*
          * CRITICAL FOR DRAGGING:
@@ -720,6 +708,7 @@ export const DesktopIcon: React.FC<
           flex
           items-center
           justify-center
+          shrink-0
 
           rounded-xl
 
@@ -816,6 +805,7 @@ export const DesktopIcon: React.FC<
           leading-tight
 
           line-clamp-2
+          min-h-[2.5em]
 
           ${dimensions.text}
 
