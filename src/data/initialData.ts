@@ -667,6 +667,15 @@ export const INITIAL_EDUCATION: Education = {
 
 export const INITIAL_WALLPAPERS: Wallpaper[] = [
   {
+    id: 'wall-cosmic-voyager',
+    name: 'Cosmic Voyager',
+    thumbnailColor: '#8d3c9b',
+    style: 'center / cover no-repeat url("/wallpapers/astronaut-purple-3840x2160-22432.jpg")',
+    type: 'static',
+    imageUrl: '/wallpapers/astronaut-purple-3840x2160-22432.jpg',
+    description: 'A lone astronaut beneath a luminous purple sky',
+  },
+  {
     id: 'wall-alpine-valley',
     name: 'Alpine Valley',
     thumbnailColor: '#486b78',
@@ -818,15 +827,6 @@ export const INITIAL_WALLPAPERS: Wallpaper[] = [
     type: 'static',
     imageUrl: '/wallpapers/kame-house-dragon-5120x2880-25003.jpg',
     description: 'A colorful illustrated island retreat in the clouds',
-  },
-  {
-    id: 'wall-cosmic-voyager',
-    name: 'Cosmic Voyager',
-    thumbnailColor: '#8d3c9b',
-    style: 'center / cover no-repeat url("/wallpapers/astronaut-purple-3840x2160-22432.jpg")',
-    type: 'static',
-    imageUrl: '/wallpapers/astronaut-purple-3840x2160-22432.jpg',
-    description: 'A lone astronaut beneath a luminous purple sky',
   },
   {
     id: 'wall-hidden-leaf',

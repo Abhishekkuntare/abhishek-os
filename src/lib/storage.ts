@@ -29,7 +29,7 @@ export const DEFAULT_SETTINGS: SystemSettings = {
   themePreset: 'aurora',
   fontFamily: 'Plus Jakarta Sans',
   cursorColor: '#e2e8f0',
-  wallpaperId: 'wall-alpine-valley',
+  wallpaperId: 'wall-cosmic-voyager',
   animationsEnabled: true,
   glassBlurEnabled: true,
   soundsEnabled: true,

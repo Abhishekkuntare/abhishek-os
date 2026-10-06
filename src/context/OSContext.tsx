@@ -348,22 +348,22 @@ export const OSProvider: React.FC<{ children: React.ReactNode }> = ({ children }
 const [settings, setSettings] = useState<SystemSettings>(() => {
   const storedSettings = getStoredSettings();
 
-  const DEFAULT_WALLPAPER_ID = 'wall-alpine-valley';
-  const WALLPAPER_DEFAULT_VERSION = '3';
+  const DEFAULT_WALLPAPER_ID = 'wall-cosmic-voyager';
+  const PREVIOUS_DEFAULT_WALLPAPER_ID = 'wall-alpine-valley';
+  const WALLPAPER_DEFAULT_VERSION = '4';
 
   const savedWallpaperDefaultVersion = localStorage.getItem(
     'abhishek-wallpaper-default-version'
   );
 
-  // One-time migration to the supplied wallpaper collection.
-  // After this migration, the user's manually selected wallpaper
-  // will continue to persist normally.
+  // Move users from the previous default without overriding a wallpaper
+  // they deliberately selected.
   if (savedWallpaperDefaultVersion !== WALLPAPER_DEFAULT_VERSION) {
     const migratedSettings = {
       ...storedSettings,
-      wallpaperId: storedSettings.wallpaperId === 'wall-custom'
-        ? 'wall-custom'
-        : DEFAULT_WALLPAPER_ID,
+      wallpaperId: storedSettings.wallpaperId === PREVIOUS_DEFAULT_WALLPAPER_ID
+        ? DEFAULT_WALLPAPER_ID
+        : storedSettings.wallpaperId,
     };
 
     localStorage.setItem(
