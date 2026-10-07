@@ -178,7 +178,7 @@ const DEFAULT_BOOKMARKS: BookmarkItem[] = [
   {
     id: "bm-2",
     title: "LinkedIn",
-    url: "https://linkedin.com/in/abhishekkuntare",
+    url: "https://www.linkedin.com/in/abhishek-kuntare-65662421b/",
     category: "Favorites",
   },
   {
@@ -3366,7 +3366,7 @@ export const BrowserApp: React.FC = () => {
                     type="button"
                     onClick={() =>
                       navigateTo(
-                        "https://linkedin.com/in/abhishekkuntare",
+                        "https://www.linkedin.com/in/abhishek-kuntare-65662421b/",
                       )
                     }
                     className="

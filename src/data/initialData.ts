@@ -551,15 +551,14 @@ export const INITIAL_EXPERIENCES: Experience[] = [
     start_date: 'Jun 2024',
     end_date: 'Aug 2026',
     description: [
-      'Architected and implemented high-performance frontend interfaces using React.js, TypeScript, Redux, and REST APIs for scalable video commerce.',
-      'Developed and optimized core modules including Stories, promotional Banners, and interactive Video Gallery components.',
-      'Executed performance engineering initiatives: implemented code splitting, lazy asset loading, and eliminated severe API bottlenecks.',
-      'Integrated responsive web components with Shopify backend services and synchronized REST endpoints reliably.'
+      'Developed scalable and reusable web application components using React.js, Redux, JavaScript, TypeScript, and REST APIs for Stories, Banners, and Video Gallery features.',
+      'Optimized performance by reducing API bottlenecks and implementing lazy loading, achieving 40%+ faster page loads while ensuring a responsive UI with SCSS and core React.js.',
+      'Integrated Shopify backend with custom frontend using REST APIs for seamless product, media, and content synchronization.'
     ],
     achievements: [
-      'Achieved 40%+ faster page load speeds through aggressive asset optimization and bottleneck reduction',
-      'Built reusable, high-volume video delivery UI modules adopted across multiple e-commerce storefronts',
-      'Engineered clean REST state synchronization preventing UI glitches during checkout flows'
+      'Achieved 40%+ faster page load speeds through API optimization and lazy loading',
+      'Built reusable video commerce UI modules adopted across multiple storefront experiences',
+      'Delivered smooth, responsive storefront experiences with reliable content synchronization'
     ],
     technologies: ['React.js', 'Redux', 'JavaScript', 'TypeScript', 'REST APIs', 'Shopify Integration'],
     sort_order: 1
@@ -572,14 +571,13 @@ export const INITIAL_EXPERIENCES: Experience[] = [
     start_date: 'Sept 2021',
     end_date: 'Dec 2021',
     description: [
-      'Developed 5+ production-ready, reusable React components utilizing Material UI design standards.',
-      'Collaborated on client-side performance auditing and streamlined complex UI component trees.',
-      'Integrated RESTful APIs to maintain synchronized user nutrition and workout tracking records.'
+      'Built 5+ interactive React.js components using Material-UI, reducing page load time by 30% and improving mobile responsiveness.',
+      'Integrated RESTful APIs to enhance real-time data sync between frontend and backend, improving data flow efficiency by 50%.'
     ],
     achievements: [
-      'Delivered a 30% page load time reduction by streamlining React component render cycles',
-      'Constructed modular Material UI component patterns that increased team delivery velocity',
-      'Enhanced reliability of asynchronous data synchronization across web sessions'
+      'Delivered a 30% page load time reduction by streamlining component render cycles',
+      'Constructed modular Material UI patterns that accelerated team delivery velocity',
+      'Improved data synchronization reliability across web sessions'
     ],
     technologies: ['React.js', 'Material UI', 'REST APIs', 'JavaScript', 'HTML5/CSS3'],
     sort_order: 2
@@ -592,14 +590,13 @@ export const INITIAL_EXPERIENCES: Experience[] = [
     start_date: 'Jan 2022',
     end_date: 'Mar 2022',
     description: [
-      'Built component-based user interfaces utilizing React.js and Redux for an educational portal.',
-      'Implemented predictable global state management pipelines ensuring cohesive multi-step workflows.',
-      'Refactored legacy UI components to deliver smoother visual feedback and responsive ergonomics.'
+      'Developed scalable, component-based web interfaces with React.js and Redux, reducing load time by 30%.',
+      'Implemented global state management, resulting in a 40% smoother UI experience and improving engagement metrics.'
     ],
     achievements: [
-      'Reduced initial page load latency by 30% through bundle splitting and image asset caching',
-      'Established disciplined Redux store conventions reducing state desynchronization bugs',
-      'Improved cross-device responsiveness across mobile and desktop browser engines'
+      'Reduced initial page load latency by 30% through bundle optimization and asset improvement',
+      'Established disciplined Redux store conventions reducing state desynchronization issues',
+      'Improved cross-device responsiveness across mobile and desktop environments'
     ],
     technologies: ['React.js', 'Redux', 'JavaScript', 'REST APIs', 'CSS3'],
     sort_order: 3
@@ -917,15 +914,15 @@ export const PROFILE_INFO = {
   name: 'Abhishek Kuntare',
   role: 'Software Developer',
   tagline: 'Building Scalable Web Applications & AI-Powered Workflows',
-  bio: 'Software Developer with 2+ years of experience building scalable web applications using React.js, TypeScript, JavaScript, Node.js, and REST APIs. Experienced in full-stack development, AI API integration, performance optimization, and reusable UI development.',
+  bio: 'Software Developer with 2+ years of experience building scalable web applications using React.js, TypeScript, JavaScript, Node.js, and REST APIs. Experienced in full-stack development, AI API integration, performance optimization, and reusable UI development. Hands-on experience building AI-powered applications using Python, Next.js, React, OpenAI APIs, and LLM-based workflows.',
   email: 'abhishekkuntare7@gmail.com',
   phone: '+91 9156075536',
-  location: 'Bengaluru / Maharashtra, India',
+  location: 'Amravati / Maharashtra, India',
   github: 'https://github.com/abhishekkuntare',
-  linkedin: 'https://linkedin.com/in/abhishekkuntare',
-  portfolio: 'https://abhishekkuntare.dev',
+  linkedin: 'https://www.linkedin.com/in/abhishek-kuntare-65662421b/',
+  portfolio: 'https://abhishek-os-seven.vercel.app/',
   technologiesHighlight: [
     'React.js', 'Next.js', 'TypeScript', 'Node.js',
-    'OpenAI APIs', 'Tailwind CSS', 'Redux', 'Python'
+    'Python', 'OpenAI APIs', 'Tailwind CSS', 'Redux'
   ]
 };
