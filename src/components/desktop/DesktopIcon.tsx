@@ -117,7 +117,7 @@ export const DesktopIcon: React.FC<
 
   const dragVisualRef = useRef<{
     element: HTMLElement;
-    originalElement: HTMLElement;
+    originalTransform: string;
     deltaX: number;
     deltaY: number;
     frame: number | null;
@@ -283,35 +283,9 @@ export const DesktopIcon: React.FC<
 
       const originalElement = e.currentTarget.parentElement;
       if (originalElement) {
-        const bounds = originalElement.getBoundingClientRect();
-        const preview = originalElement.cloneNode(true) as HTMLElement;
-        preview.removeAttribute("id");
-        preview.querySelectorAll("[id]").forEach(element => {
-          element.removeAttribute("id");
-        });
-        preview.className = "desktop-icon-drag-preview";
-        Object.assign(preview.style, {
-          position: "fixed",
-          left: `${bounds.left}px`,
-          top: `${bounds.top}px`,
-          width: `${bounds.width}px`,
-          height: `${bounds.height}px`,
-          margin: "0",
-          zIndex: "9101",
-          pointerEvents: "none",
-          willChange: "transform",
-          transform: "translate3d(0, 0, 0)",
-        });
-        preview.setAttribute("aria-hidden", "true");
-        preview.querySelectorAll("button").forEach(button => {
-          button.tabIndex = -1;
-        });
-        document.body.appendChild(preview);
-        originalElement.style.visibility = "hidden";
-
         dragVisualRef.current = {
-          element: preview,
-          originalElement,
+          element: originalElement,
+          originalTransform: originalElement.style.transform,
           deltaX: 0,
           deltaY: 0,
           frame: null,
@@ -392,8 +366,7 @@ export const DesktopIcon: React.FC<
             dragStartRef.current.iconY + deltaY,
           );
         }
-        visual.originalElement.style.visibility = "";
-        visual.element.remove();
+        visual.element.style.transform = visual.originalTransform;
         dragVisualRef.current = null;
       } else if (!droppedOnTaskbar) {
         onDesktopPositionChange?.(
@@ -466,8 +439,7 @@ export const DesktopIcon: React.FC<
           dragStartRef.current.iconY + visual.deltaY,
         );
       }
-      visual.originalElement.style.visibility = "";
-      visual.element.remove();
+      visual.element.style.transform = visual.originalTransform;
       dragVisualRef.current = null;
     }
 
