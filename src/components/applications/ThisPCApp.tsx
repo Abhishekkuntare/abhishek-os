@@ -4426,6 +4426,7 @@ export const ThisPCApp: React.FC = () => {
                     className="w-full h-7.5 flex items-center gap-2 px-2 rounded-md text-left text-[11px] text-slate-400 hover:text-slate-100 hover:bg-white/[0.06] transition"
                   >
                     <AppIcon
+                      appId={folder.appId}
                       name={
                         folder.icon
                       }
@@ -4708,25 +4709,11 @@ export const ThisPCApp: React.FC = () => {
                                   }
                                 `}
                               >
-                                <div
-                                  className="
-                                    w-9
-                                    h-9
-                                    rounded-lg
-                                    shrink-0
-                                    flex
-                                    items-center
-                                    justify-center
-                                    bg-sky-500/[0.08]
-                                    border
-                                    border-sky-400/15
-                                    transition-transform
-                                    duration-150
-                                    group-hover:scale-105
-                                  "
-                                >
-                                  <Folder className="w-4.5 h-4.5 text-sky-400 fill-sky-400/10" />
-                                </div>
+                                <AppIcon
+                                  name="Folder"
+                                  fileType="folder"
+                                  className="h-11 w-11 shrink-0 object-contain transition-transform duration-150 group-hover:scale-105"
+                                />
 
                                 <div className="min-w-0">
                                   <div className="text-[11px] font-medium text-slate-200 truncate">
@@ -4802,7 +4789,11 @@ export const ThisPCApp: React.FC = () => {
                                   }
                                 `}
                               >
-                                <Folder className="w-4 h-4 text-sky-400 shrink-0" />
+                                <AppIcon
+                                  name="Folder"
+                                  fileType="folder"
+                                  className="h-7 w-7 shrink-0 object-contain"
+                                />
 
                                 <span className="w-28 shrink-0 text-[11px] text-slate-200 truncate">
                                   {

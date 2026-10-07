@@ -204,8 +204,8 @@ export const StartMenu: React.FC = () => {
                 }}
                 className="flex flex-col items-center justify-center p-2.5 sm:p-3 rounded-xl hover:bg-white/10 transition-colors group text-center"
               >
-                <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-slate-800/90 border border-white/10 group-hover:scale-110 group-hover:bg-slate-700/80 transition-all shadow-sm mb-1.5">
-                  <AppIcon name={app.icon} className="w-5 h-5 text-sky-400 group-hover:text-sky-300" />
+                <div className="mb-1.5 flex h-12 w-12 items-center justify-center transition-transform group-hover:scale-110">
+                  <AppIcon appId={app.appId} name={app.icon} className={`h-11 w-11 text-sky-400 group-hover:text-sky-300 ${app.appId === 'experience' || app.appId === 'skills' ? 'rounded-2xl' : ''}`} />
                 </div>
                 <span className="text-xs font-medium text-slate-200 group-hover:text-white truncate max-w-full">
                   {app.title}

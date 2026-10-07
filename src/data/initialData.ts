@@ -873,7 +873,7 @@ export const DESKTOP_ICONS: DesktopIconItem[] = [
   { id: 'icon-weather', appId: 'weather', title: 'Weather', iconName: 'CloudSun' },
   { id: 'icon-calculator', appId: 'calculator', title: 'Calculator', iconName: 'Calculator' },
   { id: 'icon-calendar', appId: 'calendar', title: 'Calendar', iconName: 'Calendar' },
-  { id: 'icon-about', appId: 'about', title: 'About Abhishek', iconName: 'UserCheck' },
+  { id: 'icon-about', appId: 'about', title: 'About Me', iconName: 'UserCheck' },
   { id: 'icon-experience', appId: 'experience', title: 'Experience', iconName: 'Briefcase' },
   { id: 'icon-skills', appId: 'skills', title: 'Skills Specs', iconName: 'Cpu' },
   { id: 'icon-education', appId: 'education', title: 'Education', iconName: 'GraduationCap' },

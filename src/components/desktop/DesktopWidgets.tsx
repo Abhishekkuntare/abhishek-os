@@ -17,10 +17,12 @@ import {
   Minus,
   Maximize2,
   Plus,
-  LayoutDashboard,
   RefreshCw,
   MapPin,
 } from "lucide-react";
+
+import { DAILY_QUOTES } from "../../data/dailyQuotes";
+import { AppIcon } from "../ui/AppIcon";
 
 /* =========================================================
    TYPES
@@ -72,6 +74,12 @@ type DesktopWidgetProps = {
 
 const WIDGET_STORAGE_KEY =
   "abhishek-os-desktop-widgets-v1";
+
+const DEFAULT_QUOTE_SEEDED_KEY =
+  "abhishek-os-default-quote-seeded-v1";
+const QUOTE_WIDGET_VERSION_KEY =
+  "abhishek-os-quote-widget-version";
+const QUOTE_WIDGET_VERSION = "2";
 
 /* =========================================================
    DESKTOP CONSTANTS
@@ -189,8 +197,20 @@ const getDefaultWidgetSize = (
 
     case "quote":
       return {
-        width: 300,
-        height: 190,
+        width:
+          typeof window === "undefined"
+            ? 350
+            : Math.min(
+                350,
+                Math.max(200, window.innerWidth - DESKTOP_PADDING * 2),
+              ),
+        height:
+          typeof window === "undefined"
+            ? 205
+            : Math.min(
+                205,
+                Math.max(160, window.innerHeight - TASKBAR_HEIGHT - DESKTOP_PADDING * 2),
+              ),
       };
 
     case "profile":
@@ -214,23 +234,43 @@ const getDefaultWidgetSize = (
    SAFE STORAGE
 ========================================================= */
 
+const createDefaultQuoteWidget = (): WidgetState => {
+  const size = getDefaultWidgetSize("quote");
+  const bounds = getDesktopBounds();
+
+  return {
+    id: "widget-quote-default",
+    type: "quote",
+    position: {
+      x: Math.max(
+        DESKTOP_PADDING,
+        bounds.width - size.width - DESKTOP_PADDING,
+      ),
+      y: DESKTOP_PADDING,
+    },
+    size,
+    minimized: false,
+  };
+};
+
 const loadWidgets =
   (): WidgetState[] => {
     try {
+      const defaultWasSeeded =
+        localStorage.getItem(DEFAULT_QUOTE_SEEDED_KEY) === "true";
+      const quoteWidgetVersion =
+        localStorage.getItem(QUOTE_WIDGET_VERSION_KEY);
       const stored =
         localStorage.getItem(
           WIDGET_STORAGE_KEY
         );
 
       if (!stored) {
-        /*
-         * VERY IMPORTANT:
-         *
-         * Empty array means:
-         *
-         * NO WIDGETS BY DEFAULT.
-         */
-        return [];
+        if (defaultWasSeeded) {
+          return [];
+        }
+        localStorage.setItem(QUOTE_WIDGET_VERSION_KEY, QUOTE_WIDGET_VERSION);
+        return [createDefaultQuoteWidget()];
       }
 
       const parsed =
@@ -239,10 +279,70 @@ const loadWidgets =
       if (
         !Array.isArray(parsed)
       ) {
-        return [];
+        if (defaultWasSeeded) {
+          return [];
+        }
+        localStorage.setItem(QUOTE_WIDGET_VERSION_KEY, QUOTE_WIDGET_VERSION);
+        return [createDefaultQuoteWidget()];
       }
 
-      return parsed;
+      if (parsed.length === 0) {
+        if (!defaultWasSeeded) {
+          localStorage.setItem(QUOTE_WIDGET_VERSION_KEY, QUOTE_WIDGET_VERSION);
+          return [createDefaultQuoteWidget()];
+        }
+        return parsed;
+      }
+
+      if (quoteWidgetVersion === QUOTE_WIDGET_VERSION) {
+        return parsed;
+      }
+
+      const quoteWidget = parsed.find(
+        (widget): widget is WidgetState =>
+          widget &&
+          typeof widget === "object" &&
+          widget.type === "quote" &&
+          typeof widget.id === "string" &&
+          typeof widget.position?.x === "number" &&
+          typeof widget.position?.y === "number" &&
+          typeof widget.size?.width === "number" &&
+          typeof widget.size?.height === "number",
+      );
+
+      if (!quoteWidget) {
+        localStorage.setItem(QUOTE_WIDGET_VERSION_KEY, QUOTE_WIDGET_VERSION);
+        return parsed;
+      }
+
+      const quoteSize = getDefaultWidgetSize("quote");
+      const quoteBounds = getDesktopBounds();
+      const defaultPosition = {
+        x: Math.max(
+          DESKTOP_PADDING,
+          quoteBounds.width - quoteSize.width - DESKTOP_PADDING,
+        ),
+        y: DESKTOP_PADDING,
+      };
+      const updatedWidgets = parsed.map((widget) =>
+        widget.id === quoteWidget.id
+          ? {
+              ...widget,
+              position:
+                widget.id === "widget-quote-default"
+                  ? defaultPosition
+                  : clampWidgetPosition(
+                      quoteWidget.position.x,
+                      quoteWidget.position.y,
+                      quoteSize,
+                    ),
+              size: quoteSize,
+              minimized: false,
+            }
+          : widget,
+      );
+      localStorage.setItem(QUOTE_WIDGET_VERSION_KEY, QUOTE_WIDGET_VERSION);
+      return updatedWidgets;
     } catch {
       return [];
     }
@@ -605,6 +705,7 @@ const ClockWidget =
     return (
       <div
         className="
+          group
           flex
           h-full
           flex-col
@@ -779,6 +880,7 @@ const SpotifyWidget =
       >
         <div
           className="
+            relative
             flex
             items-center
             gap-3
@@ -903,52 +1005,64 @@ const SpotifyWidget =
    QUOTE WIDGET
 ========================================================= */
 
-const QuoteWidget =
-  () => {
-    return (
-      <div
-        className="
+const QuoteWidget = () => {
+  const [quoteIndex, setQuoteIndex] = useState(
+    () => Math.floor(Math.random() * DAILY_QUOTES.length),
+  );
+
+  const showNextQuote = () => {
+    setQuoteIndex((current) =>
+      (current + 1 + Math.floor(Math.random() * (DAILY_QUOTES.length - 1))) %
+      DAILY_QUOTES.length,
+    );
+  };
+
+  return (
+    <div
+      className="
+          relative
           flex
           h-full
           flex-col
-          justify-center
-          px-5
-          py-5
-        "
-      >
-        <Quote
-          className="
-            h-6
-            w-6
-            text-slate-400
-          "
-        />
-
-        <p
-          className="
-            mt-4
-            text-base
-            leading-7
-            text-white
-          "
+          justify-between
+          overflow-hidden
+          px-4
+          py-3
+      "
+    >
+      <div className="pointer-events-none absolute -right-10 -top-12 h-32 w-32 rounded-full bg-sky-400/[0.08] blur-3xl" />
+      <div className="relative flex items-center justify-between">
+        <span className="flex h-8 w-8 items-center justify-center rounded-xl border border-sky-300/15 bg-sky-400/[0.09] text-sky-200 shadow-[0_0_24px_rgba(56,189,248,0.10)]">
+          <Quote className="h-3.5 w-3.5" />
+        </span>
+        <button
+          type="button"
+          aria-label="Show another quote"
+          title="Show another quote"
+          onClick={showNextQuote}
+          className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition-all duration-200 hover:rotate-[-35deg] hover:bg-white/[0.08] hover:text-sky-200 active:scale-90"
         >
-          Build useful things,
-          keep learning, and
-          let the work speak.
-        </p>
-
-        <div
-          className="
-            mt-4
-            text-xs
-            text-slate-500
-          "
-        >
-          Daily note
-        </div>
+          <RefreshCw className="h-3.5 w-3.5" />
+        </button>
       </div>
-    );
-  };
+
+      <p
+        key={quoteIndex}
+        aria-live="polite"
+        className="daily-quote-text relative my-1 line-clamp-3 animate-[quoteReveal_240ms_ease-out] text-[13px] font-medium leading-[1.4] tracking-[-0.02em] text-white"
+      >
+        “{DAILY_QUOTES[quoteIndex]}”
+      </p>
+
+      <div className="relative flex items-center justify-between border-t border-white/[0.08] pt-2 text-[10px] text-slate-400">
+        <span>Daily inspiration</span>
+        <span className="font-mono text-slate-500">
+          {quoteIndex + 1} / {DAILY_QUOTES.length}
+        </span>
+      </div>
+    </div>
+  );
+};
 
 /* =========================================================
    PROFILE WIDGET
@@ -959,46 +1073,39 @@ const ProfileWidget =
     return (
       <div
         className="
+          relative
           flex
           h-full
           flex-col
           justify-between
-          px-5
-          py-5
+          overflow-hidden
+          px-4
+          py-4
         "
       >
+        <div className="pointer-events-none absolute -right-10 -top-14 h-36 w-36 rounded-full bg-violet-400/[0.08] blur-3xl" />
         <div
           className="
+            relative
             flex
             items-center
             gap-3
           "
         >
           <div
-            className="
-              flex
-              h-12
-              w-12
-              items-center
-              justify-center
-              rounded-full
-              bg-white/10
-              border
-              border-white/10
-            "
+            className="h-14 w-14 shrink-0 overflow-hidden rounded-full border border-white/20 bg-white shadow-[0_0_0_3px_rgba(255,255,255,0.04),0_8px_24px_rgba(0,0,0,0.24)] transition-transform duration-300 hover:scale-105"
           >
-            <UserRound
-              className="
-                h-6
-                w-6
-                text-white
-              "
+            <img
+              src="/abhishek-profile-avatar.png"
+              alt="Abhishek Kuntare"
+              className="h-full w-full object-cover transition-transform duration-500 hover:scale-110"
             />
           </div>
 
-          <div>
+          <div className="relative min-w-0">
             <div
               className="
+                truncate
                 text-sm
                 font-semibold
                 text-white
@@ -1021,6 +1128,7 @@ const ProfileWidget =
 
         <div
           className="
+            relative
             mt-4
             grid
             grid-cols-2
@@ -1031,15 +1139,20 @@ const ProfileWidget =
             className="
               rounded-lg
               border
-              border-white/10
-              bg-white/[0.04]
-              p-3
+              border-white/[0.09]
+              bg-white/[0.035]
+              p-2.5
+              transition-all
+              duration-200
+              hover:-translate-y-0.5
+              hover:border-sky-300/20
+              hover:bg-white/[0.07]
             "
           >
             <div
               className="
                 text-[10px]
-                text-slate-500
+                text-slate-400
               "
             >
               Focus
@@ -1060,15 +1173,20 @@ const ProfileWidget =
             className="
               rounded-lg
               border
-              border-white/10
-              bg-white/[0.04]
-              p-3
+              border-white/[0.09]
+              bg-white/[0.035]
+              p-2.5
+              transition-all
+              duration-200
+              hover:-translate-y-0.5
+              hover:border-sky-300/20
+              hover:bg-white/[0.07]
             "
           >
             <div
               className="
                 text-[10px]
-                text-slate-500
+                text-slate-400
               "
             >
               Stack
@@ -1263,14 +1381,17 @@ const DesktopWidget: React.FC<
         rounded-2xl
         border
         border-white/[0.12]
-        bg-slate-950/75
+        bg-slate-950/65
+        desktop-widget-surface
         shadow-2xl
         shadow-black/30
-        backdrop-blur-2xl
-        transition-shadow
+        backdrop-blur-[28px]
+        backdrop-saturate-150
+        transition-all
         duration-200
-        hover:border-white/[0.18]
-        hover:shadow-black/40
+        hover:-translate-y-px
+        hover:border-white/[0.2]
+        hover:shadow-[0_24px_56px_rgba(0,0,0,0.42)]
       "
       style={{
         left:
@@ -1302,7 +1423,8 @@ const DesktopWidget: React.FC<
 
       <div
         className="
-          flex
+          hidden
+          sm:flex
           h-12
           items-center
           justify-between
@@ -1545,6 +1667,14 @@ export const DesktopWidgets: React.FC =
           JSON.stringify(
             widgets
           )
+        );
+        localStorage.setItem(
+          DEFAULT_QUOTE_SEEDED_KEY,
+          "true",
+        );
+        localStorage.setItem(
+          QUOTE_WIDGET_VERSION_KEY,
+          QUOTE_WIDGET_VERSION,
         );
       } catch {
         // Ignore localStorage errors.
@@ -1923,16 +2053,19 @@ export const DesktopWidgets: React.FC =
               overflow-hidden
               rounded-2xl
               border
-              border-white/[0.12]
-              bg-slate-950/90
-              shadow-2xl
-              shadow-black/50
-              backdrop-blur-2xl
+              border-white/[0.16]
+              bg-slate-950/75
+              desktop-widgets-panel
+              shadow-[0_24px_72px_rgba(0,0,0,0.48),inset_0_1px_0_rgba(255,255,255,0.08)]
+              backdrop-blur-[28px]
+              backdrop-saturate-150
+              animate-[widgetsPanelIn_240ms_cubic-bezier(.2,.8,.2,1)]
             "
             onClick={(e) =>
               e.stopPropagation()
             }
           >
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(56,189,248,0.09),transparent_52%)]" />
             {/* =============================================
                 PANEL HEADER
             ============================================= */}
@@ -1943,7 +2076,7 @@ export const DesktopWidgets: React.FC =
                 items-center
                 justify-between
                 border-b
-                border-white/[0.08]
+                border-white/[0.10]
                 px-4
                 py-3
               "
@@ -1963,7 +2096,7 @@ export const DesktopWidgets: React.FC =
                   className="
                     mt-0.5
                     text-[11px]
-                    text-slate-500
+                    text-slate-400
                   "
                 >
                   Add widgets to your
@@ -1981,9 +2114,11 @@ export const DesktopWidgets: React.FC =
                   items-center
                   justify-center
                   rounded-lg
-                  text-slate-500
-                  transition
-                  hover:bg-white/10
+                  text-slate-400
+                  transition-all
+                  duration-200
+                  hover:rotate-90
+                  hover:bg-white/[0.08]
                   hover:text-white
                 "
                 onClick={() =>
@@ -2007,6 +2142,7 @@ export const DesktopWidgets: React.FC =
 
             <div
               className="
+                relative
                 max-h-[430px]
                 overflow-y-auto
                 p-3
@@ -2026,21 +2162,26 @@ export const DesktopWidgets: React.FC =
                         item.type
                       }
                       className="
+                        group
                         flex
                         items-center
                         gap-3
                         rounded-xl
                         border
-                        border-white/[0.07]
-                        bg-white/[0.025]
+                        border-white/[0.08]
+                        bg-white/[0.035]
                         p-3
-                        transition
-                        hover:border-white/[0.13]
-                        hover:bg-white/[0.05]
+                        transition-all
+                        duration-200
+                        hover:-translate-y-0.5
+                        hover:border-sky-300/20
+                        hover:bg-white/[0.065]
+                        hover:shadow-[0_8px_24px_rgba(0,0,0,0.18)]
                       "
                     >
                       <div
                         className="
+                          relative
                           flex
                           h-10
                           w-10
@@ -2050,8 +2191,12 @@ export const DesktopWidgets: React.FC =
                           rounded-xl
                           border
                           border-white/[0.08]
-                          bg-white/[0.05]
+                          bg-white/[0.06]
                           text-slate-300
+                          transition-all
+                          duration-200
+                          group-hover:border-white/[0.14]
+                          group-hover:bg-white/[0.09]
                         "
                       >
                         <WidgetIcon
@@ -2084,7 +2229,7 @@ export const DesktopWidgets: React.FC =
                             mt-1
                             text-[10px]
                             leading-4
-                            text-slate-500
+                            text-slate-400
                           "
                         >
                           {
@@ -2109,11 +2254,13 @@ export const DesktopWidgets: React.FC =
                           text-[11px]
                           font-medium
                           transition
+                          duration-200
+                          active:scale-95
 
                           ${
                             item.added
-                              ? "cursor-default bg-white/[0.05] text-slate-600"
-                              : "bg-sky-500/15 text-sky-300 hover:bg-sky-500/25 hover:text-sky-200"
+                              ? "cursor-default bg-white/[0.05] text-slate-400"
+                              : "border border-sky-300/15 bg-sky-500/15 text-sky-200 hover:border-sky-300/30 hover:bg-sky-500/25 hover:text-white hover:shadow-[0_4px_18px_rgba(56,189,248,0.16)]"
                           }
                         `}
                         onClick={() =>
@@ -2155,7 +2302,7 @@ export const DesktopWidgets: React.FC =
                 items-center
                 justify-between
                 border-t
-                border-white/[0.08]
+                border-white/[0.10]
                 px-3
                 py-3
               "
@@ -2163,7 +2310,7 @@ export const DesktopWidgets: React.FC =
               <div
                 className="
                   text-[10px]
-                  text-slate-500
+                  text-slate-400
                 "
               >
                 {widgets.length}{" "}
@@ -2185,9 +2332,10 @@ export const DesktopWidgets: React.FC =
                   px-2.5
                   py-1.5
                   text-[10px]
-                  text-slate-500
-                  transition
-                  hover:bg-white/10
+                  text-slate-400
+                  transition-all
+                  duration-200
+                  hover:bg-white/[0.07]
                   hover:text-slate-200
                 "
                 onClick={
@@ -2224,24 +2372,21 @@ export const DesktopWidgets: React.FC =
               bottom-5
               right-5
               z-[900]
-              flex
-              h-11
-              w-11
+              hidden
+              sm:flex
+              h-12
+              w-12
               items-center
               justify-center
-              rounded-xl
-              border
-              border-white/[0.12]
-              bg-slate-950/65
-              text-slate-300
-              shadow-xl
-              shadow-black/20
-              backdrop-blur-xl
-              transition
-              hover:scale-105
-              hover:border-white/[0.2]
-              hover:bg-slate-900/80
-              hover:text-white
+              rounded-lg
+              outline-none
+              transition-transform
+              duration-150
+              hover:scale-110
+              focus-visible:ring-2
+              focus-visible:ring-sky-300
+              focus-visible:ring-offset-2
+              focus-visible:ring-offset-transparent
             "
             onClick={(e) => {
               e.stopPropagation();
@@ -2251,11 +2396,14 @@ export const DesktopWidgets: React.FC =
               );
             }}
           >
-            <LayoutDashboard
+            <AppIcon
+              name="LayoutDashboard"
+              appId="widgets"
               className="
-                h-5
-                w-5
+                h-11
+                w-11
               "
+              size={44}
             />
           </button>
         )}

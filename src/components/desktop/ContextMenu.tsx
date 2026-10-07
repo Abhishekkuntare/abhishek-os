@@ -227,8 +227,8 @@ const MenuItem: React.FC<MenuItemProps> = ({
             text-[10px]
             font-medium
             tracking-wide
-            text-slate-500
-            group-hover:text-slate-400
+            text-slate-400
+            group-hover:text-slate-300
           "
         >
           {shortcut}
@@ -274,12 +274,12 @@ const SubMenuContainer: React.FC<
         overflow-hidden
         rounded-xl
         border
-        border-white/[0.13]
-        bg-[#11151d]/[0.88]
+        border-white/[0.18]
+        bg-[#11151d]/[0.72]
         p-1.5
         shadow-[0_24px_80px_rgba(0,0,0,0.58)]
-        backdrop-blur-[30px]
-        backdrop-saturate-[180%]
+        backdrop-blur-[36px]
+        backdrop-saturate-[190%]
         animate-in
         fade-in
         slide-in-from-left-1
@@ -1140,13 +1140,13 @@ export const ContextMenu: React.FC = () => {
             w-[250px]
             overflow-hidden
             rounded-2xl
-            border border-white/[0.14]
-            bg-[#10141c]/[0.84]
+            border border-white/[0.18]
+            bg-[#10141c]/[0.72]
             p-1.5
             text-slate-100
             shadow-[0_28px_90px_rgba(0,0,0,0.65)]
-            backdrop-blur-[32px]
-            backdrop-saturate-[180%]
+            backdrop-blur-[36px]
+            backdrop-saturate-[190%]
             select-none
             animate-in
             fade-in
@@ -1184,6 +1184,7 @@ export const ContextMenu: React.FC = () => {
                 "
               >
                 <AppIcon
+                  appId={app.appId}
                   name={app.icon}
                   className="h-5 w-5 text-sky-300"
                 />
@@ -1215,7 +1216,7 @@ export const ContextMenu: React.FC = () => {
             {/* Open windows */}
             {appWindows.length > 0 && (
               <>
-                <div className="px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-600">
+                <div className="px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400">
                   Open windows
                 </div>
 
@@ -1438,12 +1439,12 @@ export const ContextMenu: React.FC = () => {
             w-[330px]
             overflow-visible
             rounded-2xl
-            border border-white/[0.14]
-            bg-[#10141c]/[0.86]
+            border border-white/[0.18]
+            bg-[#10141c]/[0.72]
             p-1.5
             text-slate-100
             shadow-[0_30px_100px_rgba(0,0,0,0.68)]
-            backdrop-blur-[32px]
+            backdrop-blur-[36px]
             backdrop-saturate-[190%]
             select-none
             animate-in
@@ -1509,6 +1510,9 @@ export const ContextMenu: React.FC = () => {
                 "
               >
                 <AppIcon
+                  appId={icon.appId}
+                  fileType={icon.fileType ?? (icon.fileExtension ? 'file' : icon.appId === 'file-explorer' ? 'folder' : undefined)}
+                  fileExtension={icon.fileExtension}
                   name={icon.iconName}
                   className="h-6 w-6 text-sky-300"
                 />
@@ -2036,12 +2040,12 @@ export const ContextMenu: React.FC = () => {
           w-[315px]
           overflow-visible
           rounded-2xl
-          border border-white/[0.14]
-          bg-[#0d1118]/[0.84]
+          border border-white/[0.18]
+          bg-[#0d1118]/[0.72]
           p-1.5
           text-slate-100
           shadow-[0_30px_100px_rgba(0,0,0,0.68)]
-          backdrop-blur-[34px]
+          backdrop-blur-[36px]
           backdrop-saturate-[190%]
           select-none
           animate-in
@@ -2128,13 +2132,13 @@ export const ContextMenu: React.FC = () => {
                 font-bold
                 uppercase
                 tracking-[0.16em]
-                text-slate-500
+                text-slate-400
               "
             >
               Abhishek OS
             </span>
 
-            <span className="ml-auto text-[9px] text-slate-600">
+            <span className="ml-auto text-[9px] text-slate-400">
               Desktop
             </span>
           </div>
@@ -2160,7 +2164,7 @@ export const ContextMenu: React.FC = () => {
             {activeSubMenu ===
               "view" && (
               <SubMenuContainer width={315}>
-                <div className="px-2.5 py-1.5 text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-600">
+                <div className="px-2.5 py-1.5 text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400">
                   Icon layout
                 </div>
 
@@ -2311,7 +2315,7 @@ export const ContextMenu: React.FC = () => {
             {activeSubMenu ===
               "sort" && (
               <SubMenuContainer width={250}>
-                <div className="px-2.5 py-1.5 text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-600">
+                <div className="px-2.5 py-1.5 text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400">
                   Arrange desktop items
                 </div>
 
@@ -2462,7 +2466,7 @@ export const ContextMenu: React.FC = () => {
             {activeSubMenu ===
               "new" && (
               <SubMenuContainer width={235}>
-                <div className="px-2.5 py-1.5 text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-600">
+                <div className="px-2.5 py-1.5 text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400">
                   Create
                 </div>
 

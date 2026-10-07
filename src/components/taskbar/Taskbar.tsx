@@ -178,16 +178,17 @@ const QuickSettingTile: React.FC<
         py-2
         text-left
         transition-all
-        duration-200
+        duration-300
         ease-out
+        hover:-translate-y-0.5
         active:scale-[0.97]
         focus:outline-none
         focus-visible:ring-2
         focus-visible:ring-sky-400/80
         ${
           active
-            ? 'border-sky-300/60 bg-sky-500 text-slate-950 shadow-lg shadow-sky-500/20'
-            : 'border-white/[0.09] bg-white/[0.055] text-slate-200 hover:border-white/[0.16] hover:bg-white/[0.09]'
+            ? 'border-sky-200/70 bg-gradient-to-br from-sky-400 to-sky-500 text-slate-950 shadow-lg shadow-sky-500/25 hover:shadow-xl hover:shadow-sky-400/30'
+            : 'border-white/[0.10] bg-white/[0.055] text-slate-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.035)] hover:border-sky-200/25 hover:bg-white/[0.10] hover:shadow-[0_10px_28px_rgba(0,0,0,0.22),inset_0_1px_0_rgba(255,255,255,0.08)]'
         }
         ${
           disabled
@@ -223,7 +224,7 @@ const QuickSettingTile: React.FC<
             justify-center
             rounded-lg
             transition-all
-            duration-200
+            duration-300
             ${
               active
                 ? 'bg-white/20'
@@ -236,8 +237,9 @@ const QuickSettingTile: React.FC<
               h-4
               w-4
               transition-transform
-              duration-200
+              duration-300
               group-hover:scale-110
+              group-hover:-rotate-3
               ${
                 active
                   ? 'text-slate-950'
@@ -282,7 +284,7 @@ const QuickSettingTile: React.FC<
             ${
               active
                 ? 'text-slate-950/65'
-                : 'text-slate-500'
+                : 'text-slate-400'
             }
           `}
         >
@@ -1800,11 +1802,6 @@ export const Taskbar: React.FC = () => {
           select-none
           overflow-visible
         "
-        style={{
-          borderTop: `1px solid ${
-            settings.accentColor
-          }45`,
-        }}
       >
         {/* ===================================================
             TASKBAR CONTENT
@@ -2013,22 +2010,16 @@ export const Taskbar: React.FC = () => {
                     false,
                   );
                 }}
-                className={`
-                  relative
-                  shrink-0
-                  rounded-lg
-                  p-2
-                  transition-all
-                  duration-200
-                  ${
-                    isDesktopOverviewOpen
-                      ? 'bg-sky-500/25 text-sky-300 ring-1 ring-sky-400/60'
-                      : 'text-slate-300 hover:bg-white/10'
-                  }
-                `}
+                className="taskbar-menu-image-button relative flex h-8 w-8 shrink-0 items-center justify-center bg-transparent p-0 transition-transform duration-200"
                 title="Desktops overview"
               >
-                <LayoutDashboard className="h-4 w-4" />
+                <img
+                  src="/app-icons/menu.png"
+                  alt=""
+                  aria-hidden="true"
+                  className="h-8 w-8 object-contain transition-transform duration-200 hover:scale-110"
+                  draggable={false}
+                />
               </button>
 
               {/* START */}
@@ -2228,7 +2219,7 @@ export const Taskbar: React.FC = () => {
                         relative
                         shrink-0
                         rounded-lg
-                        p-2
+                        p-1
                         transition-all
                         duration-200
                         ${
@@ -2243,14 +2234,15 @@ export const Taskbar: React.FC = () => {
                         item.title
                       }
                     >
-                      <div className="flex h-5 w-5 items-center justify-center">
+                      <div className="flex h-9 w-9 items-center justify-center">
                         <AppIcon
+                          appId={item.appId}
                           name={
                             item.icon
                           }
                           className="
-                            h-5
-                            w-5
+                            h-8
+                            w-8
                             text-slate-200
                             transition-transform
                             duration-200
@@ -2564,7 +2556,7 @@ export const Taskbar: React.FC = () => {
                     className="group/preview block w-full overflow-hidden rounded-xl border border-white/10 bg-slate-900/80 text-left transition-all duration-200 hover:-translate-y-0.5 hover:border-sky-400/45 hover:bg-slate-900"
                   >
                     <div className="flex h-7 items-center gap-2 border-b border-white/[0.07] bg-white/[0.04] px-2.5">
-                      <AppIcon name={appWindow.iconName} className="h-3.5 w-3.5 text-sky-300" />
+                      <AppIcon appId={appWindow.appId} name={appWindow.iconName} className="h-3.5 w-3.5 text-sky-300" />
                       <span className="min-w-0 flex-1 truncate text-[10px] font-medium text-slate-200">
                         {appWindow.title}
                       </span>
@@ -2587,7 +2579,7 @@ export const Taskbar: React.FC = () => {
                           <div className="h-1.5 w-3/4 rounded bg-white/10" />
                         </div>
                         <div className="absolute bottom-3 right-3 rounded-md bg-sky-400/15 p-1.5 text-sky-200">
-                          <AppIcon name={appWindow.iconName} className="h-5 w-5" />
+                          <AppIcon appId={appWindow.appId} name={appWindow.iconName} className="h-5 w-5" />
                         </div>
                       </div>
                     </div>
@@ -2657,7 +2649,7 @@ export const Taskbar: React.FC = () => {
                           className="group w-full max-w-[360px] overflow-hidden rounded-xl border border-white/20 bg-slate-950/85 text-left shadow-[0_18px_55px_rgba(0,0,0,.42)] transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02] hover:border-sky-300/70 hover:shadow-[0_24px_65px_rgba(2,132,199,.2)]"
                         >
                           <div className="flex h-8 items-center gap-2 border-b border-white/10 bg-white/[0.06] px-3">
-                            <AppIcon name={appWindow.iconName} className="h-4 w-4 shrink-0 text-sky-300" />
+                            <AppIcon appId={appWindow.appId} name={appWindow.iconName} className="h-4 w-4 shrink-0 text-sky-300" />
                             <span className="min-w-0 flex-1 truncate text-[11px] font-medium text-slate-100">{appWindow.title}</span>
                             <span className="h-1.5 w-1.5 rounded-full bg-sky-400" />
                           </div>
@@ -2677,7 +2669,7 @@ export const Taskbar: React.FC = () => {
                                 <div className="h-1.5 w-5/6 rounded bg-white/10" />
                                 <div className="h-1.5 w-3/4 rounded bg-white/10" />
                               </div>
-                              <AppIcon name={appWindow.iconName} className="absolute bottom-3 right-3 h-7 w-7 text-sky-300/70" />
+                              <AppIcon appId={appWindow.appId} name={appWindow.iconName} className="absolute bottom-3 right-3 h-7 w-7 text-sky-300/70" />
                             </div>
                           </div>
                         </button>
@@ -2726,7 +2718,7 @@ export const Taskbar: React.FC = () => {
                           <span className="absolute inset-0 bg-slate-950/40" />
                           {desktopWindows.length ? (
                             <span className="relative flex max-w-[90%] items-center gap-2 rounded-md border border-white/20 bg-slate-950/80 px-3 py-2 shadow-xl">
-                              <AppIcon name={desktopWindows[0].iconName} className="h-4 w-4 shrink-0 text-sky-300" />
+                              <AppIcon appId={desktopWindows[0].appId} name={desktopWindows[0].iconName} className="h-4 w-4 shrink-0 text-sky-300" />
                               <span className="max-w-[130px] truncate text-[10px] text-white">{desktopWindows[0].title}</span>
                               {desktopWindows.length > 1 && <span className="text-[9px] text-slate-400">+{desktopWindows.length - 1}</span>}
                             </span>
@@ -2784,8 +2776,9 @@ export const Taskbar: React.FC = () => {
                 inset-0
                 z-[9997]
                 cursor-default
-                bg-black/10
-                backdrop-blur-[1px]
+                bg-black/15
+                backdrop-blur-[2px]
+                animate-[quickBackdropIn_180ms_ease-out]
               "
             />
 
@@ -2803,18 +2796,21 @@ export const Taskbar: React.FC = () => {
                 overflow-hidden
                 rounded-[22px]
                 border
-                border-white/[0.13]
-                bg-[#1b2028]/[0.98]
+                border-white/[0.18]
+                bg-[#1b2028]/[0.84]
                 text-xs
-                shadow-[0_24px_80px_rgba(0,0,0,.58)]
-                backdrop-blur-3xl
-                animate-[quickSettingsIn_220ms_cubic-bezier(.2,.8,.2,1)]
+                shadow-[0_30px_100px_rgba(0,0,0,.62),0_0_0_1px_rgba(255,255,255,.035),inset_0_1px_0_rgba(255,255,255,.12)]
+                backdrop-blur-[32px]
+                backdrop-saturate-[185%]
+                animate-[quickSettingsIn_280ms_cubic-bezier(.2,.8,.2,1)]
               "
               onClick={event =>
                 event.stopPropagation()
               }
             >
-              <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-sky-500/[0.09] to-transparent" />
+              <div className="pointer-events-none absolute inset-0 rounded-[22px] bg-[radial-gradient(ellipse_at_top_left,rgba(56,189,248,0.10),transparent_48%)]" />
+              <div className="pointer-events-none absolute inset-x-4 top-0 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent" />
+              <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-white/[0.045] to-transparent" />
 
               <div className="relative max-h-[calc(100vh-80px)] overflow-y-auto p-3.5 sm:p-4">
                 {/* =================================================
@@ -2833,6 +2829,7 @@ export const Taskbar: React.FC = () => {
                         rounded-lg
                         bg-sky-500/15
                         text-sky-300
+                        shadow-[0_0_24px_rgba(56,189,248,0.14)]
                       "
                     >
                       <Sparkles className="h-3.5 w-3.5" />
@@ -2843,7 +2840,7 @@ export const Taskbar: React.FC = () => {
                         Quick Settings
                       </p>
 
-                      <p className="text-[9px] text-slate-500">
+                      <p className="text-[9px] text-slate-400">
                         Abhishek OS controls
                       </p>
                     </div>
@@ -2860,11 +2857,13 @@ export const Taskbar: React.FC = () => {
                     className="
                       rounded-lg
                       p-1.5
-                      text-slate-500
+                      text-slate-400
                       transition-all
-                      duration-200
+                      duration-300
                       hover:bg-white/10
                       hover:text-white
+                      hover:rotate-90
+                      hover:scale-110
                       active:scale-90
                     "
                   >
@@ -4181,7 +4180,7 @@ export const Taskbar: React.FC = () => {
                   <div className="flex min-w-0 items-center gap-1.5">
                     <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
 
-                    <span className="truncate text-[9px] text-slate-600">
+                    <span className="truncate text-[9px] text-slate-400">
                       Abhishek OS • All systems operational
                     </span>
                   </div>
@@ -4274,6 +4273,16 @@ export const Taskbar: React.FC = () => {
               opacity: 1;
               transform: translateY(0) scale(1);
               filter: blur(0);
+            }
+          }
+
+          @keyframes quickBackdropIn {
+            from {
+              opacity: 0;
+            }
+
+            to {
+              opacity: 1;
             }
           }
 

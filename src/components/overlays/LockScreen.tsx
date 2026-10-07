@@ -1,18 +1,26 @@
 import React, { FormEvent, useEffect, useRef, useState } from 'react';
 import { motion } from 'motion/react';
-import { ArrowRight, LockKeyhole } from 'lucide-react';
+import { ArrowRight, LockKeyhole, ShieldCheck, Sparkles } from 'lucide-react';
 import { Mascot } from 'page-mascot';
 import { useOS } from '../../context/OSContext';
 import { PROFILE_INFO } from '../../data/initialData';
+import { DAILY_QUOTES } from '../../data/dailyQuotes';
 
 const DEFAULT_PIN = '1234';
 
 export const LockScreen: React.FC = () => {
-  const { powerState, unlockSystem } = useOS();
+  const {
+    unlockSystem,
+    settings,
+    lockScreenWallpaper,
+  } = useOS();
   const [pin, setPin] = useState('');
   const [hasError, setHasError] = useState(false);
   const [timeStr, setTimeStr] = useState('');
   const [dateStr, setDateStr] = useState('');
+  const [quote] = useState(
+    () => DAILY_QUOTES[Math.floor(Math.random() * DAILY_QUOTES.length)],
+  );
   const pinInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -44,8 +52,6 @@ export const LockScreen: React.FC = () => {
     pinInputRef.current?.focus();
   };
 
-  if (powerState !== 'locked') return null;
-
   return (
     <motion.div
       id="system-lock-screen"
@@ -55,20 +61,23 @@ export const LockScreen: React.FC = () => {
       transition={{ duration: 0.45, ease: 'easeOut' }}
       className="fixed inset-0 z-100000 flex flex-col items-center justify-between overflow-y-auto px-6 py-6 text-white select-none"
       style={{
-        background: 'rgba(8, 14, 30, 0.48)',
-        backdropFilter: 'blur(18px) saturate(125%)',
-        WebkitBackdropFilter: 'blur(18px) saturate(125%)',
+        background: lockScreenWallpaper?.imageUrl
+          ? `center / cover no-repeat url("${lockScreenWallpaper.imageUrl}")`
+          : lockScreenWallpaper?.style || 'linear-gradient(135deg,#111827,#020617)',
       }}
     >
+      <div className="pointer-events-none absolute inset-0 bg-slate-950/40 backdrop-blur-[2px]" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_42%,rgba(56,189,248,0.12),transparent_52%)]" />
 
       <div className="relative z-10 w-full pt-2 text-center sm:pt-5">
         <h1 className="text-5xl font-semibold tracking-[-0.06em] drop-shadow-[0_4px_24px_rgba(0,0,0,0.28)] sm:text-7xl">
           {timeStr}
         </h1>
-        <p className="mt-1 text-sm font-medium text-slate-200/90 sm:text-base">
-          {dateStr}
-        </p>
+        {settings.lockScreenShowDate && (
+          <p className="mt-1 text-sm font-medium text-slate-200/90 sm:text-base">
+            {dateStr}
+          </p>
+        )}
       </div>
 
       <div className="relative z-10 flex w-full max-w-sm flex-col items-center py-4 text-center">
@@ -137,6 +146,32 @@ export const LockScreen: React.FC = () => {
               : 'Enter PIN to unlock your workstation'}
           </p>
         </form>
+
+        {(settings.lockScreenShowQuote || settings.lockScreenShowStatus) && (
+          <div className="mt-5 grid w-full gap-2 text-left">
+            {settings.lockScreenShowQuote && (
+              <div className="rounded-2xl border border-white/15 bg-slate-950/35 px-4 py-3 text-left shadow-lg backdrop-blur-xl">
+                <div className="mb-1.5 flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-sky-200">
+                  <Sparkles className="h-3 w-3" />
+                  Daily inspiration
+                </div>
+                <p className="line-clamp-2 text-xs leading-relaxed text-white/90">
+                  “{quote}”
+                </p>
+              </div>
+            )}
+            {settings.lockScreenShowStatus && (
+              <div className="flex items-center gap-2.5 rounded-xl border border-emerald-300/15 bg-slate-950/30 px-3 py-2 text-left backdrop-blur-xl">
+                <ShieldCheck className="h-4 w-4 shrink-0 text-emerald-300" />
+                <div className="min-w-0">
+                  <p className="text-[10px] font-semibold text-slate-100">Workstation ready</p>
+                  <p className="truncate text-[9px] text-slate-300/75">Your workspace is ready when you are</p>
+                </div>
+                <span className="ml-auto h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,.7)]" />
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       <div className="relative z-10 pb-2 text-center text-xs text-slate-300/70">

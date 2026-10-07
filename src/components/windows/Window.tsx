@@ -317,7 +317,7 @@ export const Window: React.FC<WindowProps> = ({ win, children }) => {
             {/* macOS Centered Title & Icon */}
             <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 pointer-events-none max-w-[55%]">
               <div className="flex items-center justify-center w-4 h-4 rounded text-sky-400">
-                <AppIcon name={win.iconName} className="w-3.5 h-3.5" />
+                <AppIcon appId={win.appId} name={win.iconName} className="w-3.5 h-3.5" />
               </div>
               <span className="text-xs font-medium text-slate-200 tracking-wide truncate">
                 {win.title}
@@ -365,7 +365,7 @@ export const Window: React.FC<WindowProps> = ({ win, children }) => {
             {/* App Title & Icon (Left) */}
             <div className="flex items-center gap-2.5 min-w-0 pr-2">
               <div className="flex items-center justify-center w-5 h-5 rounded text-sky-400">
-                <AppIcon name={win.iconName} className="w-4 h-4" />
+                <AppIcon appId={win.appId} name={win.iconName} className="w-4 h-4" />
               </div>
               <span className="text-xs font-semibold tracking-wide truncate">
                 {win.title}

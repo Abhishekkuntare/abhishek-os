@@ -5,7 +5,10 @@ import React, {
 } from 'react';
 
 import { useOS } from '../../context/OSContext';
-import { saveCustomWallpaper } from '../../lib/wallpaperStorage';
+import {
+  LOCK_SCREEN_WALLPAPER_KEY,
+  saveCustomWallpaper,
+} from '../../lib/wallpaperStorage';
 
 import {
   ArrowLeft,
@@ -23,6 +26,7 @@ import {
   ShieldCheck,
   RefreshCw,
   Image as ImageIcon,
+  Video,
   Paintbrush,
   Sun,
   Moon,
@@ -599,6 +603,7 @@ export const SettingsApp: React.FC = () => {
     updateSettings,
     wallpapers,
     currentWallpaper,
+    lockScreenWallpapers,
     playSystemSound,
     activateMode,
   } = useOS();
@@ -852,7 +857,11 @@ export const SettingsApp: React.FC = () => {
   const resetVisualSettings = () => {
     if (wallpapers.length > 0) {
       updateSettings({
-        wallpaperId: wallpapers[0].id,
+        wallpaperId: 'wall-midnight-dunes',
+        lockScreenWallpaperId: 'wall-alpine-meadow',
+        lockScreenShowDate: true,
+        lockScreenShowQuote: false,
+        lockScreenShowStatus: false,
         accentColor: '#38bdf8',
         themePreset: 'aurora',
         fontFamily: 'Plus Jakarta Sans',
@@ -863,6 +872,11 @@ export const SettingsApp: React.FC = () => {
       });
     } else {
       updateSettings({
+        wallpaperId: 'wall-midnight-dunes',
+        lockScreenWallpaperId: 'wall-alpine-meadow',
+        lockScreenShowDate: true,
+        lockScreenShowQuote: false,
+        lockScreenShowStatus: false,
         accentColor: '#38bdf8',
         themePreset: 'aurora',
         fontFamily: 'Plus Jakarta Sans',
@@ -2440,7 +2454,7 @@ export const SettingsApp: React.FC = () => {
                 </h2>
 
                 <p className="text-xs text-slate-500 mt-0.5">
-                  Choose one of the 20 supplied images or add your own.
+                  Choose a background or upload an image up to 15 MB. Full resolution is preserved.
                 </p>
 
               </div>
@@ -2448,26 +2462,27 @@ export const SettingsApp: React.FC = () => {
 
             <label className="inline-flex cursor-pointer items-center justify-center gap-2 self-start rounded-xl bg-sky-400 px-4 py-2.5 text-xs font-semibold text-slate-950 transition hover:bg-sky-300 sm:self-auto">
               <Upload className="h-4 w-4" />
-              Choose image or video
+              Upload desktop wallpaper
               <input
                 type="file"
-                accept="image/*,video/*"
+                accept="image/*"
                 className="hidden"
                 onChange={event => {
                   const file = event.target.files?.[0];
                   if (!file) return;
-                  const maxSize = file.type.startsWith('video/') ? 40 * 1024 * 1024 : 8 * 1024 * 1024;
+                  if (!file.type.startsWith('image/')) {
+                    showToast('Choose a supported image file', 'error');
+                    event.target.value = '';
+                    return;
+                  }
+                  const maxSize = 15 * 1024 * 1024;
                   if (file.size > maxSize) {
-                    showToast(file.type.startsWith('video/') ? 'Choose a video smaller than 40 MB' : 'Choose an image smaller than 8 MB', 'error');
+                    showToast('Choose an image smaller than 15 MB', 'error');
                     event.target.value = '';
                     return;
                   }
                   void saveCustomWallpaper(file).then(() => {
-                    if (file.type.startsWith('video/')) {
-                      localStorage.removeItem('abhishek-custom-wallpaper-style');
-                    } else {
-                      localStorage.setItem('abhishek-custom-wallpaper-style', 'center / cover no-repeat');
-                    }
+                    localStorage.setItem('abhishek-custom-wallpaper-style', 'center / cover no-repeat');
                     updateSettings({ wallpaperId: 'wall-custom' });
                     window.dispatchEvent(new Event('abhishek-wallpaper-changed'));
                     showToast('Wallpaper applied to desktop', 'success');
@@ -2571,6 +2586,161 @@ export const SettingsApp: React.FC = () => {
 
           </div>
 
+        </Card>
+
+        <Card className="overflow-hidden p-5">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-400/10">
+                <Video className="h-5 w-5 text-violet-300" />
+              </div>
+              <div>
+                <h2 className="text-sm font-semibold text-white">Live wallpaper</h2>
+                <p className="mt-1 text-xs text-slate-400">
+                  Add a muted looping video background for your desktop, up to 40 MB.
+                </p>
+              </div>
+            </div>
+            <label className="inline-flex cursor-pointer items-center justify-center gap-2 self-start rounded-xl border border-violet-300/20 bg-violet-400/10 px-4 py-2.5 text-xs font-semibold text-violet-100 transition hover:border-violet-200/40 hover:bg-violet-400/20 sm:self-auto">
+              <Upload className="h-4 w-4" />
+              Upload live wallpaper
+              <input
+                type="file"
+                accept="video/*"
+                className="hidden"
+                onChange={event => {
+                  const file = event.target.files?.[0];
+                  if (!file) return;
+                  if (!file.type.startsWith('video/')) {
+                    showToast('Choose a supported video file', 'error');
+                    event.target.value = '';
+                    return;
+                  }
+                  if (file.size > 40 * 1024 * 1024) {
+                    showToast('Choose a video smaller than 40 MB', 'error');
+                    event.target.value = '';
+                    return;
+                  }
+                  void saveCustomWallpaper(file).then(() => {
+                    localStorage.removeItem('abhishek-custom-wallpaper-style');
+                    updateSettings({ wallpaperId: 'wall-custom' });
+                    window.dispatchEvent(new Event('abhishek-wallpaper-changed'));
+                    showToast('Live wallpaper applied to desktop', 'success');
+                  }).catch(error => {
+                    console.error('Unable to save live wallpaper:', error);
+                    showToast('Unable to save this live wallpaper', 'error');
+                  });
+                  event.target.value = '';
+                }}
+              />
+            </label>
+          </div>
+        </Card>
+
+        <Card className="p-5">
+          <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h2 className="text-sm font-semibold text-white">Lock screen background</h2>
+              <p className="mt-1 text-xs text-slate-400">
+                Choose a separate background or upload an image up to 15 MB.
+              </p>
+            </div>
+            <label className="inline-flex cursor-pointer items-center justify-center gap-2 self-start rounded-xl border border-sky-300/20 bg-sky-400/10 px-4 py-2.5 text-xs font-semibold text-sky-100 transition hover:border-sky-200/40 hover:bg-sky-400/20 sm:self-auto">
+              <Upload className="h-4 w-4" />
+              Upload lock screen image
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={event => {
+                  const file = event.target.files?.[0];
+                  if (!file) return;
+                  if (!file.type.startsWith('image/')) {
+                    showToast('Choose a supported image file', 'error');
+                    event.target.value = '';
+                    return;
+                  }
+                  if (file.size > 15 * 1024 * 1024) {
+                    showToast('Choose an image smaller than 15 MB', 'error');
+                    event.target.value = '';
+                    return;
+                  }
+                  void saveCustomWallpaper(file, LOCK_SCREEN_WALLPAPER_KEY).then(() => {
+                    updateSettings({ lockScreenWallpaperId: 'wall-custom-lock' });
+                    window.dispatchEvent(new Event('abhishek-wallpaper-changed'));
+                    showToast('Lock screen wallpaper applied', 'success');
+                  }).catch(error => {
+                    console.error('Unable to save lock screen wallpaper:', error);
+                    showToast('Unable to save this lock screen image', 'error');
+                  });
+                  event.target.value = '';
+                }}
+              />
+            </label>
+          </div>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+            {lockScreenWallpapers.map(wallpaper => {
+              const selected = wallpaper.id === settings.lockScreenWallpaperId;
+              return (
+                <button
+                  key={`lock-${wallpaper.id}`}
+                  type="button"
+                  aria-label={`Set ${wallpaper.name} as lock screen wallpaper`}
+                  aria-pressed={selected}
+                  onClick={() => updateSettings({ lockScreenWallpaperId: wallpaper.id })}
+                  className={`group overflow-hidden rounded-xl border text-left transition-all duration-200 hover:-translate-y-0.5 ${
+                    selected
+                      ? 'border-sky-300/60 ring-2 ring-sky-400/20'
+                      : 'border-white/10 hover:border-white/25'
+                  }`}
+                >
+                  <div className="relative aspect-[16/9] overflow-hidden" style={{ background: wallpaper.style }}>
+                    {wallpaper.imageUrl && (
+                      <img
+                        src={wallpaper.imageUrl}
+                        alt=""
+                        loading="lazy"
+                        decoding="async"
+                        className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                    )}
+                    {selected && <span className="absolute right-2 top-2 rounded-full bg-sky-400 p-1 text-slate-950"><Check className="h-3 w-3" /></span>}
+                  </div>
+                  <span className="block truncate bg-slate-900/80 px-3 py-2 text-[11px] font-medium text-slate-200">
+                    {wallpaper.name}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </Card>
+
+        <Card className="p-5">
+          <div className="mb-4">
+            <h2 className="text-sm font-semibold text-white">Lock screen widgets</h2>
+            <p className="mt-1 text-xs text-slate-400">
+              The date is shown by default. Turn on the optional quote or status card if you want them.
+            </p>
+          </div>
+          <div className="space-y-2">
+            {([
+              ['lockScreenShowDate', 'Date', 'Show the current day and date below the clock.'],
+              ['lockScreenShowQuote', 'Daily quote', 'Show a short piece of inspiration.'],
+              ['lockScreenShowStatus', 'System status', 'Show a compact workstation-ready card.'],
+            ] as const).map(([key, title, description]) => (
+              <div key={key} className="flex items-center justify-between gap-4 rounded-xl border border-white/[0.07] bg-white/[0.025] px-3.5 py-3 transition hover:border-white/[0.12] hover:bg-white/[0.045]">
+                <div className="min-w-0">
+                  <p className="text-xs font-medium text-slate-200">{title}</p>
+                  <p className="mt-0.5 text-[10px] text-slate-400">{description}</p>
+                </div>
+                <Toggle
+                  checked={settings[key]}
+                  onChange={() => updateSettings({ [key]: !settings[key] })}
+                  accent={accent}
+                />
+              </div>
+            ))}
+          </div>
         </Card>
 
 
@@ -3253,11 +3423,8 @@ export const SettingsApp: React.FC = () => {
               </div>
 
             </div>
-
           </div>
-
         </Card>
-
 
         <div className="space-y-2">
 

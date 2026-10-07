@@ -219,6 +219,7 @@ export interface DesktopIconItem {
   title: string;
   iconName: string;
   fileExtension?: string;
+  fileType?: 'file' | 'folder';
   customPosition?: { x: number; y: number };
   /** Optional launch payload used by installed Store experiences. */
   extraData?: any;
@@ -231,6 +232,10 @@ export interface SystemSettings {
   fontFamily: string;
   cursorColor: string;
   wallpaperId: string;
+  lockScreenWallpaperId: string;
+  lockScreenShowDate: boolean;
+  lockScreenShowQuote: boolean;
+  lockScreenShowStatus: boolean;
   animationsEnabled: boolean;
   glassBlurEnabled: boolean;
   soundsEnabled: boolean;

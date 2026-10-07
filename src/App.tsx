@@ -5,7 +5,7 @@ import React, {
   useState,
 } from "react";
 
-import { AnimatePresence } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 
 import {
   OSProvider,
@@ -84,7 +84,7 @@ const SETTINGS_STORAGE_KEY =
 ========================================================= */
 
 const DEFAULT_SETTINGS: DesktopSettings = {
-  viewMode: "medium",
+  viewMode: "small",
   sortBy: "name",
   sortDirection: "asc",
 
@@ -1676,8 +1676,6 @@ const DesktopEnvironment: React.FC =
 
         <ShutdownScreen />
 
-        <LockScreen />
-
         <SleepOverlay />
 
       </div>
@@ -1691,7 +1689,39 @@ const DesktopEnvironment: React.FC =
 export default function App() {
   return (
     <OSProvider>
-      <DesktopEnvironment />
+      <Workstation />
     </OSProvider>
   );
 }
+
+const Workstation: React.FC = () => {
+  const { powerState } = useOS();
+
+  return (
+    <AnimatePresence initial={false} mode="wait">
+      {powerState === "locked" ? (
+        <motion.div
+          key="lock-screen"
+          className="fixed inset-0"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.35, ease: "easeOut" }}
+        >
+          <LockScreen />
+        </motion.div>
+      ) : (
+        <motion.div
+          key="desktop-environment"
+          className="fixed inset-0"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.35, ease: "easeOut" }}
+        >
+          <DesktopEnvironment />
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+};

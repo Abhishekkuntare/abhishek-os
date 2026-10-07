@@ -13,6 +13,7 @@ import {
   ContactMessage,
   DesktopIconItem,
   TaskbarApp,
+  Wallpaper,
 } from '../types';
 import {
   INITIAL_PROJECTS,
@@ -46,7 +47,10 @@ import {
   saveTaskbarApps,
 } from '../lib/storage';
 import { saveVFSFile } from '../lib/vfs';
-import { getCustomWallpaper } from '../lib/wallpaperStorage';
+import {
+  getCustomWallpaper,
+  LOCK_SCREEN_WALLPAPER_KEY,
+} from '../lib/wallpaperStorage';
 
 interface ContextMenuState {
   isOpen: boolean;
@@ -129,7 +133,10 @@ interface OSContextType {
   settings: SystemSettings;
   updateSettings: (newSettings: Partial<SystemSettings>) => void;
   currentWallpaper: typeof INITIAL_WALLPAPERS[0];
-  wallpapers: typeof INITIAL_WALLPAPERS;
+  wallpapers: Wallpaper[];
+  customLockScreenWallpaperUrl: string | null;
+  lockScreenWallpapers: Wallpaper[];
+  lockScreenWallpaper: Wallpaper;
 
   // Data & Content
   projects: Project[];
@@ -282,8 +289,8 @@ const DEFAULT_TASKBAR_APPS: TaskbarApp[] = [
 ];
 
 export const OSProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Power state: initial boot sequence (brief 1.5s)
-  const [powerState, setPowerState] = useState<SystemPowerState>('booting');
+  // Start at the lock screen whenever the site is opened.
+  const [powerState, setPowerState] = useState<SystemPowerState>('locked');
 
   // Window list & zIndex counter
   const [windows, setWindows] = useState<WindowState[]>([]);
@@ -348,22 +355,30 @@ export const OSProvider: React.FC<{ children: React.ReactNode }> = ({ children }
 const [settings, setSettings] = useState<SystemSettings>(() => {
   const storedSettings = getStoredSettings();
 
-  const DEFAULT_WALLPAPER_ID = 'wall-cosmic-voyager';
-  const PREVIOUS_DEFAULT_WALLPAPER_ID = 'wall-alpine-valley';
-  const WALLPAPER_DEFAULT_VERSION = '4';
+  const DEFAULT_WALLPAPER_ID = 'wall-midnight-dunes';
+  const DEFAULT_LOCK_SCREEN_WALLPAPER_ID = 'wall-alpine-meadow';
+  const PREVIOUS_DEFAULT_WALLPAPER_IDS = new Set([
+    'wall-cosmic-voyager',
+    'wall-alpine-valley',
+  ]);
+  const WALLPAPER_DEFAULT_VERSION = '5';
 
   const savedWallpaperDefaultVersion = localStorage.getItem(
     'abhishek-wallpaper-default-version'
   );
 
-  // Move users from the previous default without overriding a wallpaper
-  // they deliberately selected.
+  // Migrate only the stock wallpaper choices; preserve user selections.
   if (savedWallpaperDefaultVersion !== WALLPAPER_DEFAULT_VERSION) {
     const migratedSettings = {
       ...storedSettings,
-      wallpaperId: storedSettings.wallpaperId === PREVIOUS_DEFAULT_WALLPAPER_ID
+      wallpaperId: PREVIOUS_DEFAULT_WALLPAPER_IDS.has(storedSettings.wallpaperId)
         ? DEFAULT_WALLPAPER_ID
         : storedSettings.wallpaperId,
+      lockScreenWallpaperId: PREVIOUS_DEFAULT_WALLPAPER_IDS.has(
+        storedSettings.lockScreenWallpaperId,
+      )
+        ? DEFAULT_LOCK_SCREEN_WALLPAPER_ID
+        : storedSettings.lockScreenWallpaperId,
     };
 
     localStorage.setItem(
@@ -381,17 +396,37 @@ const [settings, setSettings] = useState<SystemSettings>(() => {
 
 const [customWallpaperUrl, setCustomWallpaperUrl] = useState<string | null>(null);
 const [customWallpaperType, setCustomWallpaperType] = useState<'image' | 'video' | null>(null);
+const [customLockScreenWallpaperUrl, setCustomLockScreenWallpaperUrl] = useState<string | null>(null);
   useEffect(() => {
-    let objectUrl: string | null = null;
+    let desktopObjectUrl: string | null = null;
+    let lockScreenObjectUrl: string | null = null;
     let disposed = false;
     const loadWallpaper = async () => {
-      const blob = await getCustomWallpaper();
-      if (disposed || !blob) return;
-      const nextUrl = URL.createObjectURL(blob);
-      if (objectUrl) URL.revokeObjectURL(objectUrl);
-      objectUrl = nextUrl;
-      setCustomWallpaperUrl(nextUrl);
-      setCustomWallpaperType(blob.type.startsWith('video/') ? 'video' : 'image');
+      const [desktopBlob, lockScreenBlob] = await Promise.all([
+        getCustomWallpaper(),
+        getCustomWallpaper(LOCK_SCREEN_WALLPAPER_KEY),
+      ]);
+      if (disposed) return;
+
+      if (desktopObjectUrl) URL.revokeObjectURL(desktopObjectUrl);
+      if (desktopBlob) {
+        desktopObjectUrl = URL.createObjectURL(desktopBlob);
+        setCustomWallpaperUrl(desktopObjectUrl);
+        setCustomWallpaperType(desktopBlob.type.startsWith('video/') ? 'video' : 'image');
+      } else {
+        desktopObjectUrl = null;
+        setCustomWallpaperUrl(null);
+        setCustomWallpaperType(null);
+      }
+
+      if (lockScreenObjectUrl) URL.revokeObjectURL(lockScreenObjectUrl);
+      if (lockScreenBlob) {
+        lockScreenObjectUrl = URL.createObjectURL(lockScreenBlob);
+        setCustomLockScreenWallpaperUrl(lockScreenObjectUrl);
+      } else {
+        lockScreenObjectUrl = null;
+        setCustomLockScreenWallpaperUrl(null);
+      }
     };
     const handleWallpaperChange = () => {
       void loadWallpaper().catch(error => {
@@ -403,7 +438,8 @@ const [customWallpaperType, setCustomWallpaperType] = useState<'image' | 'video'
     return () => {
       disposed = true;
       window.removeEventListener('abhishek-wallpaper-changed', handleWallpaperChange);
-      if (objectUrl) URL.revokeObjectURL(objectUrl);
+      if (desktopObjectUrl) URL.revokeObjectURL(desktopObjectUrl);
+      if (lockScreenObjectUrl) URL.revokeObjectURL(lockScreenObjectUrl);
     };
   }, []);
 
@@ -527,7 +563,7 @@ const [customWallpaperType, setCustomWallpaperType] = useState<'image' | 'video'
     });
   }, []);
 
-  const wallpapers = useMemo(() => {
+  const wallpapers = useMemo<Wallpaper[]>(() => {
     const customVideo = customWallpaperUrl;
     if (!customVideo) return INITIAL_WALLPAPERS;
     return [
@@ -548,6 +584,31 @@ const [customWallpaperType, setCustomWallpaperType] = useState<'image' | 'video'
   const currentWallpaper = useMemo(() => {
     return wallpapers.find(w => w.id === settings.wallpaperId) || wallpapers[0];
   }, [settings.wallpaperId, wallpapers]);
+  const customLockScreenWallpaper: Wallpaper | null = customLockScreenWallpaperUrl
+    ? {
+        id: 'wall-custom-lock',
+        name: 'Custom lock screen',
+        thumbnailColor: '#111827',
+        style: `center / cover no-repeat url("${customLockScreenWallpaperUrl}")`,
+        type: 'static',
+        imageUrl: customLockScreenWallpaperUrl,
+        description: 'Custom lock screen wallpaper',
+      }
+    : null;
+  const lockScreenWallpapers = useMemo(
+    () => [
+      ...wallpapers.filter(wallpaper => wallpaper.id !== 'wall-custom' && wallpaper.type !== 'video'),
+      ...(customLockScreenWallpaper ? [customLockScreenWallpaper] : []),
+    ],
+    [wallpapers, customLockScreenWallpaper],
+  );
+  const lockScreenWallpaper = useMemo(
+    () =>
+      lockScreenWallpapers.find(wallpaper => wallpaper.id === settings.lockScreenWallpaperId) ??
+      lockScreenWallpapers.find(wallpaper => wallpaper.id === settings.wallpaperId) ??
+      lockScreenWallpapers[0],
+    [lockScreenWallpapers, settings.lockScreenWallpaperId, settings.wallpaperId],
+  );
 
   // Close context menu
   const closeContextMenu = useCallback(() => {
@@ -1024,6 +1085,7 @@ const [customWallpaperType, setCustomWallpaperType] = useState<'image' | 'video'
         title: fileName,
         iconName: type === 'folder' ? 'Folder' : 'FileText',
         fileExtension: extension || undefined,
+        fileType: type === 'folder' ? 'folder' : 'file',
       }];
       recordIconChange(previous, updated);
       localStorage.setItem('abhishek-desktop-icons', JSON.stringify(updated));
@@ -1489,6 +1551,9 @@ const [customWallpaperType, setCustomWallpaperType] = useState<'image' | 'video'
     updateSettings,
     currentWallpaper,
     wallpapers,
+    customLockScreenWallpaperUrl,
+    lockScreenWallpapers,
+    lockScreenWallpaper,
     projects,
     experiences,
     skills,

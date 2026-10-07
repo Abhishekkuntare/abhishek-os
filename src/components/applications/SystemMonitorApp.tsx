@@ -30,6 +30,7 @@ import {
 } from 'lucide-react';
 
 import { useOS } from '../../context/OSContext';
+import type { AppId } from '../../types';
 import { AppIcon } from '../ui/AppIcon';
 
 /* =========================================================
@@ -38,7 +39,7 @@ import { AppIcon } from '../ui/AppIcon';
 
 interface ProcessRow {
   id: string;
-  appId: string;
+  appId: AppId;
   name: string;
   iconName?: string;
   status: 'Running' | 'Suspended';
@@ -929,6 +930,7 @@ export const SystemMonitorApp: React.FC = () => {
                           }`}
                         >
                           <AppIcon
+                            appId={process.appId}
                             name={
                               process.iconName
                             }
@@ -1142,6 +1144,7 @@ export const SystemMonitorApp: React.FC = () => {
 
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-sky-400/10">
               <AppIcon
+                appId={selectedProcess.appId}
                 name={
                   selectedProcess.iconName
                 }

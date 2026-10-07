@@ -11,6 +11,7 @@ const STORAGE_KEYS = {
   MESSAGES: 'ak_portfolio_messages_v1',
   RECYCLE_BIN: 'ak_portfolio_recycle_bin_v1',
   SETTINGS: 'ak_portfolio_settings_v1',
+  LOCK_SCREEN_WIDGETS_DEFAULTED: 'ak_lock_screen_widgets_defaulted_v2',
   ADMIN_AUTH: 'ak_portfolio_admin_auth_v1',
   TASKBAR_APPS: 'ak_portfolio_taskbar_apps_v1',
 };
@@ -29,7 +30,11 @@ export const DEFAULT_SETTINGS: SystemSettings = {
   themePreset: 'aurora',
   fontFamily: 'Plus Jakarta Sans',
   cursorColor: '#e2e8f0',
-  wallpaperId: 'wall-cosmic-voyager',
+  wallpaperId: 'wall-midnight-dunes',
+  lockScreenWallpaperId: 'wall-alpine-meadow',
+  lockScreenShowDate: true,
+  lockScreenShowQuote: false,
+  lockScreenShowStatus: false,
   animationsEnabled: true,
   glassBlurEnabled: true,
   soundsEnabled: true,
@@ -215,6 +220,10 @@ export function saveRecycleBinItems(items: RecycleBinItem[]): void {
 // Settings Service
 export function getStoredSettings(): SystemSettings {
   const stored = getLocal<Partial<SystemSettings>>(STORAGE_KEYS.SETTINGS, {});
+  const shouldDisableDefaultLockScreenWidgets = !getLocal<boolean>(
+    STORAGE_KEYS.LOCK_SCREEN_WIDGETS_DEFAULTED,
+    false,
+  );
   const settings: SystemSettings = {
     ...DEFAULT_SETTINGS,
     ...stored,
@@ -223,7 +232,15 @@ export function getStoredSettings(): SystemSettings {
     // The light palette was retired; normalize settings saved by older builds.
     theme: 'dark',
   };
-  if (stored.theme === 'light') setLocal(STORAGE_KEYS.SETTINGS, settings);
+  if (shouldDisableDefaultLockScreenWidgets) {
+    settings.lockScreenShowDate = true;
+    settings.lockScreenShowQuote = false;
+    settings.lockScreenShowStatus = false;
+    setLocal(STORAGE_KEYS.SETTINGS, settings);
+    setLocal(STORAGE_KEYS.LOCK_SCREEN_WIDGETS_DEFAULTED, true);
+  } else if (stored.theme === 'light') {
+    setLocal(STORAGE_KEYS.SETTINGS, settings);
+  }
   return settings;
 }
 

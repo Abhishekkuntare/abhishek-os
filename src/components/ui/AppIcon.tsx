@@ -1,4 +1,5 @@
 import React from 'react';
+import type { AppId } from '../../types';
 import {
   Monitor,
   UserCheck,
@@ -44,12 +45,140 @@ import {
 
 interface AppIconProps {
   name: string;
+  appId?: AppId;
+  fileExtension?: string;
+  fileType?: 'file' | 'folder';
   className?: string;
   size?: number;
 }
 
-export const AppIcon: React.FC<AppIconProps> = ({ name, className = 'w-6 h-6', size }) => {
+export const AppIcon: React.FC<AppIconProps> = ({
+  name,
+  appId,
+  fileExtension,
+  fileType,
+  className = 'w-6 h-6',
+  size,
+}) => {
   const props = { className, size };
+
+  const extension = fileExtension?.toLowerCase().replace(/^\./, '');
+  const fileImage = fileType === 'folder'
+    ? 'folder'
+    : fileType === 'file'
+      ? extension === 'pdf'
+        ? 'pdf'
+        : /^(ts|tsx|js|jsx|json|css|scss|html|py|sql|sh|go|rs|java|c|cpp|h|hpp|vue|svelte)$/.test(extension ?? '')
+          ? 'code-file'
+          : /^(txt|md|rtf|doc|docx|abkdoc)$/.test(extension ?? '')
+            ? 'text-file'
+            : 'files'
+      : null;
+  if (fileImage) {
+    return (
+      <img
+        src={`/app-icons/${fileImage}.png`}
+        alt=""
+        aria-hidden="true"
+        width={size}
+        height={size}
+        className={`${className} object-contain`}
+        draggable={false}
+      />
+    );
+  }
+
+  const appImageIcons: Partial<Record<AppId, string>> = {
+    'this-pc': 'this-pc',
+    'file-explorer': 'folder',
+    'sheets': 'sheets',
+    'settings': 'settings',
+    'widgets': 'widgets',
+    weather: 'weather',
+    'abhishek-canva': 'canva',
+    store: 'app-store',
+    achievements: 'achievements',
+    calculator: 'calculator',
+    certifications: 'certificates',
+    education: 'education',
+    experience: 'experience',
+    git: 'git',
+    projects: 'projects',
+    'code-editor': 'vs-code',
+    terminal: 'terminal',
+    browser: 'browser',
+    writer: 'writer',
+    resume: 'resume',
+    skills: 'skills',
+    contact: 'contacts',
+    about: 'about',
+    arcade: 'games',
+    camera: 'camera',
+    'video-player': 'media-player',
+    'control-panel': 'control-center',
+    gallery: 'gallery',
+    notes: 'notes',
+    performance: 'performance',
+    'system-monitor': 'task-manager',
+    youtube: 'youtube',
+    'recycle-bin': 'trash',
+    spotify: 'music',
+    'music-player': 'music',
+    'api-tester': 'api-lab',
+    calendar: 'calendar',
+  };
+  const imageIcons: Record<string, string> = {
+    Monitor: 'this-pc',
+    CloudSun: 'weather',
+    Palette: 'canva',
+    Store: 'app-store',
+    Trophy: 'achievements',
+    Calculator: 'calculator',
+    Table: 'sheets',
+    Settings: 'settings',
+    LayoutDashboard: 'widgets',
+    Award: 'certificates',
+    GraduationCap: 'education',
+    GitBranch: 'git',
+    FolderKanban: 'projects',
+    Terminal: 'terminal',
+    Globe: 'browser',
+    Gamepad2: 'games',
+    Camera: 'camera',
+    SlidersHorizontal: 'control-center',
+    Images: 'gallery',
+    Music: 'music',
+    Activity: 'task-manager',
+    Youtube: 'youtube',
+    StickyNote: 'notes',
+    FileText: 'writer',
+    UserCheck: 'about',
+    Trash2: 'trash',
+    Video: 'media-player',
+    Send: 'api-lab',
+    Calendar: 'calendar',
+    Cpu: 'skills',
+    Briefcase: 'experience',
+    Mail: 'contacts',
+    Code2: 'vs-code',
+    ShieldAlert: 'task-manager',
+    HardDrive: 'this-pc',
+    Folder: 'folder',
+  };
+  const imageIcon = (appId && appImageIcons[appId]) || imageIcons[name];
+  if (imageIcon) {
+    return (
+      <img
+        src={`/app-icons/${imageIcon}.png`}
+        alt=""
+        aria-hidden="true"
+        width={size}
+        height={size}
+        className={`${className} object-contain`}
+        draggable={false}
+      />
+    );
+  }
 
   switch (name) {
     case 'Monitor':

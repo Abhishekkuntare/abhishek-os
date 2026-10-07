@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
   Monitor,
-  Sparkles,
   X,
-  ArrowUpRight,
 } from 'lucide-react';
 
 const DesktopExperienceNotice: React.FC = () => {
@@ -98,259 +96,94 @@ const DesktopExperienceNotice: React.FC = () => {
           fixed
           left-3
           right-3
-          bottom-[64px]
+          top-[max(12px,env(safe-area-inset-top))]
           z-[9998]
-
           flex
           justify-center
-
           pointer-events-none
-
           transition-all
-          duration-300
+          duration-[250ms]
           ease-out
-
           ${
             isClosing
-              ? 'translate-y-5 scale-95 opacity-0'
-              : 'translate-y-0 scale-100 opacity-100'
+              ? '-translate-y-2 opacity-0'
+              : 'translate-y-0 opacity-100'
           }
         `}
       >
         <div
           className="
             pointer-events-auto
-
             relative
+            flex
             w-full
             max-w-[420px]
-
+            items-center
+            gap-2.5
             overflow-hidden
-
-            rounded-2xl
-
+            rounded-xl
             border
-            border-sky-400/30
-
-            bg-slate-950/90
-
-            shadow-[0_15px_50px_rgba(0,0,0,0.55)]
-
+            border-sky-300/20
+            bg-slate-950/75
+            px-3
+            py-2
+            text-slate-100
+            shadow-[0_12px_36px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.08)]
             backdrop-blur-2xl
-
+            backdrop-saturate-150
             select-none
-
-            animate-[noticeFloat_3s_ease-in-out_infinite]
+            notice-enter
           "
         >
-          {/* ===================================================== */}
-          {/* GLOW */}
-          {/* ===================================================== */}
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_left,rgba(56,189,248,0.1),transparent_65%)]" />
 
           <div
             className="
-              pointer-events-none
-              absolute
-              -inset-10
-
-              rounded-full
-
-              bg-sky-500/10
-
-              blur-3xl
-
-              animate-pulse
+              relative
+              flex
+              h-8
+              w-8
+              shrink-0
+              items-center
+              justify-center
+              rounded-lg
+              border
+              border-sky-300/20
+              bg-sky-400/10
+              text-sky-200
             "
-          />
-
-          {/* ===================================================== */}
-          {/* TOP GLOW LINE */}
-          {/* ===================================================== */}
-
-          <div
-            className="
-              absolute
-              left-0
-              right-0
-              top-0
-
-              h-[2px]
-
-              bg-gradient-to-r
-              from-transparent
-              via-sky-400
-              to-transparent
-
-              animate-pulse
-            "
-          />
-
-          {/* ===================================================== */}
-          {/* CONTENT */}
-          {/* ===================================================== */}
-
-          <div className="relative flex items-center gap-3 p-3.5 sm:p-4">
-
-            {/* Monitor Icon */}
-            <div
-              className="
-                relative
-
-                flex
-                h-11
-                w-11
-                shrink-0
-
-                items-center
-                justify-center
-
-                rounded-xl
-
-                border
-                border-sky-400/30
-
-                bg-sky-500/10
-
-                shadow-[0_0_25px_rgba(56,189,248,0.18)]
-
-                animate-[iconGlow_2s_ease-in-out_infinite]
-              "
-            >
-              {/* Ping ring */}
-              <span
-                className="
-                  absolute
-                  inset-0
-
-                  rounded-xl
-
-                  border
-                  border-sky-400/40
-
-                  animate-ping
-                "
-              />
-
-              <Monitor
-                className="
-                  relative
-                  z-10
-
-                  h-5
-                  w-5
-
-                  text-sky-300
-
-                  drop-shadow-[0_0_8px_rgba(56,189,248,0.8)]
-                "
-              />
-            </div>
-
-            {/* Text */}
-            <div className="min-w-0 flex-1">
-
-              <div className="flex items-center gap-1.5">
-                <h3
-                  className="
-                    text-sm
-                    font-bold
-                    leading-tight
-                    text-white
-
-                    sm:text-[15px]
-                  "
-                >
-                  Better Experience
-                </h3>
-
-                <Sparkles
-                  className="
-                    h-3.5
-                    w-3.5
-                    shrink-0
-
-                    text-sky-300
-
-                    animate-pulse
-                  "
-                />
-              </div>
-
-              <p
-                className="
-                  mt-1
-
-                  text-[11px]
-                  leading-relaxed
-
-                  text-slate-300
-
-                  sm:text-xs
-                "
-              >
-                Open this portfolio on a laptop or desktop
-                for the full experience.
-              </p>
-
-              <div
-                className="
-                  mt-2
-
-                  flex
-                  items-center
-                  gap-1.5
-
-                  text-[9px]
-                  font-semibold
-                  uppercase
-                  tracking-[0.12em]
-
-                  text-sky-400/80
-                "
-              >
-                <ArrowUpRight className="h-3 w-3" />
-
-                Desktop OS Experience
-              </div>
-            </div>
-
-            {/* Close */}
-            <button
-              type="button"
-              aria-label="Close message"
-              onClick={closeNotice}
-              className="
-                absolute
-                right-2
-                top-2
-
-                flex
-                h-6
-                w-6
-
-                items-center
-                justify-center
-
-                rounded-lg
-
-                text-slate-500
-
-                transition-all
-                duration-150
-
-                hover:bg-white/10
-                hover:text-white
-
-                active:scale-90
-              "
-            >
-              <X className="h-3.5 w-3.5" />
-            </button>
+          >
+            <Monitor className="h-4 w-4" />
           </div>
 
-          {/* ===================================================== */}
-          {/* BOTTOM PROGRESS */}
-          {/* ===================================================== */}
+          <p className="relative min-w-0 flex-1 truncate text-[11px] font-medium text-slate-200 sm:text-xs">
+            For the full experience, open on desktop
+          </p>
+
+          <button
+            type="button"
+            aria-label="Close message"
+            onClick={closeNotice}
+            className="
+              relative
+              flex
+              h-7
+              w-7
+              shrink-0
+              items-center
+              justify-center
+              rounded-lg
+              text-slate-400
+              transition-all
+              duration-200
+              hover:rotate-90
+              hover:bg-white/[0.08]
+              hover:text-white
+              active:scale-90
+            "
+          >
+            <X className="h-3.5 w-3.5" />
+          </button>
 
           <div
             className="
@@ -358,24 +191,18 @@ const DesktopExperienceNotice: React.FC = () => {
               bottom-0
               left-0
               right-0
-
-              h-[2px]
-
+              h-px
               overflow-hidden
-
-              bg-white/5
+              bg-white/[0.06]
             "
           >
             <div
               className="
                 h-full
                 w-full
-
                 origin-left
-
-                bg-sky-400/70
-
-                animate-[noticeProgress_8s_linear_forwards]
+                bg-sky-300/70
+                notice-progress
               "
             />
           </div>
@@ -387,27 +214,15 @@ const DesktopExperienceNotice: React.FC = () => {
       {/* ========================================================= */}
 
       <style>{`
-        @keyframes noticeFloat {
-          0%,
-          100% {
-            transform: translateY(0px);
+        @keyframes noticeEnter {
+          from {
+            opacity: 0;
+            transform: translateY(-8px) scale(0.98);
           }
 
-          50% {
-            transform: translateY(-3px);
-          }
-        }
-
-        @keyframes iconGlow {
-          0%,
-          100% {
-            box-shadow:
-              0 0 0 rgba(56, 189, 248, 0);
-          }
-
-          50% {
-            box-shadow:
-              0 0 25px rgba(56, 189, 248, 0.25);
+          to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
           }
         }
 
@@ -421,9 +236,17 @@ const DesktopExperienceNotice: React.FC = () => {
           }
         }
 
+        .notice-enter {
+          animation: noticeEnter 260ms cubic-bezier(.2, .8, .2, 1) both;
+        }
+
+        .notice-progress {
+          animation: noticeProgress 8s linear forwards;
+        }
+
         @media (prefers-reduced-motion: reduce) {
-          .animate-pulse,
-          .animate-ping {
+          .notice-enter,
+          .notice-progress {
             animation: none !important;
           }
         }

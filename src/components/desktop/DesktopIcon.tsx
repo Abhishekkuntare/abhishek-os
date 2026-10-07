@@ -81,15 +81,6 @@ export const DesktopIcon: React.FC<
   const isSelected =
     selectedIconId === item.id;
 
-  const iconColors = [
-    '#78c7ff', '#9ca8ff', '#d5a3ff', '#ff94c2', '#ff9f9f',
-    '#ffbd86', '#f3d27a', '#b9df82', '#82dbb5', '#78ddd9',
-  ];
-  const iconColorIndex = Array.from(item.appId).reduce(
-    (hash, character) => (hash * 31 + character.charCodeAt(0)) >>> 0,
-    0,
-  ) % iconColors.length;
-
   /* =======================================================
      TOUCH / POINTER REFS
   ======================================================= */
@@ -124,6 +115,14 @@ export const DesktopIcon: React.FC<
       iconY: 0,
     });
 
+  const dragVisualRef = useRef<{
+    element: HTMLElement;
+    originalElement: HTMLElement;
+    deltaX: number;
+    deltaY: number;
+    frame: number | null;
+  } | null>(null);
+
   /* =======================================================
      LOCAL VISUAL STATE
   ======================================================= */
@@ -140,19 +139,19 @@ export const DesktopIcon: React.FC<
   const dimensions =
     viewMode === "large"
       ? {
-          icon: "w-11 h-11",
-          iconInner: "w-7 h-7",
+        icon: "w-[76px] h-[76px]",
+        iconInner: "w-[76px] h-[76px]",
           text: "text-sm",
         }
       : viewMode === "small"
       ? {
-          icon: "w-9 h-9",
-          iconInner: "w-5 h-5",
+        icon: "w-14 h-14",
+        iconInner: "w-14 h-14",
           text: "text-[11px]",
         }
       : {
-          icon: "w-11 h-11",
-          iconInner: "w-6 h-6",
+        icon: "w-[68px] h-[68px]",
+        iconInner: "w-[68px] h-[68px]",
           text: "text-xs",
         };
 
@@ -200,6 +199,8 @@ export const DesktopIcon: React.FC<
       iconX: desktopPosition.x,
       iconY: desktopPosition.y,
     };
+
+    dragVisualRef.current = null;
 
     setPressed(true);
 
@@ -279,26 +280,63 @@ export const DesktopIcon: React.FC<
       onDragStateChange?.(
         item.id
       );
+
+      const originalElement = e.currentTarget.parentElement;
+      if (originalElement) {
+        const bounds = originalElement.getBoundingClientRect();
+        const preview = originalElement.cloneNode(true) as HTMLElement;
+        preview.removeAttribute("id");
+        preview.querySelectorAll("[id]").forEach(element => {
+          element.removeAttribute("id");
+        });
+        preview.className = "desktop-icon-drag-preview";
+        Object.assign(preview.style, {
+          position: "fixed",
+          left: `${bounds.left}px`,
+          top: `${bounds.top}px`,
+          width: `${bounds.width}px`,
+          height: `${bounds.height}px`,
+          margin: "0",
+          zIndex: "9101",
+          pointerEvents: "none",
+          willChange: "transform",
+          transform: "translate3d(0, 0, 0)",
+        });
+        preview.setAttribute("aria-hidden", "true");
+        preview.querySelectorAll("button").forEach(button => {
+          button.tabIndex = -1;
+        });
+        document.body.appendChild(preview);
+        originalElement.style.visibility = "hidden";
+
+        dragVisualRef.current = {
+          element: preview,
+          originalElement,
+          deltaX: 0,
+          deltaY: 0,
+          frame: null,
+        };
+      }
     }
 
-    /*
-     * Calculate the new position.
-     *
-     * The parent App.tsx is responsible for
-     * clamping it inside the desktop.
-     */
-    const nextX =
-      dragStartRef.current
-        .iconX + deltaX;
+    const visual = dragVisualRef.current;
+    if (visual) {
+      visual.deltaX = deltaX;
+      visual.deltaY = deltaY;
 
-    const nextY =
-      dragStartRef.current
-        .iconY + deltaY;
-
-    onDesktopPositionChange?.(
-      nextX,
-      nextY
-    );
+      if (visual.frame === null) {
+        visual.frame = requestAnimationFrame(() => {
+          visual.frame = null;
+          visual.element.style.transform =
+            `translate3d(${visual.deltaX}px, ${visual.deltaY}px, 0)`;
+        });
+      }
+    } else {
+      onDesktopPositionChange?.(
+        dragStartRef.current.iconX + deltaX,
+        dragStartRef.current.iconY + deltaY,
+      );
+    }
 
     /*
      * Prevent scrolling on touch devices.
@@ -335,10 +373,36 @@ export const DesktopIcon: React.FC<
         e.clientX,
         e.clientY
       );
-
-      if (
+      const droppedOnTaskbar = Boolean(
         dropTarget?.closest("#windows-taskbar")
-      ) {
+      );
+      const deltaX = e.clientX - dragStartRef.current.pointerX;
+      const deltaY = e.clientY - dragStartRef.current.pointerY;
+      const visual = dragVisualRef.current;
+      if (visual) {
+        if (visual.frame !== null) {
+          cancelAnimationFrame(visual.frame);
+          visual.frame = null;
+        }
+        visual.element.style.transform =
+          `translate3d(${deltaX}px, ${deltaY}px, 0)`;
+        if (!droppedOnTaskbar) {
+          onDesktopPositionChange?.(
+            dragStartRef.current.iconX + deltaX,
+            dragStartRef.current.iconY + deltaY,
+          );
+        }
+        visual.originalElement.style.visibility = "";
+        visual.element.remove();
+        dragVisualRef.current = null;
+      } else if (!droppedOnTaskbar) {
+        onDesktopPositionChange?.(
+          dragStartRef.current.iconX + deltaX,
+          dragStartRef.current.iconY + deltaY,
+        );
+      }
+
+      if (droppedOnTaskbar) {
         pinTaskbarApp({
           appId: item.appId,
           title: item.title,
@@ -349,6 +413,8 @@ export const DesktopIcon: React.FC<
       onDragStateChange?.(
         null
       );
+    } else {
+      dragVisualRef.current = null;
     }
 
     pointerIdRef.current =
@@ -388,8 +454,28 @@ export const DesktopIcon: React.FC<
   ) => {
     e.stopPropagation();
 
+    const visual = dragVisualRef.current;
+    const wasDragging = hasMovedRef.current;
+    if (visual) {
+      if (visual.frame !== null) {
+        cancelAnimationFrame(visual.frame);
+      }
+      if (wasDragging) {
+        onDesktopPositionChange?.(
+          dragStartRef.current.iconX + visual.deltaX,
+          dragStartRef.current.iconY + visual.deltaY,
+        );
+      }
+      visual.originalElement.style.visibility = "";
+      visual.element.remove();
+      dragVisualRef.current = null;
+    }
+
     isPointerDownRef.current =
       false;
+
+    suppressClickRef.current =
+      wasDragging;
 
     hasMovedRef.current =
       false;
@@ -568,7 +654,6 @@ export const DesktopIcon: React.FC<
       id={`desktop-icon-${item.appId}`}
       type="button"
       aria-label={`Open ${item.title}`}
-      title={item.title}
       tabIndex={0}
       draggable={false}
       className={`
@@ -589,20 +674,17 @@ export const DesktopIcon: React.FC<
       : "cursor-pointer"
   }
 
-  transition-[transform,background-color,border-color,box-shadow]
+  transition-transform
   duration-150
   ease-out
 
         ${
-          isDragging
-            ? `
-              z-[999]
-              scale-[1.06]
-              bg-white/[0.12]
-              border-white/[0.20]
-              shadow-[0_18px_45px_rgba(0,0,0,0.42)]
-            `
-            : ""
+        isDragging
+          ? `
+            z-[999]
+            scale-[1.06]
+          `
+          : ""
         }
 
         ${
@@ -614,26 +696,7 @@ export const DesktopIcon: React.FC<
         ${
           isSelected &&
           !isDragging
-            ? `
-              bg-sky-500/25
-              border
-              border-sky-400/40
-              shadow-sm
-              backdrop-blur-sm
-            `
-            : `
-              border
-              border-transparent
-            `
-        }
-
-        ${
-          !isSelected &&
-          !isDragging
-            ? `
-              hover:bg-white/10
-              hover:border-white/15
-            `
+            ? "text-sky-200"
             : ""
         }
 
@@ -641,7 +704,6 @@ export const DesktopIcon: React.FC<
         focus-visible:ring-sky-400
       `}
       style={{
-        '--icon-accent': iconColors[iconColorIndex],
         width: "100%",
         height: "100%",
 
@@ -710,15 +772,6 @@ export const DesktopIcon: React.FC<
           justify-center
           shrink-0
 
-          rounded-xl
-
-          bg-slate-900/60
-
-          border
-          border-white/10
-
-          shadow-md
-
           transition-transform
           duration-150
           ease-out
@@ -727,19 +780,27 @@ export const DesktopIcon: React.FC<
 
           ${
             isDragging
-              ? "scale-105 shadow-xl"
+              ? "scale-105"
               : "group-hover:scale-105"
           }
         `}
       >
         <AppIcon
+          appId={item.appId}
+          fileType={item.fileType ?? (item.fileExtension ? 'file' : item.appId === 'file-explorer' ? 'folder' : undefined)}
+          fileExtension={item.fileExtension}
           name={
             item.iconName
           }
           className={`
             ${dimensions.iconInner}
+            ${
+              item.appId === "experience" ||
+              item.appId === "skills"
+                ? "rounded-2xl"
+                : ""
+            }
 
-            transition-colors
             duration-150
 
             ${
@@ -811,20 +872,17 @@ export const DesktopIcon: React.FC<
 
           transition-colors
 
-          drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]
-
           ${
             isSelected ||
             isDragging
               ? `
-                bg-sky-600/60
-                text-white
-                font-semibold
-              `
-              : `
-                text-slate-100
-                group-hover:text-white
-              `
+              text-white
+              font-semibold
+            `
+            : `
+              text-slate-100
+              group-hover:text-white
+            `
           }
         `}
       >

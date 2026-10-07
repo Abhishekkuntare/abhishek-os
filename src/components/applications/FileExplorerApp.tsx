@@ -12,6 +12,7 @@ import {
   Grid2X2, HardDrive, Info, LayoutList, List, MoreHorizontal, Pencil,
   Plus, RefreshCw, Search, Star, Tag, Trash2, Upload, X,
 } from 'lucide-react';
+import { AppIcon } from '../ui/AppIcon';
 
 type ViewMode = 'list' | 'grid' | 'gallery' | 'columns';
 const TAGS = [
@@ -29,13 +30,22 @@ const NAV = [
 ];
 
 const iconFor = (file: VFSFile, large = false) => {
-  const c = large ? 'w-10 h-10' : 'w-4 h-4';
-  const extension = String(file.extension || '').toLowerCase();
-  if (file.type === 'folder') return <Folder className={`${c} text-sky-400 fill-sky-400/15`} />;
-  if (/^(jpg|jpeg|png|gif|webp|svg|abkphoto)$/i.test(extension)) return <FileImage className={`${c} text-fuchsia-400`} />;
-  if (/^(ts|tsx|js|jsx|json|css|html|py|sql|md)$/i.test(extension)) return <FileCode2 className={`${c} text-amber-300`} />;
-  if (/^(abkdoc|txt|doc|pdf|rtf)$/i.test(extension)) return <FileText className={`${c} text-blue-300`} />;
-  return <File className={`${c} text-slate-400`} />;
+  const size = large ? 'h-10 w-10' : 'h-4 w-4';
+  const name = file.type === 'folder'
+    ? 'Folder'
+    : file.extension.toLowerCase() === 'pdf'
+      ? 'FileText'
+      : /^(ts|tsx|js|jsx|json|css|html|py|sql|md)$/i.test(file.extension)
+        ? 'FileCode2'
+        : 'File';
+  return (
+    <AppIcon
+      name={name}
+      fileType={file.type}
+      fileExtension={file.extension}
+      className={`${size} shrink-0 object-contain drop-shadow-[0_2px_4px_rgba(0,0,0,0.18)]`}
+    />
+  );
 };
 
 const prettySize = (n: number) => n < 1024 ? `${n} B` : n < 1048576 ? `${Math.max(1, Math.round(n / 1024))} KB` : `${(n / 1048576).toFixed(1)} MB`;
