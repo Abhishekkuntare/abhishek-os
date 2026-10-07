@@ -1393,6 +1393,9 @@ const DesktopWidget: React.FC<
         hover:border-white/[0.2]
         hover:shadow-[0_24px_56px_rgba(0,0,0,0.42)]
       "
+      data-default-quote-widget={
+        widget.id === "widget-quote-default" ? "true" : undefined
+      }
       style={{
         left:
           widget.position.x,

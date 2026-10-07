@@ -104,6 +104,12 @@
   animation: desktopWidgetIn 220ms cubic-bezier(.2, .8, .2, 1) both;
 }
 
+@media (max-width: 767px) {
+  [data-default-quote-widget="true"] {
+    display: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .desktop-widgets-panel,
   .desktop-widget-surface,
@@ -311,7 +317,7 @@
   }
 
   .desktop-icon-position button {
-    touch-action: pan-y;
+    touch-action: pan-y !important;
   }
 
   #windows-taskbar {
